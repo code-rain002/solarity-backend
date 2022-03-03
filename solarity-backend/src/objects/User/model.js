@@ -7,7 +7,9 @@ const userSchema = new Schema(
     email: { type: String, required: true },
     password: { type: String, required: true },
     publicAddress: { type: String, required: false },
-    assetsFollowing: { type: Array, required: false },
+    coinWatchlist: { type: Array, required: false },
+    nftWatchlist: { type: Array, required: false },
+    lastNftAnalysis: { type: Date, required: false },
   },
   {
     timestamps: true,

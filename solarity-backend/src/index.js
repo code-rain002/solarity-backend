@@ -1,5 +1,3 @@
-require("dotenv").config();
-
 import express from "express";
 import mongoose from "mongoose";
 import MongoStore from "connect-mongo";
@@ -7,10 +5,13 @@ import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import path from "path";
 import session from "express-session";
-import { authObject, profileObject } from "./objects";
+import Agenda from "agenda";
+import { authModule, nftModule, profileModule } from "./modules";
 import { authenticate } from "./middlewares";
 
 import Mailer from "./mailer";
+import { JobProcessingQueue } from "agenda/dist/agenda/job-processing-queue";
+import { fetchAllNftInCollection } from "./helpers/magicedenHelpers";
 
 let theblockchainapi = require("theblockchainapi");
 
@@ -38,9 +39,10 @@ class Server {
     this.initErrorHandler();
     this.initErrorRoute();
     this.initApis();
+    this.startNftQueue();
     // await this.initMailer(); <== we will unable later
   }
-  connectDatabase() {
+  async connectDatabase() {
     mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true });
     const db = mongoose.connection;
     db.on("error", console.error.bind(console, "connection error:"));
@@ -70,13 +72,14 @@ class Server {
   initPublicRoutes() {
     // put here the public routes
     console.log("> Starting public routes");
-    this.express.use("/api/auth", authObject);
+    this.express.use("/api/auth", authModule);
   }
   initPrivateRoutes() {
     // put here the private routes
     console.log("> Starting private routes");
     this.express.use("/api", authenticate);
-    this.express.use("/api/profile", profileObject);
+    this.express.use("/api/profile", profileModule);
+    this.express.use("/api/nft", nftModule);
     this.express.use("/api/*", (req, res, next) => {
       const err = new Error("Not Found");
       err.status = 404;
@@ -130,6 +133,20 @@ class Server {
     var APISecretKey = defaultClient.authentications["APISecretKey"];
     APISecretKey.apiKey = process.env.BLOCKCHAINAPI_SECRET_KEY;
     this.express.set("theblockchainapi", theblockchainapi);
+  }
+  startNftQueue() {
+    const nftQueue = new Agenda({
+      db: {
+        address: process.env.MONGO_URL,
+        collection: "nftJobs",
+      },
+    });
+    nftQueue.maxConcurrency(1);
+    nftQueue.define("fetchCollection", async ({ attrs: { data } }) => {
+      await fetchAllNftInCollection(data);
+    });
+    nftQueue.start();
+    this.express.set("nftQueue", nftQueue);
   }
 }
 

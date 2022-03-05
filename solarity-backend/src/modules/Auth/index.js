@@ -16,4 +16,4 @@ router.post("/login", validateSchema(LoginUserSchema), loginUser);
 // /register
 // /resetPassword
 
-export { router as authObject };
+export { router as authModule };

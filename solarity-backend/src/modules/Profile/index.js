@@ -17,27 +17,10 @@ const router = express.Router();
 
 router.get("/", getProfile);
 
-router.get("/nftOwned", getNftOwned);
-
-router.get("/nftWatchlist", getNftWatchList);
-router.get("/coinWatchlist", getCoinWatchList);
-
 router.post(
   "/publicAddress",
   validateSchema(updatePublicAddressSchema),
   updateProfile()
 );
 
-router.post(
-  "/coinWatchlist",
-  validateSchema(UpdateCoinSchema),
-  updateProfile("coinWatchlist")
-);
-
-router.post(
-  "/nftWatchlist",
-  validateSchema(UpdateAddressSchema),
-  updateProfile("nftWatchlist")
-);
-
-export { router as profileObject };
+export { router as profileModule };

@@ -9,22 +9,15 @@ export const updatePublicAddressSchema = yup.object({
   }),
 });
 
-export const UpdateAddressSchema = yup.object({
+export const updatePasswordSchema = yup.object({
   body: yup.object({
-    addresses: yup
-      .array()
-      .of(yup.string().typeError("Addresses must be an array of string"))
-      .typeError("Addresses must be an array of string")
-      .required("Addresses are required"),
-  }),
-});
-
-export const UpdateCoinSchema = yup.object({
-  body: yup.object({
-    coins: yup
-      .array()
-      .of(yup.string().typeError("Coins must be an array of string"))
-      .typeError("Coins must be an array of string")
-      .required("Coins are required"),
+    currentPassword: yup
+      .string()
+      .typeError("Current password must be a string")
+      .required("Current password is required"),
+    newPassword: yup
+      .string()
+      .typeError("New Password must be a string")
+      .required("New Password is required"),
   }),
 });

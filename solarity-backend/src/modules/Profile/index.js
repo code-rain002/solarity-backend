@@ -1,26 +1,18 @@
 import express from "express";
 import { validateSchema } from "../../middlewares";
-import {
-  getNftOwned,
-  getProfile,
-  updateProfile,
-  getNftWatchList,
-  getCoinWatchList,
-} from "./controller";
-import {
-  UpdateAddressSchema,
-  UpdateCoinSchema,
-  updatePublicAddressSchema,
-} from "./schema";
+import { getProfile, updateProfile, updatePassword } from "./controller";
+import { updatePasswordSchema, updatePublicAddressSchema } from "./schema";
 
 const router = express.Router();
 
 router.get("/", getProfile);
 
+router.post("/password", validateSchema(updatePasswordSchema), updatePassword);
+
 router.post(
   "/publicAddress",
   validateSchema(updatePublicAddressSchema),
-  updateProfile()
+  updateProfile
 );
 
 export { router as profileModule };

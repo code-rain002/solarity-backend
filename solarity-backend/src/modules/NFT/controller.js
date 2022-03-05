@@ -41,9 +41,12 @@ export const addNftCollection = async (req, res) => {
   try {
     const {
       session: { userId },
+    } = req;
+    let {
       body: { symbol },
     } = req;
     // get the user
+    symbol = symbol.toLowerCase();
     const user = await UserModel.findById(userId);
     // get the current nft watch list
     const { nftWatchlist } = user;

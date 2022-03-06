@@ -11,6 +11,7 @@
 | Check session   | /api/auth/check  | GET        |                                 |              |
 
 <br/>
+
 ## Profile Endpoint
 
 | **description**                | **path**                   | **method** | **data**                                     | **result**   |

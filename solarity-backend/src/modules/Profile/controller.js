@@ -1,7 +1,5 @@
 import { successResponse, errorResponse, throwError } from "../../helpers";
 import UserModel from "../User/model";
-import NftModel from "../NFT/model";
-import { getNFTPrice } from "../../helpers/nftHelpers";
 import md5 from "md5";
 
 export const getProfile = async (req, res) => {
@@ -21,7 +19,6 @@ export const getProfile = async (req, res) => {
 export const updateProfile = async (req, res) => {
   try {
     const { userId } = req.session;
-
     await UserModel.findByIdAndUpdate(userId, req.body);
     return successResponse({ res });
   } catch (err) {

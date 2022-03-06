@@ -6,23 +6,23 @@ import {
   getNftCollection,
   removeNftCollection,
 } from "./controller";
-import { addNftCollectionSchema, NftSymbolParamsSchema } from "./schema";
+import {
+  addNftCollectionSchema,
+  NftSymbolParamsSchema,
+  getNftCollectionsSchema,
+} from "./schema";
 
 const router = express.Router();
 
-router.get("/collections", getNftCollections);
-
-router.get("/test", (req, res) => {
-  const queue = req.app.get("nftQueue");
-  queue.now("fetchCollection", "NOICE");
-  queue.now("fetchCollection", "NOICE1");
-  queue.now("fetchCollection", "NOICE3");
-  res.send("done");
-});
+router.get(
+  "/collections",
+  validateSchema(getNftCollectionsSchema, { includeQuery: true }),
+  getNftCollections
+);
 
 router.get(
   "/collections/:symbol",
-  validateSchema(NftSymbolParamsSchema),
+  validateSchema(NftSymbolParamsSchema, { includeQuery: true }),
   getNftCollection
 );
 

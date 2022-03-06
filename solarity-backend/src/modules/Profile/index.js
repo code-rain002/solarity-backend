@@ -1,18 +1,18 @@
 import express from "express";
 import { validateSchema } from "../../middlewares";
 import { getProfile, updateProfile, updatePassword } from "./controller";
-import { updatePasswordSchema, updatePublicAddressSchema } from "./schema";
+import {
+  updatePasswordSchema,
+  updatePublicAddressSchema,
+  updateProfileSchema,
+} from "./schema";
 
 const router = express.Router();
 
-// returns the profile data
 router.get("/", getProfile);
 
-router.post("/");
+router.post("/", validateSchema(updateProfileSchema), updateProfile);
 
-/**
- * Updates the
- */
 router.post("/password", validateSchema(updatePasswordSchema), updatePassword);
 
 router.post(

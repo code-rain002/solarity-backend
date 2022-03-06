@@ -5,19 +5,18 @@ import { getNftCollectionStats } from "../../helpers/magicedenHelpers";
 
 export const getNftCollections = async (req, res) => {
   try {
-    const collection = await NftCollectionModel.find();
-    if (!collection) throwError("No such collection exist");
-    return successResponse({ res, response: { collection } });
-  } catch (err) {
-    return errorResponse({ res, err });
-  }
-};
-
-export const getNftCollectionsFollowing = async (req, res) => {
-  try {
-    const collection = await NftCollectionModel.find();
-    if (!collection) throwError("No such collection exist");
-    return successResponse({ res, response: { collection } });
+    const {
+      session: { userId },
+      query: { following },
+    } = req;
+    const findOptions = {};
+    if (following) {
+      const user = await UserModel.findById(userId);
+      const { nftWatchlist } = user;
+      findOptions.symbol = { $in: nftWatchlist };
+    }
+    const collections = await NftCollectionModel.find(findOptions);
+    return successResponse({ res, response: { collections } });
   } catch (err) {
     return errorResponse({ res, err });
   }
@@ -26,17 +25,30 @@ export const getNftCollectionsFollowing = async (req, res) => {
 export const getNftCollection = async (req, res) => {
   try {
     const {
+      query: { excludeNfts },
       params: { symbol },
     } = req;
     const collection = await NftCollectionModel.findOne({ symbol });
+    const { loaded } = collection;
+    if (!loaded) {
+      const nftQueue = req.app.get("nftQueue");
+      nftQueue.now("fetchCollection", symbol);
+    }
+    const response = { collection };
     if (!collection) throwError("No such collection exist");
-    const nfts = await NftModel.find({ symbol });
-    return successResponse({ res, response: { collection, nfts } });
+    if (!excludeNfts) {
+      if (loaded) {
+        const nfts = await NftModel.find({ symbol });
+        response.nfts = nfts;
+      }
+    }
+    return successResponse({ res, response });
   } catch (err) {
     return errorResponse({ res, err });
   }
 };
 
+// $push!!!
 export const addNftCollection = async (req, res) => {
   try {
     const {
@@ -66,7 +78,9 @@ export const addNftCollection = async (req, res) => {
     nftQueue.now("fetchCollection", symbol);
     // update the user watch list
     await UserModel.findByIdAndUpdate(userId, {
-      nftWatchlist: [...nftWatchlist, symbol],
+      $push: {
+        nftWatchlist: symbol,
+      },
     });
     // respond with the collection
     return successResponse({ res, response: { result } });
@@ -75,21 +89,17 @@ export const addNftCollection = async (req, res) => {
   }
 };
 
-// checked
 export const removeNftCollection = async (req, res) => {
   try {
     const {
       session: { userId },
       params: { symbol },
     } = req;
-    const user = await UserModel.findById(userId);
-    const { nftWatchlist } = user;
-    if (nftWatchlist.includes(symbol)) {
-      const newNftWatchlist = nftWatchlist.filter((id) => id != symbol);
-      await UserModel.findByIdAndUpdate(userId, {
-        nftWatchlist: newNftWatchlist,
-      });
-    }
+    await UserModel.findByIdAndUpdate(userId, {
+      $pull: {
+        nftWatchlist: symbol,
+      },
+    });
     return successResponse({ res });
   } catch (err) {
     return errorResponse({ res, err });

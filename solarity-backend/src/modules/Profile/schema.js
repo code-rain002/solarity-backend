@@ -21,3 +21,12 @@ export const updatePasswordSchema = yup.object({
       .required("New Password is required"),
   }),
 });
+
+export const updateProfileSchema = yup.object({
+  body: yup.object({
+    name: yup
+      .string()
+      .typeError("Name must be a string")
+      .required("Name is required"),
+  }),
+});

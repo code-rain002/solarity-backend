@@ -25,9 +25,9 @@
 
 ## NFT Endpoint
 
-| **description**                  | **path**                     | **method** | **data**                     | **result**                                                                   |
-| -------------------------------- | ---------------------------- | ---------- | ---------------------------- | ---------------------------------------------------------------------------- |
-| Fetch Collections                | /api/nft/collections         | GET        | QUERY<br>- following[bool]   | all nft collections<br>with following=1, collections that are being followed |
-| Fetch Single Collection          | /api/nft/collections/:symbol | GET        | QUERY<br>- excludeNFTs[bool] | all nft details                                                              |
-| Add Collection to Watchlist      | /api/nft/collections         | POST       | BODY<br>- symbol[string]\*   | all nft details                                                              |
-| Remove Collection from Watchlist | /api/nft/collections/:symbol | DELETE     |                              |                                                                              |
+| **description**                  | **path**                     | **method** | **data**                     | **result**                                                                  |
+| -------------------------------- | ---------------------------- | ---------- | ---------------------------- | --------------------------------------------------------------------------- |
+| Fetch Collections                | /api/nft/collections         | GET        | QUERY<br>- following[bool]   | all nft collections.<br>If following=1, collections that are being followed |
+| Fetch Single Collection          | /api/nft/collections/:symbol | GET        | QUERY<br>- excludeNFTs[bool] | all nft details                                                             |
+| Add Collection to Watchlist      | /api/nft/collections         | POST       | BODY<br>- symbol[string]\*   | all nft details                                                             |
+| Remove Collection from Watchlist | /api/nft/collections/:symbol | DELETE     |                              |                                                                             |

@@ -20,6 +20,7 @@
 | Update Profile _(in progress)_ | /api/profile               | POST       | BODY<br>- name[string]\*                                       | profile data |
 | Update Password                | /api/profile/password      | POST       | BODY<br>- currentPassword[string]\*<br>- newPassword[string]\* |              |
 | Update Public Address          | /api/profile/publicAddress | POST       | BODY<br>- publicAddress[string]\*                              |              |
+| Connect Twitter Account        | /api/profile/twitter       | POST       | BODY<br>- username[string]\*                                   |              |
 
 <br/>
 

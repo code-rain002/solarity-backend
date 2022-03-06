@@ -1,10 +1,16 @@
 import express from "express";
 import { validateSchema } from "../../middlewares";
-import { getProfile, updateProfile, updatePassword } from "./controller";
+import {
+  getProfile,
+  updateProfile,
+  updatePassword,
+  connectTwitter,
+} from "./controller";
 import {
   updatePasswordSchema,
   updatePublicAddressSchema,
   updateProfileSchema,
+  connectTwitterSchema,
 } from "./schema";
 
 const router = express.Router();
@@ -20,5 +26,7 @@ router.post(
   validateSchema(updatePublicAddressSchema),
   updateProfile
 );
+
+router.post("/twitter", validateSchema(connectTwitterSchema), connectTwitter);
 
 export { router as profileModule };

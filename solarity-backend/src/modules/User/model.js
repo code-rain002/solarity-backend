@@ -5,6 +5,7 @@ const userSchema = new Schema(
   {
     name: { type: String, required: true },
     email: { type: String, required: true },
+    twitterUsername: { type: String, required: true },
     password: { type: String, required: true },
     publicAddress: { type: String, required: false },
     coinWatchlist: { type: Array, required: false },

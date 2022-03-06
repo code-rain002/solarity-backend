@@ -3542,6 +3542,11 @@
   "resolved" "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz"
   "version" "1.14.1"
 
+"twitter-api-v2@^1.11.0":
+  "integrity" "sha512-aCIHKtzhQdKp5fYXCHY6HCfkNc9QAhbJ+zIPGzPCbx8/2UnfmNGIVt9eZqsJP5kj96p9BfXMXsTVhn4nvFsBNA=="
+  "resolved" "https://registry.npmjs.org/twitter-api-v2/-/twitter-api-v2-1.11.0.tgz"
+  "version" "1.11.0"
+
 "type-check@~0.3.2":
   "integrity" "sha1-WITKtRLPHTVeP7eE8wgEsrUg23I="
   "resolved" "https://registry.npmjs.org/type-check/-/type-check-0.3.2.tgz"

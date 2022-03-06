@@ -30,3 +30,12 @@ export const updateProfileSchema = yup.object({
       .required("Name is required"),
   }),
 });
+
+export const connectTwitterSchema = yup.object({
+  body: yup.object({
+    username: yup
+      .string()
+      .typeError("Twitter username must be a string")
+      .required("Twitter username is required"),
+  }),
+});

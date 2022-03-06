@@ -6,14 +6,14 @@ import cookieParser from "cookie-parser";
 import path from "path";
 import session from "express-session";
 import Agenda from "agenda";
+import { TwitterApi } from "twitter-api-v2";
+
+const theblockchainapi = require("theblockchainapi");
+
 import { authModule, nftModule, profileModule } from "./modules";
 import { authenticate } from "./middlewares";
-
 import Mailer from "./mailer";
-import { JobProcessingQueue } from "agenda/dist/agenda/job-processing-queue";
 import { fetchAllNftInCollection } from "./helpers/magicedenHelpers";
-
-let theblockchainapi = require("theblockchainapi");
 
 class Server {
   constructor({ port }) {
@@ -133,6 +133,10 @@ class Server {
     var APISecretKey = defaultClient.authentications["APISecretKey"];
     APISecretKey.apiKey = process.env.BLOCKCHAINAPI_SECRET_KEY;
     this.express.set("theblockchainapi", theblockchainapi);
+    // twitter api init
+    const twitterClient = new TwitterApi(process.env.TWITTER_BEARER_TOKEN);
+    const twitterApi = twitterClient.readOnly;
+    this.express.set("twitterApi", twitterApi);
   }
   startNftQueue() {
     const nftQueue = new Agenda({

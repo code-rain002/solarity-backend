@@ -44,3 +44,25 @@ export const updatePassword = async (req, res) => {
     return errorResponse({ res, err });
   }
 };
+
+export const connectTwitter = async (req, res) => {
+  try {
+    const {
+      session: { userId },
+      body: { username },
+    } = req;
+    const twitterApi = req.app.get("twitterApi");
+    const timeline = await twitterApi.v1.userTimelineByUsername(username, {
+      count: 5,
+    });
+    const { _realData } = timeline;
+    const data = _realData.map(({ full_text }) => full_text.trim());
+    if (!data.includes(userId)) {
+      throwError("Unable to verify twitter account ownership");
+    }
+    await UserModel.findByIdAndUpdate(userId, { twitterUsername: username });
+    return successResponse({ res });
+  } catch (err) {
+    return errorResponse({ res, err });
+  }
+};

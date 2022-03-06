@@ -1,12 +1,11 @@
 import express from "express";
 import { authenticate, validateSchema } from "../../middlewares";
-import { loginUser, logoutUser } from "./controller";
-
+import { loginUser, logoutUser, checkLogin } from "./controller";
 import { LoginUserSchema } from "./schema";
 
 const router = express.Router();
 
-router.get("/check", authenticate, (req, res) => res.send("Logged in"));
+router.get("/check", authenticate, checkLogin);
 
 router.post("/logout", logoutUser);
 

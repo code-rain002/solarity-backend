@@ -14,7 +14,7 @@ export const loginUser = async (req, res) => {
     req.session.email = email;
     req.session.logged = true;
     await req.session.save();
-    return res.send("you are logged in");
+    return successResponse({ res, response: { user } });
   } catch (err) {
     return errorResponse({ res, err, location: "loginUser" });
   }
@@ -22,5 +22,9 @@ export const loginUser = async (req, res) => {
 
 export const logoutUser = async (req, res, next) => {
   await req.session.destroy();
+  return successResponse({ res });
+};
+
+export const checkLogin = async (req, res) => {
   return successResponse({ res });
 };

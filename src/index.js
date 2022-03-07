@@ -7,6 +7,7 @@ import path from "path";
 import session from "express-session";
 import Agenda from "agenda";
 import { TwitterApi } from "twitter-api-v2";
+import Rollbar from "rollbar";
 
 const theblockchainapi = require("theblockchainapi");
 
@@ -14,6 +15,7 @@ import { authModule, nftModule, profileModule, tweetModule } from "./modules";
 import { authenticate } from "./middlewares";
 import Mailer from "./mailer";
 import { fetchAllNftInCollection } from "./helpers/magicedenHelpers";
+import { coinModule } from "./modules/Coin";
 
 class Server {
   constructor({ port }) {
@@ -81,6 +83,7 @@ class Server {
     this.express.use("/api/profile", profileModule);
     this.express.use("/api/nft", nftModule);
     this.express.use("/api/tweets", tweetModule);
+    this.express.use("/api/coins", coinModule);
     this.express.use("/api/*", (req, res, next) => {
       const err = new Error("Not Found");
       err.status = 404;
@@ -117,7 +120,6 @@ class Server {
       res.status(err.status || 500);
       res.locals.error = err;
       res.locals.errorDescription = err.message;
-      console.log(err);
       return res.send("ERROR: NOT FOUND");
     });
   }
@@ -138,6 +140,14 @@ class Server {
     const twitterClient = new TwitterApi(process.env.TWITTER_BEARER_TOKEN);
     const twitterApi = twitterClient.readOnly;
     this.express.set("twitterApi", twitterApi);
+    // rollbar api
+    let rollbar = new Rollbar({
+      accessToken: process.env.ROLLBAR_ACCESSTOKEN,
+      captureUncaught: true,
+      captureUnhandledRejections: true,
+    });
+    this.express.set("rollbar", rollbar);
+    global.rollbar = rollbar;
   }
   startNftQueue() {
     const nftQueue = new Agenda({

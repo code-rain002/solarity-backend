@@ -1,15 +1,17 @@
 import express from "express";
 import { authenticate, validateSchema } from "../../middlewares";
-import { loginUser, logoutUser, checkLogin } from "./controller";
-import { LoginUserSchema } from "./schema";
+import { registerUser, loginUser, logoutUser, checkLogin } from "./controller";
+import { LoginUserSchema, RegisterUserSchema } from "./schema";
 
 const router = express.Router();
+
+router.post("/register", validateSchema(RegisterUserSchema), registerUser);
+
+router.post("/login", validateSchema(LoginUserSchema), loginUser);
 
 router.get("/check", authenticate, checkLogin);
 
 router.post("/logout", logoutUser);
-
-router.post("/login", validateSchema(LoginUserSchema), loginUser);
 
 // later!
 // /register

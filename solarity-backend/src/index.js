@@ -10,7 +10,7 @@ import { TwitterApi } from "twitter-api-v2";
 
 const theblockchainapi = require("theblockchainapi");
 
-import { authModule, nftModule, profileModule } from "./modules";
+import { authModule, nftModule, profileModule, tweetModule } from "./modules";
 import { authenticate } from "./middlewares";
 import Mailer from "./mailer";
 import { fetchAllNftInCollection } from "./helpers/magicedenHelpers";
@@ -80,6 +80,7 @@ class Server {
     this.express.use("/api", authenticate);
     this.express.use("/api/profile", profileModule);
     this.express.use("/api/nft", nftModule);
+    this.express.use("/api/tweets", tweetModule);
     this.express.use("/api/*", (req, res, next) => {
       const err = new Error("Not Found");
       err.status = 404;

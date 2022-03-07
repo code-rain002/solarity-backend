@@ -3,6 +3,22 @@ import { errorResponse, successResponse, throwError } from "../../helpers";
 
 import UserModel from "../User/model";
 
+export const registerUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await UserModel.findOne({ email });
+    if (user) throwError("Account with the provided email already exists");
+
+    req.body.password = md5(password);
+    await UserModel.create(req.body);
+
+    return successResponse({ res });
+  } catch (err) {
+    return errorResponse({ res, err });
+  }
+};
+
 export const loginUser = async (req, res) => {
   try {
     let { email, password } = req.body;

@@ -60,7 +60,14 @@ export const connectTwitter = async (req, res) => {
     if (!data.includes(userId)) {
       throwError("Unable to verify twitter account ownership");
     }
-    await UserModel.findByIdAndUpdate(userId, { twitterUsername: username });
+    const user = await twitterApi.v2.userByUsername(username);
+    const {
+      data: { id },
+    } = user;
+    await UserModel.findByIdAndUpdate(userId, {
+      twitterUsername: username,
+      twitterId: id,
+    });
     return successResponse({ res });
   } catch (err) {
     return errorResponse({ res, err });

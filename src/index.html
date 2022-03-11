@@ -57,6 +57,15 @@
               console.log("logged in");
             });
           });
+          $("#registerForm").submit(function (e) {
+            e.preventDefault();
+            let dataArray = $("#registerForm").serializeArray();
+            const data = {};
+            dataArray.forEach(({ name, value }) => (data[name] = value));
+            $.post("/api/auth/register", data, () => {
+              console.log("Registered!");
+            });
+          });
         });
       })(jQuery);
     </script>
@@ -80,6 +89,21 @@
       </div>
       <div style="flex: 1; border: 1px solid black; padding: 10px 20px">
         <h3>Signin</h3>
+        <form id="registerForm" method="post">
+          <div>
+            <label for="name">Name</label>
+            <input type="text" label="name" name="name" id="name" />
+          </div>
+          <div>
+            <label for="email">Email</label>
+            <input type="email" label="email" name="email" id="email" />
+          </div>
+          <div>
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" />
+          </div>
+          <input type="submit" value="Register" />
+        </form>
       </div>
     </div>
     <div>

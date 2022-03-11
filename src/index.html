@@ -24,18 +24,17 @@
                 console.log("NOT LOGGED OUT");
               });
           });
-          $("#connectTwitter").click(function (e) {
+          $("#getTweets").click(function (e) {
+            console.log("Loading tweets!");
             let username = prompt("Please enter your twitter usernamer");
-            console.log(username);
-            $.post("/api/profile/twitter")
-              .done(() => {
-                console.log("LOGGED OUT");
+            $.get("/api/tweets/" + username)
+              .done((data) => {
+                console.log("tweets: ", data);
               })
               .fail(() => {
-                console.log("NOT LOGGED OUT");
+                console.log("Unable to load tweets");
               });
           });
-          connectTwitter;
           $("#checkSession").click(function (e) {
             try {
               $.get("/api/auth/check")
@@ -45,15 +44,6 @@
                 .fail(() => {
                   console.log("NOT LOGGED IN");
                 });
-            } catch {
-              console.log("Not logged in");
-            }
-          });
-          $("#showProfile").click(function (e) {
-            try {
-              $.get("/api/profile").done(({ user }) => {
-                console.log("Profile:", user);
-              });
             } catch {
               console.log("Not logged in");
             }
@@ -97,7 +87,6 @@
       <button id="logOut">Log out</button>
       <button id="checkSession">Check Session</button>
       <button id="showProfile">Show Profile</button>
-      <button id="connectTwitter">Connect twitter</button>
       <button id="getTweets">Get tweets</button>
     </div>
   </body>

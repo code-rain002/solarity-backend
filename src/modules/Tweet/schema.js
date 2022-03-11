@@ -11,3 +11,12 @@ export const getTweetsSchema = yup.object({
     communityId: yup.string().typeError("Community ID must be a string"),
   }),
 });
+
+export const getTweetsUsernameSchema = yup.object({
+  params: yup.object({
+    username: yup
+      .string()
+      .typeError("Username must be a string")
+      .required("Username is required"),
+  }),
+});

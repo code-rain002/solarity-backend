@@ -13,6 +13,8 @@
     "@babel/preset-env": "^7.4.5",
     "@babel/register": "^7.4.4",
     "@babel/runtime": "^7.4.5",
+    "@nfteyez/sol-rayz": "^0.10.2",
+    "@solana/web3.js": "^1.36.0",
     "agenda": "^4.2.1",
     "axios": "^0.26.0",
     "babel-loader": "^8.0.0-beta.0",

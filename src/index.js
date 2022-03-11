@@ -16,6 +16,7 @@ import { authenticate } from "./middlewares";
 import Mailer from "./mailer";
 import { fetchAllNftInCollection } from "./helpers/magicedenHelpers";
 import { coinModule } from "./modules/Coin";
+import { daoModule } from "./modules/DAO";
 
 class Server {
   constructor({ port }) {
@@ -74,6 +75,12 @@ class Server {
   initPublicRoutes() {
     // put here the public routes
     console.log("> Starting public routes");
+    if (process.env.NODE_ENV !== "production") {
+      // only for testing
+      this.express.get("/api/test", (req, res) => {
+        res.sendFile(path.join(__dirname, "index.html"));
+      });
+    }
     this.express.use("/api/auth", authModule);
   }
   initPrivateRoutes() {
@@ -84,6 +91,8 @@ class Server {
     this.express.use("/api/nft", nftModule);
     this.express.use("/api/tweets", tweetModule);
     this.express.use("/api/coins", coinModule);
+    this.express.use("/api/dao", daoModule);
+
     this.express.use("/api/*", (req, res, next) => {
       const err = new Error("Not Found");
       err.status = 404;
@@ -92,7 +101,23 @@ class Server {
   }
   initMiddleware() {
     // middleware initialization
-    this.express.use(helmet());
+    const scriptSources = ["'self'", "'unsafe-inline'", "'unsafe-eval'"];
+    this.express.use(
+      helmet.contentSecurityPolicy({
+        useDefaults: false,
+        directives: {
+          "default-src": scriptSources,
+          "script-src": scriptSources,
+          "script-src-elem": [...scriptSources, "https://code.jquery.com"],
+          "style-src": null,
+        },
+      })
+    );
+    this.express.use(
+      helmet({
+        contentSecurityPolicy: false,
+      })
+    );
     this.express.use(express.json());
     this.express.use(express.urlencoded({ extended: false }));
     this.express.use(cookieParser());

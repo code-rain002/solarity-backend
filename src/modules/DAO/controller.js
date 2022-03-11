@@ -1,10 +1,10 @@
 import { errorResponse, successResponse } from "../../helpers";
 
-export const getCoins = (req, res) => {
+export const getDaos = (req, res) => {
   res.send("in progress");
 };
 
-export const addCoin = (req, res) => {
+export const addDao = (req, res) => {
   try {
     const {
       session: { userId },
@@ -20,7 +20,7 @@ export const addCoin = (req, res) => {
   }
 };
 
-export const removeCoin = (req, res) => {
+export const removeDao = (req, res) => {
   // lower case symbol
   res.send("in progress");
 };

@@ -23,13 +23,12 @@ export const getTweets = async (req, res) => {
       }
       twitterId = user.twitterId;
     }
-    const timeline = await twitterApi.v2.userTimeline(twitterId, {
+    const timeline = await twitterApi.v1.userTimeline(twitterId, {
       max_results: maxResults,
       exclude: ["replies", "retweets"],
     });
-    const {
-      _realData: { data },
-    } = timeline;
+    const { _realData: data } = timeline;
+    console.log(data);
     return successResponse({ res, response: { data } });
   } catch (err) {
     return errorResponse({ res, err });

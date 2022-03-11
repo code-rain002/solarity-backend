@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Solarity Test</title>
+  </head>
+  <body>
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      (($) => {
+        $(document).ready(function ($) {
+          $("#logOut").click(function (e) {
+            $.post("/api/auth/logout")
+              .done(() => {
+                console.log("LOGGED OUT");
+              })
+              .fail(() => {
+                console.log("NOT LOGGED OUT");
+              });
+          });
+          $("#connectTwitter").click(function (e) {
+            let username = prompt("Please enter your twitter usernamer");
+            console.log(username);
+            $.post("/api/profile/twitter")
+              .done(() => {
+                console.log("LOGGED OUT");
+              })
+              .fail(() => {
+                console.log("NOT LOGGED OUT");
+              });
+          });
+          connectTwitter;
+          $("#checkSession").click(function (e) {
+            try {
+              $.get("/api/auth/check")
+                .done(() => {
+                  console.log("LOGGED IN");
+                })
+                .fail(() => {
+                  console.log("NOT LOGGED IN");
+                });
+            } catch {
+              console.log("Not logged in");
+            }
+          });
+          $("#showProfile").click(function (e) {
+            try {
+              $.get("/api/profile").done(({ user }) => {
+                console.log("Profile:", user);
+              });
+            } catch {
+              console.log("Not logged in");
+            }
+          });
+          $("#loginForm").submit(function (e) {
+            e.preventDefault();
+            let dataArray = $("#loginForm").serializeArray();
+            const data = {};
+            dataArray.forEach(({ name, value }) => (data[name] = value));
+            $.post("/api/auth/login", data, () => {
+              console.log("logged in");
+            });
+          });
+        });
+      })(jQuery);
+    </script>
+    <h1>SOLARITY</h1>
+    <h2>Only for testing</h2>
+    <hr />
+    <div style="display: flex">
+      <div style="flex: 1; border: 1px solid black; padding: 10px 20px">
+        <h3>Login</h3>
+        <form id="loginForm" method="post">
+          <div>
+            <label for="email">Email</label>
+            <input type="email" label="email" name="email" id="email" />
+          </div>
+          <div>
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" />
+          </div>
+          <input type="submit" value="Login" />
+        </form>
+      </div>
+      <div style="flex: 1; border: 1px solid black; padding: 10px 20px">
+        <h3>Signin</h3>
+      </div>
+    </div>
+    <div>
+      <h3>Actions</h3>
+      <button id="logOut">Log out</button>
+      <button id="checkSession">Check Session</button>
+      <button id="showProfile">Show Profile</button>
+      <button id="connectTwitter">Connect twitter</button>
+      <button id="getTweets">Get tweets</button>
+    </div>
+  </body>
+</html>

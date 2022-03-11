@@ -1,6 +1,12 @@
 import md5 from "md5";
 import { errorResponse, successResponse, throwError } from "../../helpers";
 
+import {
+  getParsedNftAccountsByOwner,
+  createConnectionConfig,
+} from "@nfteyez/sol-rayz";
+const web3 = require("@solana/web3.js");
+
 import UserModel from "../User/model";
 
 export const registerUser = async (req, res) => {
@@ -43,4 +49,22 @@ export const logoutUser = async (req, res, next) => {
 
 export const checkLogin = async (req, res) => {
   return successResponse({ res });
+};
+
+export const test = async (req, res) => {
+  try {
+    // const connection = new web3.Connection(
+    //   "https://api.mainnet-beta.solana.com",
+    //   "confirmed"
+    // );
+
+    const nfts = await getParsedNftAccountsByOwner({
+      publicAddress: "B6vENrPBqQvrTLUN5oHbU6qXytZKUCAgepNaXSMPE8Tp",
+      connection: createConnectionConfig("https://api.mainnet-beta.solana.com"),
+      serialization: true,
+    });
+    return successResponse({ res });
+  } catch (err) {
+    return errorResponse({ res, err });
+  }
 };

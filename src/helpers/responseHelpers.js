@@ -17,10 +17,10 @@ export const errorResponse = ({
       case "ValidationError":
         message = err.errors[0];
         break;
+      case "MongoServerError":
       case "Unable":
         message = err.message;
         break;
-      // implement for case 'logout', meaning invalidate user mid session, log them out
     }
   }
   return res.status(code).json({ message });

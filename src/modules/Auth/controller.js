@@ -1,22 +1,46 @@
 import md5 from "md5";
-import { errorResponse, successResponse, throwError } from "../../helpers";
+import _ from "lodash";
 
 import {
   getParsedNftAccountsByOwner,
   createConnectionConfig,
 } from "@nfteyez/sol-rayz";
-const web3 = require("@solana/web3.js");
 
 import UserModel from "../User/model";
+import { getProfileData } from "../Profile/helpers";
+import { validatePassword } from "../../helpers/authHelpers";
+import {
+  errorResponse,
+  successResponse,
+  throwError,
+  verifySignature,
+} from "../../helpers";
 
-export const registerUser = async (req, res) => {
+// ok
+export const registerUserController = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { fullName, email, username, password } = req.body;
 
-    const user = await UserModel.findOne({ email });
-    if (user) throwError("Account with the provided email already exists");
+    // DATA FORMATTING
+    req.body.email = email.toLowerCase();
+    req.body.username = username.toLowerCase().replace(/\s+/g, "");
 
+    const existingUser = await UserModel.findOne({
+      $or: [{ email: req.body.email }, { username: req.body.username }],
+    });
+    if (existingUser) throwError("The email or username is already in use");
+
+    req.body.fullName = fullName
+      .replace(/  +/g, " ")
+      .split(" ")
+      .map((val) => _.capitalize(val))
+      .join(" ");
+
+    // validate password
+    const [error, errorMessage] = validatePassword(req.body.password);
+    if (error) throwError(errorMessage);
     req.body.password = md5(password);
+
     await UserModel.create(req.body);
 
     return successResponse({ res });
@@ -25,29 +49,80 @@ export const registerUser = async (req, res) => {
   }
 };
 
-export const loginUser = async (req, res) => {
+// OK
+export const loginUserController = async (req, res) => {
   try {
-    let { email, password } = req.body;
-    email = email.toLowerCase();
+    let { username, password } = req.body;
+
+    username = username.toLowerCase();
     password = md5(password);
-    const user = await UserModel.findOne({ email });
+
+    const user = await UserModel.findOne(
+      {
+        $or: [{ username }, { email: username }],
+      },
+      {
+        password: 1,
+      }
+    );
+
     if (!user || user.password !== password) throwError("invalid credentials");
+
     req.session.userId = user.id;
-    req.session.email = email;
     req.session.logged = true;
     await req.session.save();
-    return successResponse({ res, response: { user } });
+
+    const profile = await getProfileData(user.id);
+
+    return successResponse({ res, response: { profile } });
   } catch (err) {
     return errorResponse({ res, err, location: "loginUser" });
   }
 };
 
-export const logoutUser = async (req, res, next) => {
+// OK
+export const LoginUserWithPublicAddressController = async (req, res) => {
+  try {
+    const { requestNonce, publicAddress, signature } = req.body;
+    const nonce = String(Math.ceil(Math.random() * 99999) + 10000);
+
+    const user = await UserModel.findOne(
+      { publicAddress },
+      { publicAddress: 1, nonce: 1 }
+    );
+
+    if (!user) throwError("No user with the provided public address exists");
+
+    if (requestNonce) {
+      await UserModel.updateOne({ _id: user.id }, { nonce });
+      return successResponse({ res, response: { nonce } });
+    }
+
+    const verified = verifySignature(user.nonce, signature, publicAddress);
+    if (!verified) throwError("Invalid signature, unable to login");
+
+    await UserModel.updateOne({ _id: user.id }, { nonce });
+
+    const profile = await getProfileData(user.id);
+
+    return successResponse({ res, response: { profile } });
+  } catch (err) {
+    return errorResponse({
+      res,
+      err,
+      location: "LoginUserWithPublicAddressController",
+    });
+  }
+};
+
+// OK
+export const logoutUserController = async (req, res, next) => {
   await req.session.destroy();
   return successResponse({ res });
 };
 
-export const checkLogin = async (req, res) => {
+// OK
+export const checkLoginController = async (req, res) => {
   return successResponse({ res });
 };
 

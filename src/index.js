@@ -43,10 +43,14 @@ class Server {
     this.initErrorRoute();
     this.initApis();
     this.startNftQueue();
+    this.initAwsServices();
     // await this.initMailer(); <== we will unable later
   }
   async connectDatabase() {
-    mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true });
+    await mongoose.connect(process.env.MONGO_URL, {
+      useNewUrlParser: true,
+      autoIndex: true,
+    });
     const db = mongoose.connection;
     db.on("error", console.error.bind(console, "connection error:"));
     db.once("open", () => {
@@ -145,6 +149,7 @@ class Server {
       res.status(err.status || 500);
       res.locals.error = err;
       res.locals.errorDescription = err.message;
+      console.log(err);
       return res.send("ERROR: NOT FOUND");
     });
   }

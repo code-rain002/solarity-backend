@@ -1,32 +1,46 @@
 import express from "express";
 import { validateSchema } from "../../middlewares";
+import { upload } from "../../middlewares/multerMiddlewares";
 import {
-  getProfile,
-  updateProfile,
-  updatePassword,
-  connectTwitter,
+  updatePasswordController,
+  getProfileController,
+  updateProfileController,
+  updateProfileImageController,
+  updatePublicAddressController,
 } from "./controller";
 import {
   updatePasswordSchema,
   updatePublicAddressSchema,
   updateProfileSchema,
-  connectTwitterSchema,
 } from "./schema";
 
 const router = express.Router();
 
-router.get("/", getProfile);
+// OK
+router.get("/", getProfileController);
 
-router.post("/", validateSchema(updateProfileSchema), updateProfile);
+// OK
+router.post(
+  "/password",
+  validateSchema(updatePasswordSchema),
+  updatePasswordController
+);
 
-router.post("/password", validateSchema(updatePasswordSchema), updatePassword);
+// OK
+router.patch("/", validateSchema(updateProfileSchema), updateProfileController);
 
+// OK
+router.post(
+  "/image",
+  upload("/profileImages").single("image"),
+  updateProfileImageController
+);
+
+// OK
 router.post(
   "/publicAddress",
   validateSchema(updatePublicAddressSchema),
-  updateProfile
+  updatePublicAddressController
 );
-
-router.post("/twitter", validateSchema(connectTwitterSchema), connectTwitter);
 
 export { router as profileModule };

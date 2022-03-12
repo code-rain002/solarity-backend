@@ -1,28 +1,45 @@
 import express from "express";
 import { authenticate, validateSchema } from "../../middlewares";
 import {
-  registerUser,
-  loginUser,
-  logoutUser,
-  checkLogin,
+  registerUserController,
+  loginUserController,
+  logoutUserController,
+  checkLoginController,
+  LoginUserWithPublicAddressController,
   test,
 } from "./controller";
-import { LoginUserSchema, RegisterUserSchema } from "./schema";
+import {
+  LoginUserSchema,
+  RegisterUserSchema,
+  LoginUserWithPublicAddressSchema,
+} from "./schema";
 
 const router = express.Router();
 
-router.post("/register", validateSchema(RegisterUserSchema), registerUser);
+// OK
+router.get("/check", authenticate, checkLoginController);
 
-router.post("/login", validateSchema(LoginUserSchema), loginUser);
+// OK
+router.post("/logout", logoutUserController);
 
-router.get("/check", authenticate, checkLogin);
-
-router.post("/logout", logoutUser);
-
+// OK: ONLY FOR TESTING
 router.get("/", test);
 
-// later!
-// /register
-// /resetPassword
+// OK
+router.post("/login", validateSchema(LoginUserSchema), loginUserController);
+
+// OK
+router.post(
+  "/login/publicAddress",
+  validateSchema(LoginUserWithPublicAddressSchema),
+  LoginUserWithPublicAddressController
+);
+
+// OK
+router.post(
+  "/register",
+  validateSchema(RegisterUserSchema),
+  registerUserController
+);
 
 export { router as authModule };

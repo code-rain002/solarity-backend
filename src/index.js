@@ -11,7 +11,13 @@ import Rollbar from "rollbar";
 
 const theblockchainapi = require("theblockchainapi");
 
-import { authModule, nftModule, profileModule, tweetModule } from "./modules";
+import {
+  authModule,
+  nftModule,
+  profileModule,
+  tweetModule,
+  userModule,
+} from "./modules";
 import { authenticate } from "./middlewares";
 import Mailer from "./mailer";
 import { fetchAllNftInCollection } from "./helpers/magicedenHelpers";
@@ -96,7 +102,7 @@ class Server {
     this.express.use("/api/tweets", tweetModule);
     this.express.use("/api/coins", coinModule);
     this.express.use("/api/dao", daoModule);
-
+    this.express.use("/api/users", userModule);
     this.express.use("/api/*", (req, res, next) => {
       const err = new Error("Not Found");
       err.status = 404;

@@ -1,6 +1,18 @@
 import { errorResponse } from "../helpers";
 import * as yup from "yup";
 
+export const paginationSharedObject = {
+  page: yup
+    .number()
+    .typeError("Page must be a number")
+    .min(1, "Page cannot be lesser than 1"),
+  items: yup
+    .number()
+    .typeError("Items must be a number")
+    .min(1, "Items cannot be lesser than 1"),
+  term: yup.string().typeError("term must be a string"),
+};
+
 export const validateSchema =
   (
     schema = null,
@@ -12,10 +24,9 @@ export const validateSchema =
       schema = yup.object({
         params: yup.object({
           [options.idName]: yup
-            .number()
-            .typeError("The ID must be a number")
-            .min(0, "Invalid ID provided")
-            .required(),
+            .string()
+            .typeError("The ID must be a string")
+            .required("The ID is required"),
         }),
       });
     try {

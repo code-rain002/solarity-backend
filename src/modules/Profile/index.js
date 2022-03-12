@@ -11,6 +11,7 @@ import {
 import {
   updatePasswordSchema,
   updatePublicAddressSchema,
+  updateProfileImageSchema,
   updateProfileSchema,
 } from "./schema";
 

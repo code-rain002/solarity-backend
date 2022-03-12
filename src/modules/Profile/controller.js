@@ -151,6 +151,7 @@ export const updateProfileImageController = async (req, res) => {
     return errorResponse({
       res,
       err,
+      message: "Image was not uploaded",
     });
   }
 };

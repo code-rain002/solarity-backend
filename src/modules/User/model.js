@@ -75,5 +75,6 @@ const userSchema = new Schema(
     toJSON: { getters: true },
   }
 );
+const UserModel = mongoose.model("User", userSchema, "users");
 
-export default mongoose.model("User", userSchema, "users");
+export default UserModel;

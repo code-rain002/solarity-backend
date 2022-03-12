@@ -133,11 +133,6 @@ export const test = async (req, res) => {
     //   "confirmed"
     // );
 
-    const nfts = await getParsedNftAccountsByOwner({
-      publicAddress: "B6vENrPBqQvrTLUN5oHbU6qXytZKUCAgepNaXSMPE8Tp",
-      connection: createConnectionConfig("https://api.mainnet-beta.solana.com"),
-      serialization: true,
-    });
     return successResponse({ res });
   } catch (err) {
     return errorResponse({ res, err });

@@ -30,7 +30,7 @@ router.post("/login", validateSchema(LoginUserSchema), loginUserController);
 
 // OK
 router.post(
-  "/login/publicAddress",
+  "/login/wallet",
   validateSchema(LoginUserWithPublicAddressSchema),
   LoginUserWithPublicAddressController
 );

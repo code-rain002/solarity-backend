@@ -6,11 +6,11 @@ export const paginationSharedObject = {
     .number()
     .typeError("Page must be a number")
     .min(1, "Page cannot be lesser than 1"),
-  items: yup
+  count: yup
     .number()
-    .typeError("Items must be a number")
-    .min(1, "Items cannot be lesser than 1"),
-  term: yup.string().typeError("term must be a string"),
+    .typeError("Count must be a number")
+    .min(1, "Count cannot be lesser than 1"),
+  term: yup.string().typeError("Term must be a string"),
 };
 
 export const validateSchema =

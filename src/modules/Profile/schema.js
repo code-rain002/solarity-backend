@@ -65,7 +65,6 @@ export const updateProfileSchema = yup.object({
       .trim()
       .typeError("Twitter Username handle is invalid")
       .nullable(),
-    image: yup.mixed(),
   }),
 });
 

@@ -15,12 +15,12 @@ import { validatePassword } from "../../helpers/authHelpers";
 export const getProfileController = async (req, res) => {
   try {
     const { userId } = req.session;
-    const user = await getProfileData(userId);
-    if (!user) {
+    const profile = await getProfileData(userId);
+    if (!profile) {
       await res.session.destroy();
       throwError("Invalid Credentials");
     }
-    return successResponse({ res, response: { user } });
+    return successResponse({ res, response: { profile } });
   } catch (err) {
     return errorResponse({ res, err });
   }

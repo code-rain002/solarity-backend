@@ -154,7 +154,9 @@ class Server {
       res.status(err.status || 500);
       res.locals.error = err;
       res.locals.errorDescription = err.message;
-      console.log(err);
+      if (global.rollbar) {
+        global.rollbar.error(err);
+      }
       return res.send("ERROR: NOT FOUND");
     });
   }

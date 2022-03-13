@@ -16,7 +16,7 @@ export const getUsersController = async (req, res) => {
   try {
     const {
       session: { userId },
-      query: { page = 1, items = 10, term = "" },
+      query: { page = 1, count = 10, term = "" },
     } = req;
     let searchTerm = new RegExp(term.toLowerCase(), "i");
     const findOptions = {
@@ -27,19 +27,18 @@ export const getUsersController = async (req, res) => {
         { fullName: searchTerm },
       ],
     };
-    const count = await UserModel.count(findOptions);
-    const pages = Math.ceil(count / items);
+    const totalCount = await UserModel.count(findOptions);
+    const totalPages = Math.ceil(count / count);
     const data = await UserModel.find(findOptions, userDataFormat).skip(
-      (page - 1) * items
+      (page - 1) * count
     );
-    return successResponse({ res, response: { data, pages, count } });
+    return successResponse({ res, response: { data, totalPages, totalCount } });
   } catch (err) {
     return errorResponse({ res, err });
   }
 };
 
 // OK
-// Followed <--- check
 export const getUserController = async (req, res) => {
   try {
     const {
@@ -47,6 +46,7 @@ export const getUserController = async (req, res) => {
       session: { userId },
     } = req;
     const username = _username.toLowerCase();
+    const selfObjectId = new Types.ObjectId(userId);
     const user = await UserModel.aggregate([
       {
         $match: {
@@ -56,7 +56,8 @@ export const getUserController = async (req, res) => {
       {
         $addFields: {
           followerCount: { $size: "$followers" },
-          followed: { $in: [userId, "$followers"] },
+          followed: { $in: [selfObjectId, "$followers"] },
+          self: { $eq: [selfObjectId, "$_id"] },
         },
       },
       { $unset: Object.keys(userDataFormat) },
@@ -67,6 +68,7 @@ export const getUserController = async (req, res) => {
   }
 };
 
+// OK
 // WHAT if the user objects doesn't exist
 export const followUserController = async (req, res) => {
   try {
@@ -108,6 +110,7 @@ export const followUserController = async (req, res) => {
   }
 };
 
+// OK
 export const unfollowUserController = async (req, res) => {
   try {
     const {
@@ -146,7 +149,6 @@ export const unfollowUserController = async (req, res) => {
         $pull: { "following.users": userToUnfollow.id },
       }
     );
-
     return successResponse({ res });
   } catch (err) {
     return errorResponse({ res, err });

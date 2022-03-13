@@ -49,7 +49,6 @@ class Server {
     this.initErrorRoute();
     this.initApis();
     this.startNftQueue();
-    this.initAwsServices();
     // await this.initMailer(); <== we will unable later
   }
   async connectDatabase() {

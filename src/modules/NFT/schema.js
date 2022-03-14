@@ -1,4 +1,12 @@
 import * as yup from "yup";
+import { paginationSharedObject } from "../../middlewares/validateSchema";
+
+export const getNftsSchema = yup.object({
+  query: yup.object({
+    ...paginationSharedObject,
+    ownedBy: yup.string().typeError("Owned by must be a string"),
+  }),
+});
 
 export const getNftCollectionsSchema = yup.object({
   query: yup.object({

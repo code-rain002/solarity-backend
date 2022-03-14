@@ -23,6 +23,7 @@ import Mailer from "./mailer";
 import { fetchAllNftInCollection } from "./helpers/magicedenHelpers";
 import { coinModule } from "./modules/Coin";
 import { daoModule } from "./modules/DAO";
+import NodeCache from "node-cache";
 
 class Server {
   constructor({ port }) {
@@ -89,6 +90,9 @@ class Server {
       this.express.get("/api/test", (req, res) => {
         res.sendFile(path.join(__dirname, "index.html"));
       });
+      this.express.get("/api/register", (req, res) => {
+        res.sendFile(path.join(__dirname, "registerTest.html"));
+      });
     }
     this.express.use("/api/auth", authModule);
   }
@@ -97,7 +101,7 @@ class Server {
     console.log("> Starting private routes");
     this.express.use("/api", authenticate);
     this.express.use("/api/profile", profileModule);
-    this.express.use("/api/nft", nftModule);
+    this.express.use("/api/nfts", nftModule);
     this.express.use("/api/tweets", tweetModule);
     this.express.use("/api/coins", coinModule);
     this.express.use("/api/dao", daoModule);
@@ -142,7 +146,11 @@ class Server {
     });
   }
   initCache() {
-    // initialize nodecache here if needed
+    const registerNonceCache = new NodeCache({
+      useClones: false,
+      stdTTL: 3600,
+    });
+    this.express.set("registerNonceCache", registerNonceCache);
   }
   initErrorRoute() {
     this.express.use((req, res, next) => {

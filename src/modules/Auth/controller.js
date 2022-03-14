@@ -1,11 +1,6 @@
 import md5 from "md5";
 import _ from "lodash";
 
-import {
-  getParsedNftAccountsByOwner,
-  createConnectionConfig,
-} from "@nfteyez/sol-rayz";
-
 import UserModel from "../User/model";
 import { getProfileData } from "../Profile/helpers";
 import { validatePassword } from "../../helpers/authHelpers";
@@ -15,6 +10,7 @@ import {
   throwError,
   verifySignature,
 } from "../../helpers";
+import { isValidSolanaAddress } from "@nfteyez/sol-rayz";
 
 // ok
 export const registerUserController = async (req, res) => {
@@ -46,6 +42,47 @@ export const registerUserController = async (req, res) => {
     return successResponse({ res });
   } catch (err) {
     return errorResponse({ res, err });
+  }
+};
+
+// OK
+export const registerUserWithPublicAddressController = async (req, res) => {
+  try {
+    const { requestNonce, publicAddress, signature } = req.body;
+    if (!isValidSolanaAddress(publicAddress)) {
+      throwError("Invalid public address");
+    }
+    const nonce = String(Math.ceil(Math.random() * 99999) + 10000);
+    const cache = req.app.get("registerNonceCache");
+    if (requestNonce) {
+      cache.set(publicAddress, nonce);
+      return successResponse({ res, response: { nonce } });
+    }
+    const savedNonce = cache.get(publicAddress);
+    if (!savedNonce) {
+      throwError("Please request a nonce first");
+    }
+
+    const verified = verifySignature(savedNonce, signature, publicAddress);
+    if (!verified) throwError("Invalid signature, unable to login");
+
+    const user = await UserModel.create({
+      publicAddress,
+    });
+
+    req.session.userId = user.id;
+    req.session.logged = true;
+    await req.session.save();
+
+    const profile = await getProfileData(user.id);
+
+    return successResponse({ res, response: { profile } });
+  } catch (err) {
+    return errorResponse({
+      res,
+      err,
+      location: "LoginUserWithPublicAddressController",
+    });
   }
 };
 
@@ -104,7 +141,9 @@ export const LoginUserWithPublicAddressController = async (req, res) => {
     await UserModel.updateOne({ _id: user.id }, { nonce });
 
     const profile = await getProfileData(user.id);
-
+    req.session.userId = user.id;
+    req.session.logged = true;
+    await req.session.save();
     return successResponse({ res, response: { profile } });
   } catch (err) {
     return errorResponse({

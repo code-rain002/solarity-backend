@@ -1,6 +1,8 @@
 import express from "express";
 import { validateSchema } from "../../middlewares";
 import {
+  getNftsController,
+  getNftController,
   getNftCollections,
   addNftCollection,
   getNftCollection,
@@ -10,9 +12,22 @@ import {
   addNftCollectionSchema,
   NftSymbolParamsSchema,
   getNftCollectionsSchema,
+  getNftsSchema,
 } from "./schema";
 
 const router = express.Router();
+
+router.get(
+  "/",
+  validateSchema(getNftsSchema, { includeQuery: true }),
+  getNftsController
+);
+
+router.get(
+  "/:mint",
+  validateSchema(null, { idParamCheck: true, idName: "mint" }),
+  getNftController
+);
 
 router.get(
   "/collections",

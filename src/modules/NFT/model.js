@@ -3,20 +3,44 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 const nftSchema = new Schema(
   {
-    tokenMint: {
+    mint: {
       type: String,
       unique: true,
       required: true,
     },
-    symbol: { type: String },
-    pdaAddress: { type: String },
-    auctionHouse: { type: String },
-    tokenAddress: { type: String },
-    seller: { type: String },
-    tokenSize: { type: Number },
-    price: { type: Number },
-    listingUrl: { type: String },
-    listing: { type: Object },
+    items: {
+      type: Array,
+    },
+    creators: {
+      type: Array,
+    },
+    tags: {
+      type: Array,
+    },
+    nsfw: {
+      type: Boolean,
+    },
+    description: {
+      type: String,
+    },
+    preview_URL: {
+      type: String,
+    },
+    title: {
+      type: String,
+    },
+    jsonUrl: {
+      type: String,
+    },
+    pubkey: {
+      type: String,
+    },
+    properties: {
+      type: Object,
+    },
+    owner: {
+      type: Object,
+    },
   },
   {
     timestamps: true,

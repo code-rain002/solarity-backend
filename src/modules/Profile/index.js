@@ -1,6 +1,8 @@
 import express from "express";
+import { saveOwnedNfts } from "../../helpers/nftHelpers";
 import { validateSchema } from "../../middlewares";
 import { upload } from "../../middlewares/multerMiddlewares";
+import UserModel from "../User/model";
 import {
   updatePasswordController,
   getProfileController,

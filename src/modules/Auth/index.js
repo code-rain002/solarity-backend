@@ -7,6 +7,7 @@ import {
   checkLoginController,
   LoginUserWithPublicAddressController,
   test,
+  registerUserWithPublicAddressController,
 } from "./controller";
 import {
   LoginUserSchema,
@@ -40,6 +41,12 @@ router.post(
   "/register",
   validateSchema(RegisterUserSchema),
   registerUserController
+);
+
+router.post(
+  "/register/wallet",
+  validateSchema(LoginUserWithPublicAddressSchema),
+  registerUserWithPublicAddressController
 );
 
 export { router as authModule };

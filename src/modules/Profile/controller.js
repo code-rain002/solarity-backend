@@ -10,6 +10,7 @@ import { getProfileData, validateTwitterUsername } from "./helpers";
 import _ from "lodash";
 import { Promise } from "bluebird";
 import { validatePassword } from "../../helpers/authHelpers";
+import { isValidSolanaAddress } from "@nfteyez/sol-rayz";
 
 // OK
 export const getProfileController = async (req, res) => {
@@ -160,10 +161,12 @@ export const updatePublicAddressController = async (req, res) => {
   try {
     const { userId } = req.session;
     const { publicAddress, signedUserId } = req.body;
+    if (!isValidSolanaAddress(publicAddress))
+      throwError("Invalid public address");
     const verified = verifySignature(userId, signedUserId, publicAddress);
     if (!verified) throw false;
     await UserModel.updateOne({ _id: userId }, { publicAddress });
-
+    await saveOwnedNfts(publicAddress);
     return successResponse({ res });
   } catch (err) {
     return errorResponse({

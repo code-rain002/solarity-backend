@@ -1,34 +1,41 @@
 import { errorResponse, successResponse, throwError } from "../../helpers";
 import UserModel from "../User/model";
+import { Types } from "mongoose";
 
 export const getTweets = async (req, res) => {
   try {
     let {
-      query: { maxResults, userId, communityId },
+      query: { maxResults, username, communityId },
       session: { userId: loggedInUserId },
     } = req;
     const twitterApi = req.app.get("twitterApi");
     let twitterId;
     if (!maxResults) maxResults = 20;
     if (communityId) {
-      // tweets for communities here!
     } else {
-      let tempUserId = loggedInUserId;
-      if (userId) tempUserId = userId;
       let user;
       try {
-        user = await UserModel.findById(tempUserId);
-      } catch {
+        const findOptions = {};
+        if (username) {
+          findOptions.username = username;
+        } else {
+          findOptions["_id"] = new Types.ObjectId(loggedInUserId);
+        }
+        user = await UserModel.findOne(findOptions, { twitterId: 1 });
+      } catch (err) {
+        console.log(err);
         throwError("No user with the provided User Id exists");
       }
       twitterId = user.twitterId;
+      if (!twitterId) {
+        throwError("No twitter account associated with the profile");
+      }
     }
     const timeline = await twitterApi.v1.userTimeline(twitterId, {
       max_results: maxResults,
       exclude: ["replies", "retweets"],
     });
     const { _realData: data } = timeline;
-    console.log(data);
     return successResponse({ res, response: { data } });
   } catch (err) {
     return errorResponse({ res, err });

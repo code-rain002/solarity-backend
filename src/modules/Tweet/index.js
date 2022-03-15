@@ -11,10 +11,4 @@ router.get(
   getTweets
 );
 
-router.get(
-  "/:username",
-  validateSchema(getTweetsUsernameSchema),
-  getTweetsByUsername
-);
-
 export { router as tweetModule };

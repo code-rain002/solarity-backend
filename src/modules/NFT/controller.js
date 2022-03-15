@@ -1,6 +1,11 @@
+import { Types } from "mongoose";
 import { successResponse, errorResponse, throwError } from "../../helpers";
 import UserModel from "../User/model";
-import { NftModel, NftCollectionModel } from "../NFT/model";
+import {
+  NftModel,
+  NftCollectionModel,
+  NftAnalysisReportModel,
+} from "../NFT/model";
 import { getNftCollectionStats } from "../../helpers/magicedenHelpers";
 
 export const getNftsController = async (req, res) => {
@@ -66,6 +71,91 @@ export const getNftController = async (req, res) => {
       nft = { ...nft._doc, owned: false };
     }
     return successResponse({ res, response: { nft } });
+  } catch (err) {
+    return errorResponse({ res, err });
+  }
+};
+
+export const nftAnalysisController = async (req, res) => {
+  try {
+    const {
+      body: {
+        collectionSymbols = [],
+        nftMintAddresses = [],
+        startTime,
+        endTime,
+      },
+      session: { userId },
+    } = req;
+
+    // check if ran analysis in the last 24 hours
+    const user = await UserModel.findById(userId, { lastAnalysisTime: 1 });
+
+    const hourDifference = Math.abs(user.lastAnalysisTime - new Date()) / 36e5;
+    if (hourDifference <= 24) {
+      throwError("You can run the analysis once every 24 hours");
+    }
+
+    const mintAddresses = [...nftMintAddresses];
+
+    if (collectionSymbols.length > 0) {
+      // fetch all the nft addresses and add them to the all array
+    }
+
+    const theblockchainapi = req.app.get("theblockchainapi");
+    const api = new theblockchainapi.SolanaNFTMarketplacesApi();
+
+    const validateTime = (timestamp) => new Date(timestamp).getTime() > 0;
+    if (
+      (endTime && !validateTime(endTime)) ||
+      (startTime && !validateTime(startTime) && startTime != -1)
+    ) {
+      throwError("Invalid time parameters provided");
+    }
+
+    let opts = {
+      nFTAnalyticsRequest: new theblockchainapi.NFTAnalyticsRequest(
+        mintAddresses,
+        startTime,
+        endTime
+      ),
+    };
+
+    if (startTime) {
+      opts.nFTAnalyticsRequest["start_time"] = startTime;
+    }
+    if (endTime) {
+      opts.nFTAnalyticsRequest["end_time"] = endTime;
+    }
+
+    const analysis = await api.solanaGetNFTMarketplaceAnalytics(opts);
+
+    const lastAnalysisTime = new Date();
+
+    await NftAnalysisReportModel.updateOne(
+      {
+        userId: Types.ObjectId(userId),
+      },
+      {
+        analysis,
+      },
+      { upsert: true }
+    );
+
+    await UserModel.updateOne({ _id: userId }, { lastAnalysisTime });
+
+    return successResponse({ res, response: { analysis } });
+  } catch (err) {
+    return errorResponse({ res, err });
+  }
+};
+
+export const getNftAnalysisController = async (req, res) => {
+  try {
+    const analysis = await NftAnalysisReportModel.findOne({
+      userId: req.session.userId,
+    });
+    return successResponse({ res, response: { analysis } });
   } catch (err) {
     return errorResponse({ res, err });
   }

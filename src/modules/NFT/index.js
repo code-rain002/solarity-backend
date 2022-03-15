@@ -7,12 +7,15 @@ import {
   addNftCollection,
   getNftCollection,
   removeNftCollection,
+  nftAnalysisController,
+  getNftAnalysisController,
 } from "./controller";
 import {
   addNftCollectionSchema,
   NftSymbolParamsSchema,
   getNftCollectionsSchema,
   getNftsSchema,
+  nftAnalysisSchema,
 } from "./schema";
 
 const router = express.Router();
@@ -23,10 +26,18 @@ router.get(
   getNftsController
 );
 
+router.get("/analysis", getNftAnalysisController);
+
 router.get(
   "/:mint",
   validateSchema(null, { idParamCheck: true, idName: "mint" }),
   getNftController
+);
+
+router.post(
+  "/analysis",
+  validateSchema(nftAnalysisSchema),
+  nftAnalysisController
 );
 
 router.get(

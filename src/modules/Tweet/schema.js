@@ -7,7 +7,7 @@ export const getTweetsSchema = yup.object({
       .typeError("Max results must be a number")
       .min(10, "Max results cannot be lesser than 10")
       .max(200, "Max results cannot be greater than 200"),
-    userId: yup.string().typeError("User ID must be a string"),
+    username: yup.string().typeError("Username must be a string"),
     communityId: yup.string().typeError("Community ID must be a string"),
   }),
 });

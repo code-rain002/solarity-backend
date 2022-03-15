@@ -67,6 +67,7 @@ const userSchema = new Schema(
       nfts: { type: [mongoose.Types.ObjectId], required: false },
     },
     nonce: { type: String },
+    lastAnalysisTime: { type: Date },
   },
   {
     autoIndex: true,

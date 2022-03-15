@@ -24,6 +24,7 @@ import { fetchAllNftInCollection } from "./helpers/magicedenHelpers";
 import { coinModule } from "./modules/Coin";
 import { daoModule } from "./modules/DAO";
 import NodeCache from "node-cache";
+import { testModule } from "./modules/Test";
 
 class Server {
   constructor({ port }) {
@@ -85,15 +86,7 @@ class Server {
   initPublicRoutes() {
     // put here the public routes
     console.log("> Starting public routes");
-    if (process.env.NODE_ENV !== "production") {
-      // only for testing
-      this.express.get("/api/test", (req, res) => {
-        res.sendFile(path.join(__dirname, "index.html"));
-      });
-      this.express.get("/api/register", (req, res) => {
-        res.sendFile(path.join(__dirname, "registerTest.html"));
-      });
-    }
+    this.express.use("/api/test", testModule);
     this.express.use("/api/auth", authModule);
   }
   initPrivateRoutes() {

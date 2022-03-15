@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 
 const Schema = mongoose.Schema;
 const nftSchema = new Schema(
@@ -39,7 +39,7 @@ const nftSchema = new Schema(
       type: Object,
     },
     owner: {
-      type: Object,
+      type: String,
     },
   },
   {
@@ -66,7 +66,29 @@ const nftCollectionSchema = new Schema(
   }
 );
 
+const nftAnalysisReportSchema = new Schema(
+  {
+    userId: {
+      type: mongoose.Types.ObjectId,
+      required: true,
+      unique: true,
+    },
+    analysis: {
+      type: Object,
+    },
+  },
+  {
+    timestamps: true,
+    toJSON: { getters: true },
+  }
+);
+
 export const NftModel = mongoose.model("NFT", nftSchema, "nfts");
+export const NftAnalysisReportModel = mongoose.model(
+  "NftAnalysisReport",
+  nftAnalysisReportSchema,
+  "nftAnalysisReports"
+);
 export const NftCollectionModel = mongoose.model(
   "NFTCollection",
   nftCollectionSchema,

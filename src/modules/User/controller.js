@@ -29,9 +29,9 @@ export const getUsersController = async (req, res) => {
     };
     const totalCount = await UserModel.count(findOptions);
     const totalPages = Math.ceil(totalCount / count);
-    const data = await UserModel.find(findOptions, userDataFormat).skip(
-      (page - 1) * count
-    );
+    const data = await UserModel.find(findOptions, userDataFormat)
+      .skip((page - 1) * count)
+      .limit(count);
     return successResponse({ res, response: { data, totalPages, totalCount } });
   } catch (err) {
     return errorResponse({ res, err });

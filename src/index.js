@@ -8,7 +8,7 @@ import session from "express-session";
 import Agenda from "agenda";
 import { TwitterApi } from "twitter-api-v2";
 import Rollbar from "rollbar";
-
+import cors from "cors";
 const theblockchainapi = require("theblockchainapi");
 
 import {
@@ -96,7 +96,7 @@ class Server {
     this.express.use("/api", authenticate);
     this.express.use("/api/profile", profileModule);
     this.express.use("/api/nfts", nftModule);
-    this.express.use("/api/nftCollections", nftCollectionModule);
+    this.express.use("/api/collections", nftCollectionModule);
     this.express.use("/api/tweets", tweetModule);
     this.express.use("/api/coins", coinModule);
     this.express.use("/api/dao", daoModule);
@@ -120,7 +120,8 @@ class Server {
         "Access-Control-Allow-Headers",
         "X-Requested-With, Content-type,Accept,X-Access-Token,X-Key"
       );
-      // res.header("Access-Control-Allow-Origin", "*");
+      res.header("Access-Control-Allow-Origin", "*");
+      res.header("Access-Control-Allow-Credentials", "true");
       if (req.method === "OPTIONS") {
         res.status(200).end();
       } else {
@@ -128,7 +129,7 @@ class Server {
       }
     }
     this.express.all("/*", setupCORS);
-
+    this.express.use(cors({ credentials: true }));
     this.express.use(express.json());
     this.express.use(express.urlencoded({ extended: false }));
     this.express.use(cookieParser());

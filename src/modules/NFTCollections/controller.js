@@ -8,6 +8,7 @@ import {
 } from "../../helpers/magicedenHelpers";
 import { Promise } from "bluebird";
 import axios from "axios";
+import { NftModel } from "../NFT/model";
 
 // export const statCollections = async (req, res) => {
 //   try {
@@ -32,40 +33,41 @@ export const getNftCollectionsController = async (req, res) => {
   try {
     const {
       session: { userId },
-      query: { following },
+      query: { following = false, page = 1, count = 10, term = "" },
     } = req;
-    const findOptions = {};
+    let searchTerm = new RegExp(term.toLowerCase(), "i");
+    console.log(searchTerm);
+    const findOptions = {
+      $or: [{ symbol: searchTerm }, { name: searchTerm }],
+    };
     if (following) {
       const user = await UserModel.findById(userId);
       const { nftWatchlist } = user;
       findOptions.symbol = { $in: nftWatchlist };
     }
-    const collections = await NftCollectionModel.find(findOptions);
-    return successResponse({ res, response: { collections } });
+    const totalCount = await NftCollectionModel.count(findOptions);
+    const totalPages = Math.ceil(totalCount / count);
+    const data = await NftCollectionModel.find(findOptions)
+      .skip((page - 1) * count)
+      .limit(count);
+    return successResponse({ res, response: { data, totalCount, totalPages } });
   } catch (err) {
     return errorResponse({ res, err });
   }
 };
 
-export const getNftCollectionController = async (req, res) => {
+export const getSingleNftCollectionController = async (req, res) => {
   try {
     const {
       query: { excludeNfts },
       params: { symbol },
     } = req;
     const collection = await NftCollectionModel.findOne({ symbol });
-    const { loaded } = collection;
-    if (!loaded) {
-      const nftQueue = req.app.get("nftQueue");
-      nftQueue.now("fetchCollection", symbol);
-    }
     const response = { collection };
     if (!collection) throwError("No such collection exist");
     if (!excludeNfts) {
-      if (loaded) {
-        const nfts = await NftModel.find({ symbol });
-        response.nfts = nfts;
-      }
+      const nfts = await NftModel.find({ symbol });
+      response.nfts = nfts;
     }
     return successResponse({ res, response });
   } catch (err) {

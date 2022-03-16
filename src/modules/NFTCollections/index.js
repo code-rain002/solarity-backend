@@ -2,21 +2,11 @@ import express from "express";
 import { validateSchema } from "../../middlewares";
 import {
   getNftCollectionsController,
-  addNftCollectionController,
-  getNftCollectionController,
-  removeNftCollection,
-  statCollections,
+  getSingleNftCollectionController,
 } from "./controller";
-import {
-  addNftCollectionSchema,
-  NftSymbolParamsSchema,
-  getNftCollectionsSchema,
-} from "./schema";
+import { getNftCollectionsSchema, NftSymbolParamsSchema } from "./schema";
 
 const router = express.Router();
-
-// // stats fetch
-// router.get("/stats", statCollections);
 
 router.get(
   "/",
@@ -24,11 +14,11 @@ router.get(
   getNftCollectionsController
 );
 
-// router.get(
-//   "/:symbol",
-//   validateSchema(NftSymbolParamsSchema, { includeQuery: true }),
-//   getNftCollection
-// );
+router.get(
+  "/:symbol",
+  validateSchema(NftSymbolParamsSchema, { includeQuery: true }),
+  getSingleNftCollectionController
+);
 
 // router.post(
 //   "/collections",

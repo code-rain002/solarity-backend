@@ -6,7 +6,11 @@ import {
 } from "../../helpers";
 import UserModel from "../User/model";
 import md5 from "md5";
-import { getProfileData, validateTwitterUsername } from "./helpers";
+import {
+  getProfileData,
+  validateTwitterUsername,
+  saveOwnedNfts,
+} from "./helpers";
 import _ from "lodash";
 import { Promise } from "bluebird";
 import { validatePassword } from "../../helpers/authHelpers";

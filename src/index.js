@@ -25,6 +25,7 @@ import { coinModule } from "./modules/Coin";
 import { daoModule } from "./modules/DAO";
 import NodeCache from "node-cache";
 import { testModule } from "./modules/Test";
+import { nftCollectionModule } from "./modules/NFTCollections";
 
 class Server {
   constructor({ port }) {
@@ -95,6 +96,7 @@ class Server {
     this.express.use("/api", authenticate);
     this.express.use("/api/profile", profileModule);
     this.express.use("/api/nfts", nftModule);
+    this.express.use("/api/nftCollections", nftCollectionModule);
     this.express.use("/api/tweets", tweetModule);
     this.express.use("/api/coins", coinModule);
     this.express.use("/api/dao", daoModule);
@@ -107,23 +109,26 @@ class Server {
   }
   initMiddleware() {
     // middleware initialization
-    const scriptSources = ["'self'", "'unsafe-inline'", "'unsafe-eval'"];
-    this.express.use(
-      helmet.contentSecurityPolicy({
-        useDefaults: false,
-        directives: {
-          "default-src": scriptSources,
-          "script-src": scriptSources,
-          "script-src-elem": [...scriptSources, "https://code.jquery.com"],
-          "style-src": null,
-        },
-      })
-    );
     this.express.use(
       helmet({
         contentSecurityPolicy: false,
       })
     );
+    function setupCORS(req, res, next) {
+      res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
+      res.header(
+        "Access-Control-Allow-Headers",
+        "X-Requested-With, Content-type,Accept,X-Access-Token,X-Key"
+      );
+      // res.header("Access-Control-Allow-Origin", "*");
+      if (req.method === "OPTIONS") {
+        res.status(200).end();
+      } else {
+        next();
+      }
+    }
+    this.express.all("/*", setupCORS);
+
     this.express.use(express.json());
     this.express.use(express.urlencoded({ extended: false }));
     this.express.use(cookieParser());

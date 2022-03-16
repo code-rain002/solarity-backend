@@ -991,6 +991,18 @@
   dependencies:
     "buffer" "~6.0.3"
 
+"@solana/spl-governance@^0.0.30":
+  "integrity" "sha512-pe1fz3ct+xhJS+v3PTm7bdYp6fumU3PvXIfEkt9eOqIg+yC2DmUc4aQo8ISUwomCtH11CmO5secT3wkhTFMJcA=="
+  "resolved" "https://registry.npmjs.org/@solana/spl-governance/-/spl-governance-0.0.30.tgz"
+  "version" "0.0.30"
+  dependencies:
+    "@solana/web3.js" "^1.22.0"
+    "bignumber.js" "^9.0.1"
+    "bn.js" "^5.1.3"
+    "borsh" "^0.3.1"
+    "bs58" "^4.0.1"
+    "superstruct" "^0.15.2"
+
 "@solana/spl-name-service@^0.1.3":
   "integrity" "sha512-NIsa5xU8Fx9nIofM/mmrNI3s472kDBtNdqI6TbhIaVeP/DTYc9m5dkjvG32T1tZdNMv0kvFIpqZ0iAJvvZ/ABg=="
   "resolved" "https://registry.npmjs.org/@solana/spl-name-service/-/spl-name-service-0.1.3.tgz"
@@ -1022,7 +1034,7 @@
     "buffer-layout" "^1.2.0"
     "dotenv" "10.0.0"
 
-"@solana/web3.js@^1.12.0", "@solana/web3.js@^1.21.0", "@solana/web3.js@^1.33.0", "@solana/web3.js@^1.36.0":
+"@solana/web3.js@^1.12.0", "@solana/web3.js@^1.21.0", "@solana/web3.js@^1.22.0", "@solana/web3.js@^1.33.0", "@solana/web3.js@^1.36.0":
   "integrity" "sha512-RNT1451iRR7TyW7EJKMCrH/0OXawIe4zVm0DWQASwXlR/u1jmW6FrmH0lujIh7cGTlfOVbH+2ZU9AVUPLBFzwA=="
   "resolved" "https://registry.npmjs.org/@solana/web3.js/-/web3.js-1.36.0.tgz"
   "version" "1.36.0"
@@ -1642,6 +1654,11 @@
   "resolved" "https://registry.npmjs.org/big.js/-/big.js-5.2.2.tgz"
   "version" "5.2.2"
 
+"bignumber.js@^9.0.1":
+  "integrity" "sha512-GAcQvbpsM0pUb0zw1EI0KhQEZ+lRwR5fYaAp3vPOYuP7aDvGy6cVN6XHLauvF8SOga2y0dcLcjt3iQDTSEliyw=="
+  "resolved" "https://registry.npmjs.org/bignumber.js/-/bignumber.js-9.0.2.tgz"
+  "version" "9.0.2"
+
 "binary-extensions@^1.0.0":
   "integrity" "sha512-Un7MIEDdUC5gNpcGDV97op1Ywk748MpHcFTHoYs6qnj1Z3j7I53VG3nwZhKzoBZmbdRNnb6WRdFlwl7tSDuZGw=="
   "resolved" "https://registry.npmjs.org/binary-extensions/-/binary-extensions-1.13.1.tgz"
@@ -1682,17 +1699,12 @@
   "resolved" "https://registry.npmjs.org/bn.js/-/bn.js-4.12.0.tgz"
   "version" "4.12.0"
 
-"bn.js@^5.0.0":
+"bn.js@^5.0.0", "bn.js@^5.1.3":
   "integrity" "sha512-D7iWRBvnZE8ecXiLj/9wbxH7Tk79fAh8IHaTNq1RWRixsS02W+5qS+iE9yq6RYl0asXx5tw0bLhmT5pIfbSquw=="
   "resolved" "https://registry.npmjs.org/bn.js/-/bn.js-5.2.0.tgz"
   "version" "5.2.0"
 
 "bn.js@^5.1.0":
-  "integrity" "sha512-D7iWRBvnZE8ecXiLj/9wbxH7Tk79fAh8IHaTNq1RWRixsS02W+5qS+iE9yq6RYl0asXx5tw0bLhmT5pIfbSquw=="
-  "resolved" "https://registry.npmjs.org/bn.js/-/bn.js-5.2.0.tgz"
-  "version" "5.2.0"
-
-"bn.js@^5.1.3":
   "integrity" "sha512-D7iWRBvnZE8ecXiLj/9wbxH7Tk79fAh8IHaTNq1RWRixsS02W+5qS+iE9yq6RYl0asXx5tw0bLhmT5pIfbSquw=="
   "resolved" "https://registry.npmjs.org/bn.js/-/bn.js-5.2.0.tgz"
   "version" "5.2.0"
@@ -1729,6 +1741,16 @@
     "dns-txt" "^2.0.2"
     "multicast-dns" "^6.0.1"
     "multicast-dns-service-types" "^1.1.0"
+
+"borsh@^0.3.1":
+  "integrity" "sha512-gJoSTnhwLxN/i2+15Y7uprU8h3CKI+Co4YKZKvrGYUy0FwHWM20x5Sx7eU8Xv4HQqV+7rb4r3P7K1cBIQe3q8A=="
+  "resolved" "https://registry.npmjs.org/borsh/-/borsh-0.3.1.tgz"
+  "version" "0.3.1"
+  dependencies:
+    "@types/bn.js" "^4.11.5"
+    "bn.js" "^5.0.0"
+    "bs58" "^4.0.0"
+    "text-encoding-utf-8" "^1.0.2"
 
 "borsh@^0.4.0":
   "integrity" "sha512-aX6qtLya3K0AkT66CmYWCCDr77qsE9arV05OmdFpmat9qu8Pg9J5tBUPDztAW5fNh/d/MyVG/OYziP52Ndzx1g=="
@@ -1812,7 +1834,7 @@
     "node-releases" "^2.0.1"
     "picocolors" "^1.0.0"
 
-"bs58@^4.0.0":
+"bs58@^4.0.0", "bs58@^4.0.1":
   "integrity" "sha1-vhYedsNU9veIrkBx9j806MTwpCo="
   "resolved" "https://registry.npmjs.org/bs58/-/bs58-4.0.1.tgz"
   "version" "4.0.1"
@@ -5921,6 +5943,11 @@
   "integrity" "sha512-nPewA6m9mR3d6k7WkZ8N8zpTWfenFH3q9pA2PkuiZxINr9DKB2+40wEQf0ixn8VaGuJ78AB6iWOtStI+/4FKZQ=="
   "resolved" "https://registry.npmjs.org/superstruct/-/superstruct-0.14.2.tgz"
   "version" "0.14.2"
+
+"superstruct@^0.15.2":
+  "integrity" "sha512-eOoMeSbP9ZJChNOm/9RYjE+F36rYR966AAqeG3xhQB02j2sfAUXDp4EQ/7bAOqnlJnuFDB8yvOu50SocvKpUEw=="
+  "resolved" "https://registry.npmjs.org/superstruct/-/superstruct-0.15.4.tgz"
+  "version" "0.15.4"
 
 "supports-color@^5.3.0":
   "integrity" "sha512-QjVjwdXIt408MIiAqCX4oUKsgU2EqAGzs2Ppkm4aQYbjm+ZEWEcW4SfFNTr4uMNZma0ey4f5lgLrkB0aX0QMow=="

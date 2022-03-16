@@ -3,7 +3,6 @@ import { errorResponse, successResponse } from "../../helpers";
 
 export const getTweets = async (req, res) => {
   try {
-    const tweets = "";
     const { username } = req.params;
     const twitterApi = req.app.get("twitterApi");
 

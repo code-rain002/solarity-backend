@@ -1,5 +1,6 @@
 import axios from "axios";
-import { NftCollectionModel, NftModel } from "../modules/NFT/model";
+import NftCollectionModel from "../modules/NFTCollections/model";
+import { NftModel } from "../modules/NFT/model";
 import { promiseWhile } from "./generalHelpers";
 import Promise from "bluebird";
 import { throwError } from "./responseHelpers";
@@ -9,8 +10,6 @@ export const getNftCollectionStats = async (symbol) => {
     let result = await axios.get(
       `https://api-mainnet.magiceden.dev/v2/collections/${symbol}/stats`
     );
-    result.data.loaded = false;
-    await NftCollectionModel.create(result.data);
     return result.data;
   } catch (err) {
     throwError("A collection with this name doesn't exist");
@@ -38,30 +37,71 @@ export const fetchAllNftInCollection = async (symbol) => {
           axios.get(listingUrl)
         );
         let nfts = await Promise.allSettled(listingDetailPromises);
+
         nfts = nfts
           .filter(({ _settledValueField: { status } }) => status == 200)
           .map(({ _settledValueField: { data } }) => data);
+
         nfts.forEach((nft) => {
           const data = result.data.find((d) => d.tokenMint == nft.Mint);
           data.listing = nft;
         });
-        await NftModel.bulkWrite(
-          result.data.map((nft) => ({
-            updateOne: {
-              filter: { tokenMint: nft.tokenMint },
-              update: { $set: { ...nft, symbol } },
-              upsert: true,
+        await Promise.each(result.data, async (_result) => {
+          const {
+            seller,
+            price,
+            listingUrl,
+            tokenAddress,
+            pdaAddress,
+            tokenSize,
+            listing: {
+              Mint,
+              Items,
+              Creators,
+              Description,
+              Preview_URL,
+              Title,
+              tags,
+              nsfw,
+              jsonUrl,
+              Pubkey,
+              Properties,
             },
-          }))
-        );
+          } = _result;
+
+          await NftModel.updateOne(
+            { mint: Mint },
+            {
+              symbol,
+              items: Items,
+              creators: Creators,
+              description: Description,
+              preview_URL: Preview_URL,
+              title: Title,
+              tags,
+              nsfw,
+              jsonUrl,
+              pubkey: Pubkey,
+              properties: Properties,
+              seller,
+              price,
+              listingUrl,
+              tokenAddress,
+              pdaAddress,
+              tokenSize,
+            },
+            { upsert: true }
+          );
+        });
+
+        continueFetching = false;
         if (result.data.length == 0) {
           continueFetching = false;
         }
         offset += limit;
       }
     );
-    await NftCollectionModel.updateOne({ symbol }, { loaded: true });
-    console.log("I have fetched the nfts for " + symbol);
+    await NftCollectionModel.updateOne({ symbol }, { loaded2: true });
   } catch (err) {
     console.log(err);
   }

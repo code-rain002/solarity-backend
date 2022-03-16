@@ -12,6 +12,7 @@ export const saveOwnedNfts = async (publicAddress) => {
       connection,
       serialization: true,
     });
+    // check if nft already in collection
     const nftMintAddresses = nfts.map(({ mint }) => mint);
     const nftFetchAddresses = nftMintAddresses.map(
       (mint) => `https://api.all.art/v1/solana/${mint}`

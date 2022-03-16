@@ -64,7 +64,10 @@ export const registerUserWithPublicAddressController = async (req, res) => {
     }
 
     const verified = verifySignature(savedNonce, signature, publicAddress);
-    if (!verified) throwError("Invalid signature, unable to login");
+    console.log(savedNonce);
+    console.log(signature);
+    console.log(publicAddress);
+    if (!verified) throwError("Invalid signature, unable to register");
 
     const user = await UserModel.create({
       publicAddress,
@@ -136,6 +139,7 @@ export const LoginUserWithPublicAddressController = async (req, res) => {
     }
 
     const verified = verifySignature(user.nonce, signature, publicAddress);
+
     if (!verified) throwError("Invalid signature, unable to login");
 
     await UserModel.updateOne({ _id: user.id }, { nonce });
@@ -162,7 +166,14 @@ export const logoutUserController = async (req, res, next) => {
 
 // OK
 export const checkLoginController = async (req, res) => {
-  return successResponse({ res });
+  try {
+    const { userId } = req.session;
+    const profile = await getProfileData(userId);
+    return successResponse({ res, response: { profile } });
+  } catch (err) {
+    console.log(err);
+    return errorResponse({ res, err });
+  }
 };
 
 export const test = async (req, res) => {

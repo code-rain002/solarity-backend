@@ -116,8 +116,9 @@ class Server {
         "http://localhost:3000",
         "https://solarity-web-git-master-hassan-sk.vercel.app",
       ],
+      preflightContinue: true,
       methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-      credentials: true,
+      credentials: true, //access-control-allow-credentials:true
       optionSuccessStatus: 200,
     };
     this.express.use(cors(corsOptions));

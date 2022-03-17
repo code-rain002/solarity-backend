@@ -92,7 +92,10 @@ export const updateProfileController = async (req, res) => {
     });
 
     // TWITTER USERNAME OWNERSHIP VALIDATION
-    if (updateObject.twitterUsername !== user.twitterUsername) {
+    if (
+      updateObject.twitterUsername &&
+      updateObject.twitterUsername !== user.twitterUsername
+    ) {
       const twitterInfo = await validateTwitterUsername(
         req,
         updateObject.twitterUsername

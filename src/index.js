@@ -140,6 +140,7 @@ class Server {
         origin: [
           "http://localhost:3000",
           "https://solarity-web-k00gou0jv-hassan-sk.vercel.app",
+          "https://solarity-web-git-master-hassan-sk.vercel.app/",
         ],
       })
     );

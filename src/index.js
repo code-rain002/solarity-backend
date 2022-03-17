@@ -117,7 +117,6 @@ class Server {
         "https://solarity-web-git-master-hassan-sk.vercel.app",
       ],
       methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-      origin: true,
       credentials: true,
       optionSuccessStatus: 200,
     };

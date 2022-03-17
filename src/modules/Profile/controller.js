@@ -96,14 +96,14 @@ export const updateProfileController = async (req, res) => {
       updateObject.twitterUsername &&
       updateObject.twitterUsername !== user.twitterUsername
     ) {
-      const twitterInfo = await validateTwitterUsername(
-        req,
-        updateObject.twitterUsername
-      );
-      const {
-        data: { id: twitterId },
-      } = twitterInfo;
-      updateObject.twitterId = twitterId;
+      // const twitterInfo = await validateTwitterUsername(
+      //   req,
+      //   updateObject.twitterUsername
+      // );
+      // const {
+      //   data: { id: twitterId },
+      // } = twitterInfo;
+      updateObject.twitterId = null;
     }
 
     // check if any of the unique data is in use

@@ -126,7 +126,6 @@ class Server {
       next();
     }
     this.express.all("/api/*", setupCORS);
-
     const corsOptions = {
       origin: ["http://localhost:3000"],
       preflightContinue: true,
@@ -139,7 +138,7 @@ class Server {
       cors({
         origin: [
           "http://localhost:3000",
-          "https://solarity-web-git-master-hassan-sk.vercel.app/",
+          "https://solarity-web-git-master-hassan-sk.vercel.app",
         ],
       })
     );

@@ -111,10 +111,26 @@ class Server {
     // middleware initialization
     this.express.use(helmet());
 
+    function setupCORS(req, res, next) {
+      res.setHeader(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+      );
+      res.setHeader("Access-Control-Allow-Credentials", "true");
+      //   res.setHeader("Access-Control-Max-Age", "1800");
+      res.setHeader(
+        "Access-Control-Allow-Methods",
+        "PUT, POST, GET, DELETE, PATCH, OPTIONS"
+      );
+      res.setHeader("Access-Control-Allow-Origin", "*");
+      next();
+    }
+    this.express.all("/api/*", setupCORS);
+
     const corsOptions = {
       origin: [
         "http://localhost:3000",
-        "https://solarity-web-git-master-hassan-sk.vercel.app",
+        "https://solarity-web-k00gou0jv-hassan-sk.vercel.app",
       ],
       preflightContinue: true,
       methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],

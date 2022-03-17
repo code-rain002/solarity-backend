@@ -109,26 +109,41 @@ class Server {
   }
   initMiddleware() {
     // middleware initialization
+    this.express.use(helmet());
+
+    function setupCORS(req, res, next) {
+      res.setHeader(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+      );
+      res.setHeader("Access-Control-Allow-Credentials", "true");
+      //   res.setHeader("Access-Control-Max-Age", "1800");
+      res.setHeader(
+        "Access-Control-Allow-Methods",
+        "PUT, POST, GET, DELETE, PATCH, OPTIONS"
+      );
+      res.setHeader("Access-Control-Allow-Origin", "*");
+      next();
+    }
+    this.express.all("/api/*", setupCORS);
+
+    const corsOptions = {
+      origin: ["http://localhost:3000"],
+      preflightContinue: true,
+      methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+      origin: true,
+      credentials: true, //access-control-allow-credentials:true
+      optionSuccessStatus: 200,
+    };
     this.express.use(
-      helmet({
-        contentSecurityPolicy: false,
+      cors({
+        origin: [
+          "http://localhost:3000",
+          "https://solarity-web-k00gou0jv-hassan-sk.vercel.app",
+        ],
       })
     );
-    function setupCORS(req, res, next) {
-      res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
-      res.header(
-        "Access-Control-Allow-Headers",
-        "X-Requested-With, Content-type,Accept,X-Access-Token,X-Key"
-      );
-      res.header("Access-Control-Allow-Origin", "http://localhost:3000");
-      if (req.method === "OPTIONS") {
-        res.status(200).end();
-      } else {
-        next();
-      }
-    }
-    this.express.all("/*", setupCORS);
-    // this.express.use(cors({ credentials: true }));
+
     this.express.use(express.json());
     this.express.use(express.urlencoded({ extended: false }));
     this.express.use(cookieParser());

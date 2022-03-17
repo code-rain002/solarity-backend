@@ -127,21 +127,17 @@ class Server {
     }
     this.express.all("/api/*", setupCORS);
     const corsOptions = {
-      origin: ["http://localhost:3000"],
+      origin: [
+        "http://localhost:3000",
+        "https://solarity-web-git-master-hassan-sk.vercel.app",
+      ],
       preflightContinue: true,
       methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
       origin: true,
       credentials: true, //access-control-allow-credentials:true
       optionSuccessStatus: 200,
     };
-    this.express.use(
-      cors({
-        origin: [
-          "http://localhost:3000",
-          "https://solarity-web-git-master-hassan-sk.vercel.app",
-        ],
-      })
-    );
+    this.express.use(cors(corsOptions));
 
     this.express.use(express.json());
     this.express.use(express.urlencoded({ extended: false }));

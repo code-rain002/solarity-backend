@@ -49,7 +49,7 @@ export const updateProfileController = async (req, res) => {
         throwError(`User with the provided '${key}' already exists`);
       return false;
     };
-    const newVal = (key) => body[key] || user[key];
+    const newVal = (key) => body[key] || user[key] || "";
     const formatForId = (value) => {
       if (typeof value === "string") {
         return value.toLowerCase().replace(/\s+/g, "");
@@ -115,7 +115,10 @@ export const updateProfileController = async (req, res) => {
       await checkIfExists(value);
     });
 
-    await UserModel.updateOne({ _id: userId }, updateObject);
+    await UserModel.updateOne(
+      { _id: userId },
+      { ...updateObject, profileCompleted: true }
+    );
     const userData = await getProfileData(userId);
 
     return successResponse({ res, response: { profile: userData } });
@@ -178,5 +181,13 @@ export const updatePublicAddressController = async (req, res) => {
       err,
       message: "Unable to verify the public address",
     });
+  }
+};
+
+export const initProfileController = async (req, res) => {
+  try {
+    return successResponse({ res });
+  } catch (err) {
+    return errorResponse({ res, err });
   }
 };

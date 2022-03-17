@@ -66,8 +66,9 @@ const userSchema = new Schema(
       coins: { type: [mongoose.Types.ObjectId], required: false },
       nfts: { type: [mongoose.Types.ObjectId], required: false },
     },
-    nonce: { type: String },
-    lastAnalysisTime: { type: Date },
+    nonce: String,
+    lastAnalysisTime: Date,
+    profileCompleted: Boolean,
   },
   {
     autoIndex: true,

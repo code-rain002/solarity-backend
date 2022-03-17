@@ -20,16 +20,4 @@ router.get(
   getSingleNftCollectionController
 );
 
-// router.post(
-//   "/collections",
-//   validateSchema(addNftCollectionSchema),
-//   addNftCollection
-// );
-
-// router.delete(
-//   "/:symbol",
-//   validateSchema(NftSymbolParamsSchema),
-//   removeNftCollection
-// );
-
 export { router as nftCollectionModule };

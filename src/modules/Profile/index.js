@@ -9,18 +9,26 @@ import {
   updateProfileController,
   updateProfileImageController,
   updatePublicAddressController,
+  initProfileController,
 } from "./controller";
 import {
   updatePasswordSchema,
   updatePublicAddressSchema,
   updateProfileImageSchema,
   updateProfileSchema,
+  initProfileSchema,
 } from "./schema";
 
 const router = express.Router();
 
 // OK
 router.get("/", getProfileController);
+
+router.post(
+  "/init",
+  validateSchema(initProfileSchema),
+  updateProfileController
+);
 
 // OK
 router.post(

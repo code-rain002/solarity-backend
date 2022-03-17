@@ -58,23 +58,20 @@ export const registerUserWithPublicAddressController = async (req, res) => {
       cache.set(publicAddress, nonce);
       return successResponse({ res, response: { nonce } });
     }
+
     const savedNonce = cache.get(publicAddress);
     if (!savedNonce) {
       throwError("Please request a nonce first");
     }
 
     const verified = verifySignature(savedNonce, signature, publicAddress);
-    console.log(savedNonce);
-    console.log(signature);
-    console.log(publicAddress);
+
     if (!verified) throwError("Invalid signature, unable to register");
 
     const user = await UserModel.create({
       publicAddress,
     });
 
-    req.session.userId = user.id;
-    req.session.logged = true;
     await req.session.save();
 
     const profile = await getProfileData(user.id);
@@ -124,6 +121,14 @@ export const loginUserController = async (req, res) => {
 export const LoginUserWithPublicAddressController = async (req, res) => {
   try {
     const { requestNonce, publicAddress, signature } = req.body;
+    const cache = req.app.get("registerNonceCache");
+    let registerFlag = false;
+    // check if the address is a valid solana address
+    if (!isValidSolanaAddress(publicAddress)) {
+      throwError("Invalid public address");
+    }
+
+    // generate nonce regardless
     const nonce = String(Math.ceil(Math.random() * 99999) + 10000);
 
     const user = await UserModel.findOne(
@@ -131,23 +136,44 @@ export const LoginUserWithPublicAddressController = async (req, res) => {
       { publicAddress: 1, nonce: 1 }
     );
 
-    if (!user) throwError("No user with the provided public address exists");
+    if (!user) registerFlag = true;
 
     if (requestNonce) {
-      await UserModel.updateOne({ _id: user.id }, { nonce });
+      if (registerFlag) {
+        cache.set(publicAddress, nonce);
+      } else {
+        await UserModel.updateOne({ _id: user.id }, { nonce });
+      }
       return successResponse({ res, response: { nonce } });
     }
 
-    const verified = verifySignature(user.nonce, signature, publicAddress);
+    let nonceToVerify;
+    if (registerFlag) {
+      nonceToVerify = cache.get(publicAddress);
+    } else {
+      nonceToVerify = user.nonce;
+    }
+
+    const verified = verifySignature(nonceToVerify, signature, publicAddress);
 
     if (!verified) throwError("Invalid signature, unable to login");
+    let userId;
+    if (registerFlag) {
+      const user = await UserModel.create({
+        publicAddress,
+        profileCompleted: false,
+      });
+      userId = user.id;
+    } else {
+      await UserModel.updateOne({ _id: user.id }, { nonce });
+      userId = user.id;
+    }
 
-    await UserModel.updateOne({ _id: user.id }, { nonce });
-
-    const profile = await getProfileData(user.id);
-    req.session.userId = user.id;
+    req.session.userId = userId;
     req.session.logged = true;
     await req.session.save();
+
+    const profile = await getProfileData(userId);
     return successResponse({ res, response: { profile } });
   } catch (err) {
     return errorResponse({

@@ -68,6 +68,40 @@ export const updateProfileSchema = yup.object({
   }),
 });
 
+export const initProfileSchema = yup.object({
+  body: yup.object({
+    fullName: yup
+      .string()
+      .trim()
+      .typeError("Full name is invalid")
+      .min(4, "Full name is too short")
+      .max(60, "Full name is too long")
+      .required("Full name is required"),
+    username: yup
+      .string()
+      .trim()
+      .typeError("Username is invalid")
+      .min(3, "Username is too short")
+      .max(60, "Username is too long")
+      .required("Username is required"),
+    githubUsername: yup
+      .string()
+      .trim()
+      .typeError("Github username is invalid")
+      .required("Github username is required"),
+    discordHandle: yup
+      .string()
+      .trim()
+      .typeError("Discord handle is invalid")
+      .required("Discord Handle is required"),
+    twitterUsername: yup
+      .string()
+      .trim()
+      .typeError("Twitter Username handle is invalid")
+      .required("Twitter Username is required"),
+  }),
+});
+
 export const connectTwitterSchema = yup.object({
   body: yup.object({
     username: yup

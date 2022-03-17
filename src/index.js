@@ -120,8 +120,7 @@ class Server {
         "Access-Control-Allow-Headers",
         "X-Requested-With, Content-type,Accept,X-Access-Token,X-Key"
       );
-      res.header("Access-Control-Allow-Origin", "*");
-      res.header("Access-Control-Allow-Credentials", "true");
+      res.header("Access-Control-Allow-Origin", "http://localhost:3000");
       if (req.method === "OPTIONS") {
         res.status(200).end();
       } else {
@@ -129,7 +128,7 @@ class Server {
       }
     }
     this.express.all("/*", setupCORS);
-    this.express.use(cors({ credentials: true }));
+    // this.express.use(cors({ credentials: true }));
     this.express.use(express.json());
     this.express.use(express.urlencoded({ extended: false }));
     this.express.use(cookieParser());
@@ -164,6 +163,7 @@ class Server {
       if (global.rollbar) {
         global.rollbar.error(err);
       }
+      console.log(err);
       return res.send("ERROR: NOT FOUND");
     });
   }

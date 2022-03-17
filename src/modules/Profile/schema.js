@@ -70,13 +70,6 @@ export const updateProfileSchema = yup.object({
 
 export const initProfileSchema = yup.object({
   body: yup.object({
-    fullName: yup
-      .string()
-      .trim()
-      .typeError("Full name is invalid")
-      .min(4, "Full name is too short")
-      .max(60, "Full name is too long")
-      .required("Full name is required"),
     username: yup
       .string()
       .trim()

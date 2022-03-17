@@ -23,9 +23,8 @@ export const getTweets = async (req, res) => {
 export const getCollections = async (req, res) => {
   try {
     const { symbol } = req.params;
-    // const collection = await NftCollections.findOne({ symbol });
-    // // await NftCollections.create({ symbol: 12 });
-    return successResponse({ res, response: { collection: "sdas" } });
+    const collection = await NftCollections.findOne({ symbol });
+    return successResponse({ res, response: { collection } });
   } catch (err) {
     console.log(err);
     return errorResponse({ res, err });

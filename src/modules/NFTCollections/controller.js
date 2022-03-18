@@ -10,37 +10,43 @@ import { Promise } from "bluebird";
 import axios from "axios";
 import { NftModel } from "../NFT/model";
 
-// export const statCollections = async (req, res) => {
-//   try {
-//     const symbols = await NftCollectionModel.find({}, { symbol: 1, loaded: 1 });
-//     let count = 1;
-//     await Promise.each(symbols, async ({ symbol, loaded2 }) => {
-//       if (!loaded2) {
-//         try {
-//           const nfts = await fetchAllNftInCollection(symbol);
-//         } catch (err) {
-//           console.log(err);
-//         }
-//       }
-//     });
-//     return successResponse({ res });
-//   } catch (err) {
-//     return errorResponse({ res, err });
-//   }
-// };
-
 export const getNftCollectionsController = async (req, res) => {
   try {
     const {
       session: { userId },
-      query: { following = false, page = 1, count = 10, term = "" },
+      query: {
+        following = false,
+        page = 1,
+        count = 10,
+        term = "",
+        member = false,
+      },
     } = req;
     let searchTerm = new RegExp(term.toLowerCase(), "i");
-    console.log(searchTerm);
     const findOptions = {
       $or: [{ symbol: searchTerm }, { name: searchTerm }],
     };
-    if (following) {
+    if (member) {
+      const publicAddress = "6BnAzdBGmUdgcRaTaFGBvMAiAgC2cELiU5q12hBYb8YN";
+      const collectionNames = await NftModel.distinct(
+        "properties.collection.name",
+        { owner: publicAddress }
+      );
+      const uniqueNfts = await Promise.map(collectionNames, async (name) => {
+        return await NftModel.findOne(
+          { "properties.collection.name": name },
+          { mint: 1 }
+        );
+      });
+      const collections = await Promise.map(uniqueNfts, async ({ mint }) => {
+        return await axios.get(
+          `https://api-mainnet.magiceden.dev/v2/tokens/${mint}`
+        );
+      });
+      const symbols = collections.map(({ data: { collection } }) => collection);
+      findOptions.symbol = { $in: symbols };
+    }
+    if (!member && following) {
       const user = await UserModel.findById(userId);
       const { nftWatchlist } = user;
       findOptions.symbol = { $in: nftWatchlist };

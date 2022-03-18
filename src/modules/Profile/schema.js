@@ -103,3 +103,12 @@ export const connectTwitterSchema = yup.object({
       .required("Twitter username is required"),
   }),
 });
+
+export const nftProfilePicSchema = yup.object({
+  body: yup.object({
+    mint: yup
+      .string()
+      .typeError("Nft mint address must be a string")
+      .required("NFT mint address is required"),
+  }),
+});

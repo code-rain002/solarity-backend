@@ -66,8 +66,22 @@ class Server {
     });
   }
   initSessions() {
+    const opts = {};
+    if (process.env.PRODUCTION == true) {
+      opts.cookie = {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        maxAge: 1000 * 60 * 60 * 48,
+      };
+    } else {
+      opts.cookie = {
+        maxAge: 1000 * 60 * 60 * 48,
+      };
+    }
     this.express.use(
       session({
+        ...opts,
         saveUninitialized: false,
         resave: true,
         name: "solaritySession",
@@ -78,6 +92,7 @@ class Server {
       })
     );
   }
+
   async initMailer() {
     // for later user
     const mailer = new Mailer();
@@ -110,29 +125,14 @@ class Server {
   initMiddleware() {
     // middleware initialization
     this.express.use(helmet());
-
-    function setupCORS(req, res, next) {
-      res.setHeader(
-        "Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-      );
-      res.setHeader("Access-Control-Allow-Credentials", "true");
-      //   res.setHeader("Access-Control-Max-Age", "1800");
-      res.setHeader(
-        "Access-Control-Allow-Methods",
-        "PUT, POST, GET, DELETE, PATCH, OPTIONS"
-      );
-      res.setHeader("Access-Control-Allow-Origin", "*");
-      next();
-    }
-    this.express.all("/api/*", setupCORS);
-
+    this.express.set("trust proxy", 1);
     const corsOptions = {
       origin: [
         "http://localhost:3000",
-        "https://solarity-web-k00gou0jv-hassan-sk.vercel.app",
+        "https://solarity-web-git-master-hassan-sk.vercel.app",
+        "https://127.0.0.1:5501",
       ],
-      preflightContinue: true,
+      //      preflightContinue: true,
       methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
       credentials: true, //access-control-allow-credentials:true
       optionSuccessStatus: 200,

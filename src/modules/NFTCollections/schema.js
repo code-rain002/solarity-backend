@@ -27,6 +27,8 @@ export const getNftCollectionsSchema = yup.object({
   query: yup.object({
     ...paginationSharedObject,
     following: yup.boolean().typeError("Following can either be true or false"),
+    member: yup.boolean().typeError("Member can either be true or false"),
+    // partOf: yup.boolean().typeError()
   }),
 });
 

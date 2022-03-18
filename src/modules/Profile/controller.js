@@ -15,6 +15,7 @@ import _ from "lodash";
 import { Promise } from "bluebird";
 import { validatePassword } from "../../helpers/authHelpers";
 import { isValidSolanaAddress } from "@nfteyez/sol-rayz";
+import axios from "axios";
 
 // OK
 export const getProfileController = async (req, res) => {
@@ -103,7 +104,7 @@ export const updateProfileController = async (req, res) => {
       // const {
       //   data: { id: twitterId },
       // } = twitterInfo;
-      updateObject.twitterId = null;
+      updateObject.twitterId = undefined;
     }
 
     // check if any of the unique data is in use
@@ -125,6 +126,19 @@ export const updateProfileController = async (req, res) => {
     const userData = await getProfileData(userId);
 
     return successResponse({ res, response: { profile: userData } });
+  } catch (err) {
+    return errorResponse({ res, err });
+  }
+};
+
+export const claimProfitDaoController = async (req, res) => {
+  try {
+    const {
+      session: { userId },
+    } = req;
+    await UserModel.updateOne({ _id: userId }, { daoClaimed: true });
+    const profile = await getProfileData(userId);
+    return successResponse({ res, response: { profile } });
   } catch (err) {
     return errorResponse({ res, err });
   }
@@ -187,9 +201,21 @@ export const updatePublicAddressController = async (req, res) => {
   }
 };
 
-export const initProfileController = async (req, res) => {
+export const updateProfileImageFromNftController = async (req, res) => {
   try {
-    return successResponse({ res });
+    const {
+      body: { mint },
+      session: { userId },
+    } = req;
+    const { data: nftDetails } = await axios.get(
+      `https://api-mainnet.magiceden.dev/v2/tokens/${mint}`
+    );
+    await UserModel.updateOne(
+      { _id: userId },
+      { profileImageLink: nftDetails.image }
+    );
+    const profile = await getProfileData(userId);
+    return successResponse({ res, response: { profile } });
   } catch (err) {
     return errorResponse({ res, err });
   }

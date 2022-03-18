@@ -1,5 +1,5 @@
 import express from "express";
-import { authenticate, validateSchema } from "../../middlewares";
+import { validateSchema } from "../../middlewares";
 import { getCollections, getTweets } from "./controller";
 
 const router = express.Router();

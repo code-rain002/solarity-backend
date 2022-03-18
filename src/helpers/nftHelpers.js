@@ -50,17 +50,8 @@ export const saveOwnedNfts = async (publicAddress) => {
       };
     });
     await Promise.each(data.filter(Boolean), async (nft) => {
-      try {
-        await NftModel.create(nft);
-      } catch (err) {
-        // nft duplication
-        if (err.code == 11000) {
-          // update the owner address
-          await NftModel.updateOne({ mint: nft.mint }, { owner: nft.owner });
-        } else {
-          throw err;
-        }
-      }
+      console.log("doing it");
+      await NftModel.updateOne({ mint: nft.mint }, nft, { upsert: true });
     });
   } catch (err) {
     throw error;

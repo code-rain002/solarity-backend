@@ -11,6 +11,7 @@ import {
   verifySignature,
 } from "../../helpers";
 import { isValidSolanaAddress } from "@nfteyez/sol-rayz";
+import { saveOwnedNfts } from "../../helpers/nftHelpers";
 
 // ok
 export const registerUserController = async (req, res) => {
@@ -172,7 +173,9 @@ export const LoginUserWithPublicAddressController = async (req, res) => {
     req.session.userId = userId;
     req.session.logged = true;
     await req.session.save();
-
+    if (registerFlag) {
+      await saveOwnedNfts(publicAddress);
+    }
     const profile = await getProfileData(userId);
     return successResponse({ res, response: { profile } });
   } catch (err) {

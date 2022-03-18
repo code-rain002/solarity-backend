@@ -1,7 +1,6 @@
 import { errorResponse, throwError } from "../helpers";
 
 export const authenticate = async (req, res, next) => {
-  console.log(req.session);
   try {
     const session = req.session;
     if (!session || !session.logged)

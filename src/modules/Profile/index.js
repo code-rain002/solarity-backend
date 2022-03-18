@@ -9,7 +9,8 @@ import {
   updateProfileController,
   updateProfileImageController,
   updatePublicAddressController,
-  initProfileController,
+  claimProfitDaoController,
+  updateProfileImageFromNftController,
 } from "./controller";
 import {
   updatePasswordSchema,
@@ -17,6 +18,7 @@ import {
   updateProfileImageSchema,
   updateProfileSchema,
   initProfileSchema,
+  nftProfilePicSchema,
 } from "./schema";
 
 const router = express.Router();
@@ -29,6 +31,8 @@ router.post(
   validateSchema(initProfileSchema),
   updateProfileController
 );
+
+router.post("/claimDao", claimProfitDaoController);
 
 // OK
 router.post(
@@ -45,6 +49,12 @@ router.post(
   "/image",
   upload("/profileImages").single("image"),
   updateProfileImageController
+);
+
+router.post(
+  "/nftProfilePic",
+  validateSchema(nftProfilePicSchema),
+  updateProfileImageFromNftController
 );
 
 // OK

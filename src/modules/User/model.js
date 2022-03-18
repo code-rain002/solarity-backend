@@ -69,6 +69,7 @@ const userSchema = new Schema(
     nonce: String,
     lastAnalysisTime: Date,
     profileCompleted: Boolean,
+    daoClaimed: Boolean,
   },
   {
     autoIndex: true,

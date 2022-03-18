@@ -5,6 +5,7 @@ import {
   getNftController,
   nftAnalysisController,
   getNftAnalysisController,
+  getNftFromMagicEdenController,
 } from "./controller";
 import { getNftsSchema, nftAnalysisSchema } from "./schema";
 
@@ -17,6 +18,12 @@ router.get(
 );
 
 router.get("/analysis", getNftAnalysisController);
+
+router.get(
+  "/:mint/magiceden",
+  validateSchema(null, { idParamCheck: true, idName: "mint" }),
+  getNftFromMagicEdenController
+);
 
 router.get(
   "/:mint",

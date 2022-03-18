@@ -2,6 +2,7 @@ import { Types } from "mongoose";
 import { successResponse, errorResponse, throwError } from "../../helpers";
 import UserModel from "../User/model";
 import { NftModel, NftAnalysisReportModel } from "../NFT/model";
+import axios from "axios";
 
 export const getNftsController = async (req, res) => {
   try {
@@ -66,6 +67,20 @@ export const getNftController = async (req, res) => {
       nft = { ...nft._doc, owned: false };
     }
     return successResponse({ res, response: { nft } });
+  } catch (err) {
+    return errorResponse({ res, err });
+  }
+};
+
+export const getNftFromMagicEdenController = async (req, res) => {
+  try {
+    const {
+      params: { mint },
+    } = req;
+    const { data } = await axios.get(
+      `https://api-mainnet.magiceden.dev/v2/tokens/${mint}`
+    );
+    return successResponse({ res, response: data });
   } catch (err) {
     return errorResponse({ res, err });
   }

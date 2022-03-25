@@ -1,8 +1,9 @@
 import express from "express";
-import { validateSchema } from "../../middlewares";
+import { authenticate, validateSchema } from "../../middlewares";
 import {
   followUserController,
   getUserController,
+  getUserFollowingStatusController,
   getUsersController,
   unfollowUserController,
 } from "./controller";
@@ -24,9 +25,18 @@ router.get(
   getUserController
 );
 
+// check if following user
+router.get(
+  "/:username/follow",
+  authenticate,
+  validateSchema(null, { idParamCheck: true, idName: "username" }),
+  getUserFollowingStatusController
+);
+
 // follow user
 router.post(
   "/:username/follow",
+  authenticate,
   validateSchema(null, { idParamCheck: true, idName: "username" }),
   followUserController
 );
@@ -34,6 +44,7 @@ router.post(
 // unfollow user
 router.post(
   "/:username/unfollow",
+  authenticate,
   validateSchema(null, { idParamCheck: true, idName: "username" }),
   unfollowUserController
 );

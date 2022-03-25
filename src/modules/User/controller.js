@@ -9,18 +9,17 @@ const userDataFormat = {
   email: 0,
   createdAt: 0,
   updatedAt: 0,
+  nonce: 0,
 };
 
 // OK
 export const getUsersController = async (req, res) => {
   try {
     const {
-      session: { userId },
       query: { page = 1, count = 10, term = "" },
     } = req;
     let searchTerm = new RegExp(term.toLowerCase(), "i");
     const findOptions = {
-      $nor: [{ _id: userId }],
       $or: [
         { username: searchTerm },
         { email: searchTerm },
@@ -43,26 +42,35 @@ export const getUserController = async (req, res) => {
   try {
     const {
       params: { username: _username },
-      session: { userId },
     } = req;
     const username = _username.toLowerCase();
-    const selfObjectId = new Types.ObjectId(userId);
     const user = await UserModel.aggregate([
       {
-        $match: {
-          $or: [{ username }],
-        },
+        $match: { username },
       },
       {
         $addFields: {
           followerCount: { $size: "$followers" },
-          followed: { $in: [selfObjectId, "$followers"] },
-          self: { $eq: [selfObjectId, "$_id"] },
         },
       },
       { $unset: Object.keys(userDataFormat) },
     ]);
-    return successResponse({ res, response: { user } });
+
+    if (user.length == 0) throwError("No user with the username exists");
+    return successResponse({ res, response: { user: user[0] } });
+  } catch (err) {
+    return errorResponse({ res, err });
+  }
+};
+
+export const getUserFollowingStatusController = async (req, res) => {
+  try {
+    const {
+      params: { username },
+      session: { userId },
+    } = req;
+    // const following = await UserModel.findById(userId, {})
+    return successResponse({ res, response: { following: true } });
   } catch (err) {
     return errorResponse({ res, err });
   }

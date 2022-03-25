@@ -6,25 +6,23 @@ import {
 } from "../../helpers";
 import UserModel from "../User/model";
 import md5 from "md5";
-import {
-  getProfileData,
-  validateTwitterUsername,
-  saveOwnedNfts,
-} from "./helpers";
 import _ from "lodash";
 import { Promise } from "bluebird";
 import { validatePassword } from "../../helpers/authHelpers";
-import { isValidSolanaAddress } from "@nfteyez/sol-rayz";
+import {
+  getParsedAccountByMint,
+  isValidSolanaAddress,
+} from "@nfteyez/sol-rayz";
 import axios from "axios";
+import { clusterApiUrl, Connection } from "@solana/web3.js";
 
 // OK
 export const getProfileController = async (req, res) => {
   try {
-    const { userId } = req.session;
-    const profile = await getProfileData(userId);
+    const profile = await req.profile();
     if (!profile) {
       await res.session.destroy();
-      throwError("Invalid Credentials");
+      throwError("Please login again");
     }
     return successResponse({ res, response: { profile } });
   } catch (err) {
@@ -123,7 +121,7 @@ export const updateProfileController = async (req, res) => {
       { _id: userId },
       { ...updateObject, profileCompleted: true }
     );
-    const userData = await getProfileData(userId);
+    const userData = await getProfileData(req);
 
     return successResponse({ res, response: { profile: userData } });
   } catch (err) {
@@ -137,7 +135,7 @@ export const claimProfitDaoController = async (req, res) => {
       session: { userId },
     } = req;
     await UserModel.updateOne({ _id: userId }, { daoClaimed: true });
-    const profile = await getProfileData(userId);
+    const profile = await getProfileData(req);
     return successResponse({ res, response: { profile } });
   } catch (err) {
     return errorResponse({ res, err });
@@ -165,7 +163,7 @@ export const updatePasswordController = async (req, res) => {
   }
 };
 
-//OK
+// OK
 export const updateProfileImageController = async (req, res) => {
   try {
     const profileImageLink = req.file.location;
@@ -181,16 +179,24 @@ export const updateProfileImageController = async (req, res) => {
   }
 };
 
+// OK
 export const updatePublicAddressController = async (req, res) => {
   try {
-    const { userId } = req.session;
-    const { publicAddress, signedUserId } = req.body;
-    if (!isValidSolanaAddress(publicAddress))
-      throwError("Invalid public address");
+    const {
+      session: { userId },
+      body: { publicAddress, signedUserId },
+    } = req;
+
+    // Validate if the public address is valid
+    if (!isValidSolanaAddress(publicAddress)) {
+      throw false;
+    }
+
+    // verify the signature
     const verified = verifySignature(userId, signedUserId, publicAddress);
-    if (!verified) throw false;
+    if (!verified) throwError("Invalid signature");
+
     await UserModel.updateOne({ _id: userId }, { publicAddress });
-    await saveOwnedNfts(publicAddress);
     return successResponse({ res });
   } catch (err) {
     return errorResponse({
@@ -201,12 +207,20 @@ export const updatePublicAddressController = async (req, res) => {
   }
 };
 
-export const updateProfileImageFromNftController = async (req, res) => {
+export const updateProfilePicController = async (req, res) => {
   try {
     const {
       body: { mint },
       session: { userId },
     } = req;
+
+    const ownerAddress = await getParsedAccountByMint({
+      mintAddress: mint,
+      connection: req.solanaConnection,
+    });
+
+    // confirm owner
+
     const { data: nftDetails } = await axios.get(
       `https://api-mainnet.magiceden.dev/v2/tokens/${mint}`
     );
@@ -214,7 +228,7 @@ export const updateProfileImageFromNftController = async (req, res) => {
       { _id: userId },
       { profileImageLink: nftDetails.image }
     );
-    const profile = await getProfileData(userId);
+    const profile = await getProfileData(req);
     return successResponse({ res, response: { profile } });
   } catch (err) {
     return errorResponse({ res, err });

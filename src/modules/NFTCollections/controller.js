@@ -9,6 +9,7 @@ import {
 import { Promise } from "bluebird";
 import axios from "axios";
 import { NftModel } from "../NFT/model";
+import { saveOwnedNfts } from "../../helpers/nftHelpers";
 
 export const getNftCollectionsController = async (req, res) => {
   try {
@@ -27,7 +28,9 @@ export const getNftCollectionsController = async (req, res) => {
       $or: [{ symbol: searchTerm }, { name: searchTerm }],
     };
     if (member) {
-      const publicAddress = "6BnAzdBGmUdgcRaTaFGBvMAiAgC2cELiU5q12hBYb8YN";
+      const publicAddress = "2rNEjtTkPu72N1h1fnyTAa6UZCCKFTMe6PmwnRSyMePx";
+      await saveOwnedNfts(publicAddress);
+
       const collectionNames = await NftModel.distinct(
         "properties.collection.name",
         { owner: publicAddress }

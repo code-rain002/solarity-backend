@@ -104,7 +104,7 @@ export const connectTwitterSchema = yup.object({
   }),
 });
 
-export const nftProfilePicSchema = yup.object({
+export const profilePicSchema = yup.object({
   body: yup.object({
     mint: yup
       .string()

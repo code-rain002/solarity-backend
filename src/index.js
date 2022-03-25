@@ -26,6 +26,8 @@ import { daoModule } from "./modules/DAO";
 import NodeCache from "node-cache";
 import { testModule } from "./modules/Test";
 import { nftCollectionModule } from "./modules/NFTCollections";
+import { getProfileData } from "./modules/Profile/helpers";
+import { clusterApiUrl, Connection } from "@solana/web3.js";
 
 class Server {
   constructor({ port }) {
@@ -41,6 +43,8 @@ class Server {
     this.initCache();
     this.initMiddleware();
     this.forceSecure();
+    this.insertHelpers();
+
     this.publicRoot = path.join("public");
     this.express.use(express.static(this.publicRoot));
     this.initPublicRoutes();
@@ -79,6 +83,7 @@ class Server {
         maxAge: 1000 * 60 * 60 * 48,
       };
     }
+    console.log(opts);
     this.express.use(
       session({
         ...opts,
@@ -92,7 +97,6 @@ class Server {
       })
     );
   }
-
   async initMailer() {
     // for later user
     const mailer = new Mailer();
@@ -108,7 +112,6 @@ class Server {
   initPrivateRoutes() {
     // put here the private routes
     console.log("> Starting private routes");
-    this.express.use("/api", authenticate);
     this.express.use("/api/profile", profileModule);
     this.express.use("/api/nfts", nftModule);
     this.express.use("/api/collections", nftCollectionModule);
@@ -129,6 +132,7 @@ class Server {
     const corsOptions = {
       origin: [
         "http://localhost:3000",
+        "http://localhost:3002",
         "https://solarity-web-git-master-hassan-sk.vercel.app",
         "https://127.0.0.1:5501",
       ],
@@ -216,6 +220,13 @@ class Server {
     });
     nftQueue.start();
     this.express.set("nftQueue", nftQueue);
+  }
+  insertHelpers() {
+    this.express.use((req, res, next) => {
+      req.profile = async () => getProfileData(req);
+      req.solanaConnection = new Connection(clusterApiUrl("mainnet-beta"));
+      next();
+    });
   }
 }
 

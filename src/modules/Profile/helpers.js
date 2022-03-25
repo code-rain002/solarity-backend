@@ -23,7 +23,8 @@ export const validateTwitterUsername = async (req, username) => {
   return twitterData;
 };
 
-export const getProfileData = async (userId) => {
+export const getProfileData = async (req) => {
+  const { userId } = req.session;
   const user = await UserModel.findById(userId, {
     password: 0,
     followers: 0,

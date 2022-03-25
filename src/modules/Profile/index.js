@@ -4,8 +4,8 @@ import { validateSchema } from "../../middlewares";
 import { upload } from "../../middlewares/multerMiddlewares";
 import UserModel from "../User/model";
 import {
-  updatePasswordController,
   getProfileController,
+  updateProfilePicController,
   updateProfileController,
   updateProfileImageController,
   updatePublicAddressController,
@@ -15,16 +15,31 @@ import {
 import {
   updatePasswordSchema,
   updatePublicAddressSchema,
-  updateProfileImageSchema,
   updateProfileSchema,
   initProfileSchema,
-  nftProfilePicSchema,
+  profilePicSchema,
 } from "./schema";
 
 const router = express.Router();
 
-// OK
+// CHECKED
 router.get("/", getProfileController);
+
+// CHECKED
+router.post(
+  "/profilePic",
+  validateSchema(profilePicSchema),
+  updateProfilePicController
+);
+
+// OK
+router.post(
+  "/publicAddress",
+  validateSchema(updatePublicAddressSchema),
+  updatePublicAddressController
+);
+
+// ----
 
 router.post(
   "/init",
@@ -35,33 +50,6 @@ router.post(
 router.post("/claimDao", claimProfitDaoController);
 
 // OK
-router.post(
-  "/password",
-  validateSchema(updatePasswordSchema),
-  updatePasswordController
-);
-
-// OK
 router.patch("/", validateSchema(updateProfileSchema), updateProfileController);
-
-// OK
-router.post(
-  "/image",
-  upload("/profileImages").single("image"),
-  updateProfileImageController
-);
-
-router.post(
-  "/nftProfilePic",
-  validateSchema(nftProfilePicSchema),
-  updateProfileImageFromNftController
-);
-
-// OK
-router.post(
-  "/publicAddress",
-  validateSchema(updatePublicAddressSchema),
-  updatePublicAddressController
-);
 
 export { router as profileModule };

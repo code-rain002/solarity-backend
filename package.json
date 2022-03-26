@@ -4,6 +4,8 @@
   "description": "",
   "main": "bin/www",
   "scripts": {
+    "start": "node bin/www",
+    "dev": "nodemon bin/www",
     "build": "npx tsc --project ./"
   },
   "author": "",

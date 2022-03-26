@@ -112,7 +112,7 @@ class Server {
   initPrivateRoutes() {
     // put here the private routes
     console.log("> Starting private routes");
-    this.express.use("/api/profile", profileModule);
+    this.express.use("/api/profile", authenticate, profileModule);
     this.express.use("/api/nfts", nftModule);
     this.express.use("/api/collections", nftCollectionModule);
     this.express.use("/api/tweets", tweetModule);

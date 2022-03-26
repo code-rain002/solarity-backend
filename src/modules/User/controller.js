@@ -3,10 +3,8 @@ import UserModel from "./model";
 import { Types } from "mongoose";
 
 const userDataFormat = {
-  password: 0,
   followers: 0,
   following: 0,
-  email: 0,
   createdAt: 0,
   updatedAt: 0,
   nonce: 0,
@@ -55,7 +53,6 @@ export const getUserController = async (req, res) => {
       },
       { $unset: Object.keys(userDataFormat) },
     ]);
-
     if (user.length == 0) throwError("No user with the username exists");
     return successResponse({ res, response: { user: user[0] } });
   } catch (err) {

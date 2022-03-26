@@ -59,7 +59,10 @@ export const loginUserController = async (req, res) => {
     if (registerFlag) {
       const user = await UserModel.create({
         publicAddress,
-        profileCompleted: false,
+        stepsCompleted: {
+          infoAdded: false,
+          daoClaimed: false,
+        },
       });
       userId = user.id;
     } else {

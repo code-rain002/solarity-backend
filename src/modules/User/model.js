@@ -11,14 +11,6 @@ const userSchema = new Schema(
       sparse: true,
       trim: true,
     },
-    email: {
-      type: String,
-      index: true,
-      unique: true,
-      lowercase: true,
-      sparse: true,
-      trim: true,
-    },
     publicAddress: {
       type: String,
       index: true,
@@ -26,9 +18,7 @@ const userSchema = new Schema(
       trim: true,
       sparse: true,
     },
-    fullName: { type: String, trim: true },
     bio: { type: String, required: false, trim: true },
-    password: { type: String },
     twitterUsername: {
       type: String,
       required: false,
@@ -59,7 +49,7 @@ const userSchema = new Schema(
       required: false,
       trim: true,
     },
-    followers: { type: [mongoose.Types.ObjectId], required: false },
+    followerCount: { type: Number, required: false, default: 0 },
     following: {
       users: { type: [mongoose.Types.ObjectId], required: false },
       daos: { type: [mongoose.Types.ObjectId], required: false },
@@ -68,8 +58,24 @@ const userSchema = new Schema(
     },
     nonce: String,
     lastAnalysisTime: Date,
-    profileCompleted: Boolean,
-    daoClaimed: Boolean,
+    visible: {
+      type: Boolean,
+      default: false,
+    },
+    stepsCompleted: {
+      infoAdded: {
+        type: Boolean,
+        default: false,
+      },
+      daoClaimed: {
+        type: Boolean,
+        default: false,
+      },
+      profilePicUpdated: {
+        type: Boolean,
+        default: false,
+      },
+    },
   },
   {
     autoIndex: true,

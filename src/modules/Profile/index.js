@@ -7,16 +7,13 @@ import {
   getProfileController,
   updateProfilePicController,
   updateProfileController,
-  updateProfileImageController,
   updatePublicAddressController,
   claimProfitDaoController,
-  updateProfileImageFromNftController,
 } from "./controller";
 import {
-  updatePasswordSchema,
   updatePublicAddressSchema,
   updateProfileSchema,
-  initProfileSchema,
+  setupProfileInfoSchema,
   profilePicSchema,
 } from "./schema";
 
@@ -42,8 +39,8 @@ router.post(
 // ----
 
 router.post(
-  "/init",
-  validateSchema(initProfileSchema),
+  "/setup/info",
+  validateSchema(setupProfileInfoSchema),
   updateProfileController
 );
 

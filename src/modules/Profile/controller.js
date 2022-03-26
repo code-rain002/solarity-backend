@@ -116,12 +116,11 @@ export const updateProfileController = async (req, res) => {
     await Promise.each(valueChecks, async (value) => {
       await checkIfExists(value);
     });
-
     await UserModel.updateOne(
       { _id: userId },
-      { ...updateObject, profileCompleted: true }
+      { ...updateObject, "stepsCompleted.infoAdded": true }
     );
-    const userData = await getProfileData(req);
+    const userData = await req.profile();
 
     return successResponse({ res, response: { profile: userData } });
   } catch (err) {

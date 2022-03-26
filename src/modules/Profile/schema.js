@@ -68,7 +68,7 @@ export const updateProfileSchema = yup.object({
   }),
 });
 
-export const initProfileSchema = yup.object({
+export const setupProfileInfoSchema = yup.object({
   body: yup.object({
     username: yup
       .string()

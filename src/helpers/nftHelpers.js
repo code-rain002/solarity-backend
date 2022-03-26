@@ -50,7 +50,6 @@ export const saveOwnedNfts = async (publicAddress) => {
       };
     });
     await Promise.each(data.filter(Boolean), async (nft) => {
-      console.log("doing it");
       await NftModel.updateOne({ mint: nft.mint }, nft, { upsert: true });
     });
   } catch (err) {

@@ -9,6 +9,7 @@ import {
   updateProfileController,
   updatePublicAddressController,
   claimDaosController,
+  checkUsernameAvailabilityController,
 } from "./controller";
 import {
   updatePublicAddressSchema,
@@ -53,4 +54,9 @@ router.post(
 // OK
 router.patch("/", validateSchema(updateProfileSchema), updateProfileController);
 
+router.get(
+  "/usernameAvailability/:username",
+  validateSchema(null, { idParamCheck: true, idName: "username" }),
+  checkUsernameAvailabilityController
+);
 export { router as profileModule };

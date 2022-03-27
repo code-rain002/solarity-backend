@@ -1,5 +1,6 @@
 import { throwError } from "../../helpers";
 import UserModel from "../User/model";
+import { Types } from "mongoose";
 
 const VALIDATE_TWITTER = false;
 
@@ -23,16 +24,32 @@ export const validateTwitterUsername = async (req, username) => {
   return twitterData;
 };
 
+const PROFILE_DATA_UNSET = {
+  following: 0,
+  createdAt: 0,
+  updatedAt: 0,
+  nonce: 0,
+  profileImage: 0,
+};
+
+const PROFILE_DATA_ADD_FIELDS = {
+  profileImageLink: "$profileImage.link",
+};
+
 export const getProfileData = async (req) => {
   const { userId } = req.session;
-  const user = await UserModel.findById(userId, {
-    followerCount: 0,
-    createdAt: 0,
-    updatedAt: 0,
-    following: 0,
-    __v: 0,
-  });
-  return user;
+  const user = await UserModel.aggregate([
+    {
+      $match: { _id: new Types.ObjectId(userId) },
+    },
+    {
+      $addFields: PROFILE_DATA_ADD_FIELDS,
+    },
+    {
+      $unset: Object.keys(PROFILE_DATA_UNSET),
+    },
+  ]);
+  return user[0];
 };
 
 export const isProfileVisible = (profile) => {

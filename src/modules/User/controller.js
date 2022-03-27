@@ -2,15 +2,21 @@ import { errorResponse, successResponse, throwError } from "../../helpers";
 import UserModel from "./model";
 import { Types } from "mongoose";
 
-const userDataFormat = {
-  followers: 0,
+const USER_DATA_UNSET = {
   following: 0,
   createdAt: 0,
   updatedAt: 0,
   nonce: 0,
+  profileImage: 0,
+  stepsCompleted: 0,
+  visible: true,
 };
 
-// OK
+const USER_DATA_ADD_FIELDS = {
+  profileImageLink: "$profileImage.link",
+};
+
+// NOT OK!!! ADD AGGREGATE HERE!!!!!!!!!!
 export const getUsersController = async (req, res) => {
   try {
     const {
@@ -46,9 +52,13 @@ export const getUserController = async (req, res) => {
       {
         $match: { username },
       },
-      { $unset: Object.keys(userDataFormat) },
+      {
+        $addFields: USER_DATA_ADD_FIELDS,
+      },
+      { $unset: Object.keys(USER_DATA_UNSET) },
     ]);
     if (user.length == 0) throwError("No user with the username exists");
+    console.log(user);
     return successResponse({ res, response: { user: user[0] } });
   } catch (err) {
     return errorResponse({ res, err });

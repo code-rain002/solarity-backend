@@ -34,6 +34,9 @@ const PROFILE_DATA_UNSET = {
 
 const PROFILE_DATA_ADD_FIELDS = {
   profileImageLink: "$profileImage.link",
+  twitterUsername: "$externalLinks.twitter.username",
+  githubUsername: "$externalLinks.github.username",
+  discordHandle: "$externalLinks.discord.handle",
 };
 
 export const getProfileData = async (req) => {

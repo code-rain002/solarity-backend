@@ -14,6 +14,9 @@ const USER_DATA_UNSET = {
 
 const USER_DATA_ADD_FIELDS = {
   profileImageLink: "$profileImage.link",
+  twitterUsername: "$externalLinks.twitter.username",
+  githubUsername: "$externalLinks.github.username",
+  discordHandle: "$externalLinks.discord.handle",
 };
 
 // NOT OK!!! ADD AGGREGATE HERE!!!!!!!!!!

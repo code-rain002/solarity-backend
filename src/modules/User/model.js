@@ -19,30 +19,29 @@ const userSchema = new Schema(
       sparse: true,
     },
     bio: { type: String, required: false, trim: true },
-    twitterUsername: {
-      type: String,
-      required: false,
-      lowercase: true,
-      trim: true,
-      unique: true,
-      sparse: true,
-    },
-    twitterId: { type: Number, required: false, unique: true, sparse: true },
-    githubUsername: {
-      type: String,
-      required: false,
-      lowercase: true,
-      trim: true,
-      unique: true,
-      sparse: true,
-    },
-    discordHandle: {
-      type: String,
-      required: false,
-      lowercase: true,
-      trim: true,
-      unique: true,
-      sparse: true,
+    externalLinks: {
+      twitter: {
+        id: String,
+        username: String,
+        verified: {
+          type: Boolean,
+          default: false,
+        },
+      },
+      github: {
+        username: String,
+        verified: {
+          type: Boolean,
+          default: false,
+        },
+      },
+      discord: {
+        handle: String,
+        verified: {
+          type: Boolean,
+          default: false,
+        },
+      },
     },
     profileImage: {
       link: { type: String, required: false, trim: true },

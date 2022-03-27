@@ -46,11 +46,6 @@ export const getUserController = async (req, res) => {
       {
         $match: { username },
       },
-      {
-        $addFields: {
-          followerCount: { $size: "$followers" },
-        },
-      },
       { $unset: Object.keys(userDataFormat) },
     ]);
     if (user.length == 0) throwError("No user with the username exists");

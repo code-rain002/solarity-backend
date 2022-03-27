@@ -8,7 +8,7 @@ import {
   updateProfilePicController,
   updateProfileController,
   updatePublicAddressController,
-  claimProfitDaoController,
+  claimDaosController,
 } from "./controller";
 import {
   updatePublicAddressSchema,
@@ -36,15 +36,19 @@ router.post(
   updatePublicAddressController
 );
 
-// ----
-
 router.post(
   "/setup/info",
   validateSchema(setupProfileInfoSchema),
   updateProfileController
 );
 
-router.post("/claimDao", claimProfitDaoController);
+router.post("/setup/claimDaos", claimDaosController);
+
+router.post(
+  "/setup/setProfilePic",
+  validateSchema(profilePicSchema),
+  updateProfilePicController
+);
 
 // OK
 router.patch("/", validateSchema(updateProfileSchema), updateProfileController);

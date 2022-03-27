@@ -44,10 +44,9 @@ const userSchema = new Schema(
       unique: true,
       sparse: true,
     },
-    profileImageLink: {
-      type: String,
-      required: false,
-      trim: true,
+    profileImage: {
+      link: { type: String, required: false, trim: true },
+      address: { type: String, required: false, trim: true },
     },
     followerCount: { type: Number, required: false, default: 0 },
     following: {

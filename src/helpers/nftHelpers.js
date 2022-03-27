@@ -56,3 +56,13 @@ export const saveOwnedNfts = async (publicAddress) => {
     throw error;
   }
 };
+
+export const checkIfOwnsNft = async (publicAddress) => {
+  const connection = new Connection(process.env.SOLANA_RPC_ENDPOINT);
+  const nfts = await getParsedNftAccountsByOwner({
+    publicAddress,
+    connection,
+    serialization: true,
+  });
+  return Boolean(nfts.length);
+};

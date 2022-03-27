@@ -15,6 +15,8 @@ import {
 } from "@nfteyez/sol-rayz";
 import axios from "axios";
 import { clusterApiUrl, Connection } from "@solana/web3.js";
+import { checkIfOwnsNft } from "../../helpers/nftHelpers";
+import { isProfileVisible } from "./helpers";
 
 // OK
 export const getProfileController = async (req, res) => {
@@ -37,6 +39,7 @@ export const updateProfileController = async (req, res) => {
       session: { userId },
       body,
     } = req;
+
     const user = await UserModel.findById(userId);
     const updateObject = {};
     const checkIfExists = async (key) => {
@@ -128,53 +131,30 @@ export const updateProfileController = async (req, res) => {
   }
 };
 
-export const claimProfitDaoController = async (req, res) => {
+export const claimDaosController = async (req, res) => {
   try {
     const {
       session: { userId },
     } = req;
-    await UserModel.updateOne({ _id: userId }, { daoClaimed: true });
-    const profile = await getProfileData(req);
+    let profile = await req.profile();
+    // steps of claiming will come here, when ready
+    const ownsNft = await checkIfOwnsNft(profile.publicAddress);
+
+    const updateObject = {
+      stepsCompleted: {
+        ...profile.stepsCompleted,
+        daoClaimed: true,
+        profilePicUpdated: ownsNft
+          ? profile.stepsCompleted.profilePicUpdated || false
+          : true,
+      },
+    };
+    const visible = isProfileVisible(updateObject);
+    profile = { ...profile._doc, ...updateObject, visible };
+    await UserModel.updateOne({ _id: userId }, { ...updateObject, visible });
     return successResponse({ res, response: { profile } });
   } catch (err) {
     return errorResponse({ res, err });
-  }
-};
-
-// OK
-export const updatePasswordController = async (req, res) => {
-  try {
-    const {
-      body: { newPassword, currentPassword },
-      session: { userId },
-    } = req;
-    const user = await UserModel.findById(userId);
-    const { password } = user;
-    if (password != md5(currentPassword)) {
-      throwError("The provided current password is invalid");
-    }
-    const [error, errorMessage] = validatePassword(password);
-    if (error) throwError(errorMessage);
-    await UserModel.updateOne({ _id: userId }, { password: md5(newPassword) });
-    return successResponse({ res });
-  } catch (err) {
-    return errorResponse({ res, err });
-  }
-};
-
-// OK
-export const updateProfileImageController = async (req, res) => {
-  try {
-    const profileImageLink = req.file.location;
-    const { userId } = req.session;
-    await UserModel.updateOne({ _id: userId }, { profileImageLink });
-    return successResponse({ res, response: { profileImageLink } });
-  } catch (err) {
-    return errorResponse({
-      res,
-      err,
-      message: "Image was not uploaded",
-    });
   }
 };
 
@@ -212,22 +192,42 @@ export const updateProfilePicController = async (req, res) => {
       body: { mint },
       session: { userId },
     } = req;
+    // check if the user is the owner of the nft
+    // const {
+    //   account: { owner: nftOwnerAddress },
+    // } = await getParsedAccountByMint({
+    //   mintAddress: mint,
+    //   connection: req.solanaConnection,
+    // });
+    const profile = await req.profile();
 
-    const ownerAddress = await getParsedAccountByMint({
-      mintAddress: mint,
-      connection: req.solanaConnection,
-    });
-
-    // confirm owner
+    // if (profile.publicAddress !== nftOwnerAddress) {
+    //   throwError("The NFT is not owned by you");
+    // }
 
     const { data: nftDetails } = await axios.get(
       `https://api-mainnet.magiceden.dev/v2/tokens/${mint}`
     );
+
+    const profileImageUpdates = {
+      link: nftDetails.image,
+      address: mint,
+    };
+
+    profile.profileImage = profileImageUpdates;
+    profile.stepsCompleted.profilePicUpdated = true;
+    const visible = isProfileVisible(profile);
+    profile.visible = visible;
+
     await UserModel.updateOne(
       { _id: userId },
-      { profileImageLink: nftDetails.image }
+      {
+        profileImage: profile.profileImage,
+        stepsCompleted: profile.stepsCompleted,
+        visible,
+      }
     );
-    const profile = await getProfileData(req);
+
     return successResponse({ res, response: { profile } });
   } catch (err) {
     return errorResponse({ res, err });

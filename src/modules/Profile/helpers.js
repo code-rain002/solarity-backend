@@ -39,8 +39,5 @@ export const isProfileVisible = (profile) => {
   const {
     stepsCompleted: { infoAdded, daoClaimed, profilePicUpdated },
   } = profile;
-  console.log("infoAdded: ", infoAdded);
-  console.log("daoClaimed: ", daoClaimed);
-  console.log("profilePicUpdated: ", profilePicUpdated);
   return infoAdded && daoClaimed && profilePicUpdated;
 };

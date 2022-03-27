@@ -213,7 +213,6 @@ export const updateProfilePicController = async (req, res) => {
       link: nftDetails.image,
       address: mint,
     };
-
     profile.profileImage = profileImageUpdates;
     profile.stepsCompleted.profilePicUpdated = true;
     const visible = isProfileVisible(profile);
@@ -222,7 +221,7 @@ export const updateProfilePicController = async (req, res) => {
     await UserModel.updateOne(
       { _id: userId },
       {
-        profileImage: profile.profileImage,
+        profileImage: profileImageUpdates,
         stepsCompleted: profile.stepsCompleted,
         visible,
       }

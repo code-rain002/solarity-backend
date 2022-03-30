@@ -34,6 +34,7 @@ export const updateProfilePicController = async (req, res) => {
     profile.profileImage = profileImageUpdates;
     profile.stepsCompleted.profilePicUpdated = true;
     profile.profileImageLink = nftDetails.image;
+    profile.profileImageAddress = nftDetails.mint;
     const visible = isProfileVisible(profile);
     profile.visible = visible;
     await UserModel.updateOne(

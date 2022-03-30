@@ -34,6 +34,7 @@ const PROFILE_DATA_UNSET = {
 
 const PROFILE_DATA_ADD_FIELDS = {
   profileImageLink: "$profileImage.link",
+  profileImageAddress: "$profileImage.address",
   twitterUsername: "$externalLinks.twitter.username",
   githubUsername: "$externalLinks.github.username",
   discordHandle: "$externalLinks.discord.handle",

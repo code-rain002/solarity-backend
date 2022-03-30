@@ -134,6 +134,7 @@ class Server {
         "http://localhost:3000",
         "http://localhost:3002",
         "https://solarity-web-git-master-hassan-sk.vercel.app",
+        "https://solarityvr.github.io/",
         "https://127.0.0.1:5501",
       ],
       //      preflightContinue: true,

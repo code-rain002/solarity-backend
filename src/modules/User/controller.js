@@ -14,6 +14,7 @@ const USER_DATA_UNSET = {
 
 const USER_DATA_ADD_FIELDS = {
   profileImageLink: "$profileImage.link",
+  profileImageAddress: "$profileImage.address",
   twitterUsername: "$externalLinks.twitter.username",
   githubUsername: "$externalLinks.github.username",
   discordHandle: "$externalLinks.discord.handle",
@@ -125,7 +126,7 @@ export const followUserController = async (req, res) => {
     await UserModel.updateOne(
       { username },
       {
-        $push: { followers: userId },
+        $inc: { followerCount: 1 },
       }
     );
     await UserModel.updateOne(
@@ -171,7 +172,7 @@ export const unfollowUserController = async (req, res) => {
     await UserModel.updateOne(
       { username },
       {
-        $pull: { followers: userId },
+        $inc: { followerCount: -1 },
       }
     );
     await UserModel.updateOne(

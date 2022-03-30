@@ -1,62 +1,80 @@
-import express from "express";
-import { saveOwnedNfts } from "../../helpers/nftHelpers";
-import { validateSchema } from "../../middlewares";
-import { upload } from "../../middlewares/multerMiddlewares";
-import UserModel from "../User/model";
+import { RouteModule } from "../RouteModuleClass";
 import {
   getProfileController,
-  updateProfilePicController,
   updateProfileController,
   updatePublicAddressController,
   claimDaosController,
+  updateProfilePicController,
   checkUsernameAvailabilityController,
-} from "./controller";
+  selectNftsForRoomController,
+} from "./controllers";
 import {
   updatePublicAddressSchema,
   updateProfileSchema,
   setupProfileInfoSchema,
   profilePicSchema,
+  selectNftsForRoomSchema,
 } from "./schema";
 
-const router = express.Router();
+class ProfileModule extends RouteModule {
+  privateRoutes() {
+    // get profile details
+    this.router.get("/", getProfileController);
 
-// CHECKED
-router.get("/", getProfileController);
+    // update profile
+    this.router.patch(
+      "/",
+      this.validateSchema(updateProfileSchema),
+      updateProfileController
+    );
 
-// CHECKED
-router.post(
-  "/profilePic",
-  validateSchema(profilePicSchema),
-  updateProfilePicController
-);
+    // update profile pic using the nft
+    this.router.post(
+      "/profilePic",
+      this.validateSchema(profilePicSchema),
+      updateProfilePicController
+    );
 
-// OK
-router.post(
-  "/publicAddress",
-  validateSchema(updatePublicAddressSchema),
-  updatePublicAddressController
-);
+    // update the public address of the profile
+    this.router.post(
+      "/publicAddress",
+      this.validateSchema(updatePublicAddressSchema),
+      updatePublicAddressController
+    );
 
-router.post(
-  "/setup/info",
-  validateSchema(setupProfileInfoSchema),
-  updateProfileController
-);
+    // SETUP ROUTE
+    // update the data for the profile
+    this.router.post(
+      "/setup/info",
+      this.validateSchema(setupProfileInfoSchema),
+      updateProfileController
+    );
 
-router.post("/setup/claimDaos", claimDaosController);
+    // SETUP ROUTE
+    // claim the DAOs for the profile
+    this.router.post("/setup/claimDaos", claimDaosController);
 
-router.post(
-  "/setup/setProfilePic",
-  validateSchema(profilePicSchema),
-  updateProfilePicController
-);
+    // set the profile pic for the profile
+    this.router.post(
+      "/setup/setProfilePic",
+      this.validateSchema(profilePicSchema),
+      updateProfilePicController
+    );
 
-// OK
-router.patch("/", validateSchema(updateProfileSchema), updateProfileController);
+    // get the username availability
+    this.router.get(
+      "/usernameAvailability/:username",
+      this.validateSchema(null, { idParamCheck: true, idName: "username" }),
+      checkUsernameAvailabilityController
+    );
 
-router.get(
-  "/usernameAvailability/:username",
-  validateSchema(null, { idParamCheck: true, idName: "username" }),
-  checkUsernameAvailabilityController
-);
-export { router as profileModule };
+    // select nfts for display in a room
+    this.router.post(
+      "/selectNftsForRoom",
+      this.validateSchema(selectNftsForRoomSchema),
+      selectNftsForRoomController
+    );
+  }
+}
+
+export const profileModule = new ProfileModule();

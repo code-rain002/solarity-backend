@@ -8,45 +8,38 @@ import {
   unfollowUserController,
 } from "./controller";
 import { getUsersSchema } from "./schema";
+import { RouteModule } from "../RouteModuleClass";
 
-const router = express.Router();
+class UserModule extends RouteModule {
+  publicRoutes() {
+    this.router.get(
+      "/",
+      this.validateSchema(getUsersSchema, { includeQuery: true }),
+      getUsersController
+    );
+    this.router.get(
+      "/:username",
+      this.validateSchema(null, { idParamCheck: true, idName: "username" }),
+      getUserController
+    );
+  }
+  privateRoutes() {
+    this.router.get(
+      "/:username/follow",
+      this.validateSchema(null, { idParamCheck: true, idName: "username" }),
+      getUserFollowingStatusController
+    );
+    this.router.post(
+      "/:username/follow",
+      this.validateSchema(null, { idParamCheck: true, idName: "username" }),
+      followUserController
+    );
+    this.router.post(
+      "/:username/unfollow",
+      this.validateSchema(null, { idParamCheck: true, idName: "username" }),
+      unfollowUserController
+    );
+  }
+}
 
-// OK
-router.get(
-  "/",
-  validateSchema(getUsersSchema, { includeQuery: true }),
-  getUsersController
-);
-
-// get user
-router.get(
-  "/:username",
-  validateSchema(null, { idParamCheck: true, idName: "username" }),
-  getUserController
-);
-
-// check if following user
-router.get(
-  "/:username/follow",
-  authenticate,
-  validateSchema(null, { idParamCheck: true, idName: "username" }),
-  getUserFollowingStatusController
-);
-
-// follow user
-router.post(
-  "/:username/follow",
-  authenticate,
-  validateSchema(null, { idParamCheck: true, idName: "username" }),
-  followUserController
-);
-
-// unfollow user
-router.post(
-  "/:username/unfollow",
-  authenticate,
-  validateSchema(null, { idParamCheck: true, idName: "username" }),
-  unfollowUserController
-);
-
-export { router as userModule };
+export const userModule = new UserModule();

@@ -46,7 +46,7 @@ export const updateProfileSchema = yup.object({
       .string()
       .trim()
       .typeError("Bio is invalid")
-      .min(20, "Bio is too short")
+      .min(10, "Bio is too short")
       .max(500, "Bio is too long")
       .nullable(),
     email: yup.string().email().trim().typeError("Email is invalid").nullable(),
@@ -110,5 +110,32 @@ export const profilePicSchema = yup.object({
       .string()
       .typeError("Nft mint address must be a string")
       .required("NFT mint address is required"),
+  }),
+});
+
+export const selectNftsForRoomSchema = yup.object({
+  body: yup.object({
+    mints: yup
+      .array()
+      .of(
+        yup
+          .object({
+            mint: yup
+              .string()
+              .typeError("Nft mint address must be a string")
+              .required("NFT mint address is required"),
+            location: yup
+              .string()
+              .typeError("Location must be a string")
+              .required("Location is required"),
+          })
+          .typeError(
+            "Nft mint address must be an object containing the location and address"
+          )
+          .nullable(false)
+      )
+      .max(7, "You cannot provide more than 7 Nfts to display")
+      .typeError("The mint addresses must be an array of addresses")
+      .required("The array of mint addresses is required"),
   }),
 });

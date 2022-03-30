@@ -61,7 +61,6 @@ export const getUserController = async (req, res) => {
       { $unset: Object.keys(USER_DATA_UNSET) },
     ]);
     if (user.length == 0) throwError("No user with the username exists");
-    console.log(user);
     return successResponse({ res, response: { user: user[0] } });
   } catch (err) {
     return errorResponse({ res, err });
@@ -74,8 +73,27 @@ export const getUserFollowingStatusController = async (req, res) => {
       params: { username },
       session: { userId },
     } = req;
-    // const following = await UserModel.findById(userId, {})
-    return successResponse({ res, response: { following: true } });
+    let following = false;
+    const user = await UserModel.findOne({ username }, { id: 1 });
+    const result = await UserModel.aggregate([
+      {
+        $match: { _id: new Types.ObjectId(userId) },
+      },
+      {
+        $set: {
+          following: {
+            $in: [new Types.ObjectId(user._id), "$following.users"],
+          },
+        },
+      },
+      {
+        $project: { following: 1 },
+      },
+    ]);
+    if (result && result.length > 0) {
+      following = result[0].following;
+    }
+    return successResponse({ res, response: { following } });
   } catch (err) {
     return errorResponse({ res, err });
   }

@@ -14,7 +14,6 @@ export const claimDaosController = async (req, res) => {
     let profile = await req.profile();
     // steps of claiming will come here, when ready
     const ownsNft = await checkIfOwnsNft(profile.publicAddress);
-
     const updateObject = {
       stepsCompleted: {
         ...profile.stepsCompleted,
@@ -25,7 +24,7 @@ export const claimDaosController = async (req, res) => {
       },
     };
     const visible = isProfileVisible(updateObject);
-    profile = { ...profile._doc, ...updateObject, visible };
+    profile = { ...profile, ...updateObject, visible };
     await UserModel.updateOne({ _id: userId }, { ...updateObject, visible });
     return successResponse({ res, response: { profile } });
   } catch (err) {

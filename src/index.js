@@ -71,7 +71,7 @@ class Server {
   }
   initSessions() {
     const opts = {};
-    if (process.env.PRODUCTION == true) {
+    if (process.env.PRODUCTION == "true") {
       opts.cookie = {
         httpOnly: true,
         secure: true,

@@ -9,6 +9,7 @@ import {
 } from "./controller";
 import { getUsersSchema } from "./schema";
 import { RouteModule } from "../RouteModuleClass";
+import { getUserFollowersController } from "./controllers";
 
 class UserModule extends RouteModule {
   publicRoutes() {
@@ -21,6 +22,11 @@ class UserModule extends RouteModule {
       "/:username",
       this.validateSchema(null, { idParamCheck: true, idName: "username" }),
       getUserController
+    );
+    this.router.get(
+      "/:username/followers",
+      this.validateSchema(null, { idParamCheck: true, idName: "username" }),
+      getUserFollowersController
     );
   }
   privateRoutes() {

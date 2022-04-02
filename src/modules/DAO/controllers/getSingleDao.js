@@ -43,7 +43,7 @@ export const getSingleDaoController = async (req, res) => {
             },
           }
         );
-        dao.floorPrice;
+        dao.floorPrice = newFloorPrice;
       } catch (err) {}
     }
     delete dao.floorPriceLastUpdate;

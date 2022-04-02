@@ -47,7 +47,15 @@ const daoSchema = new Schema(
       default: false,
     },
     supply: { type: Number, default: 0 },
-    floorPrice: { type: Number, default: 0 },
+    floorPrice: {
+      value: {
+        type: Number,
+        default: 0,
+      },
+      lastUpdate: {
+        type: Date,
+      },
+    },
     token: { type: String },
     stackingRewards: { type: Number, default: 0 },
     nftCollection: { type: [String], default: [] },

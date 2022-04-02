@@ -54,6 +54,19 @@ const userSchema = new Schema(
       coins: { type: [mongoose.Types.ObjectId], required: false },
       nfts: { type: [mongoose.Types.ObjectId], required: false },
     },
+    rooms: [
+      {
+        roomId: { type: mongoose.Types.ObjectId, required: false },
+        nftCount: {type: Number, required: false, default: 0},
+        nftStates: [
+          {
+            no: { type: Number },
+            nftAddress: { type: String, trim: true},
+            link: { type: String, required: false },
+          }
+        ]
+      }
+    ],
     nonce: String,
     lastAnalysisTime: Date,
     visible: {

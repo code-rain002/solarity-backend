@@ -138,7 +138,6 @@ class Server {
         "https://127.0.0.1:5501",
         "http://127.0.0.1:5500",
       ],
-      //      preflightContinue: true,
       methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
       credentials: true, //access-control-allow-credentials:true
       optionSuccessStatus: 200,

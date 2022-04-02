@@ -1,7 +1,7 @@
 import { errorResponse, successResponse, throwError } from "../../../helpers";
 import { getCollectionStats } from "../../../helpers/magicedenHelpers";
 import DaoModel from "../model";
-import Web3, { LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 
 export const getSingleDaoController = async (req, res) => {
   try {
@@ -15,6 +15,7 @@ export const getSingleDaoController = async (req, res) => {
           floorPrice: "$floorPrice.value",
           floorPriceLastUpdate: "$floorPrice.lastUpdate",
           profileImageLink: "$profileImage.link",
+          image: "$profileImage.link",
           twitterUsername: "$externalLinks.twitter.username",
           githubUsername: "$externalLinks.github.username",
           discordHandle: "$externalLinks.discord.handle",

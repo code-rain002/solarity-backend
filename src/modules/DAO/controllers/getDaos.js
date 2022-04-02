@@ -1,20 +1,31 @@
-import { errorResponse, successResponse } from "../../../helpers";
+import {
+  errorResponse,
+  getCollectionsOwned,
+  successResponse,
+} from "../../../helpers";
 import DaoModel from "../model";
 
 export const getDaosController = async (req, res) => {
   try {
     let { member, term } = req.query;
     const findOptions = {};
-    if (term) {
-      const searchRegex = new RegExp(`.*${term}.*`, "i");
-      findOptions["$or"] = [
-        {
-          symbol: { $regex: searchRegex },
-        },
-        {
-          name: { $regex: searchRegex },
-        },
-      ];
+    if (member) {
+      const ownedCollections = await getCollectionsOwned(
+        "31W6QazPT8dSXvWLCg8yPktLga5nSg6cXysbwnuSQPPu"
+      );
+      console.log(ownedCollections);
+    } else {
+      if (term) {
+        const searchRegex = new RegExp(`.*${term}.*`, "i");
+        findOptions["$or"] = [
+          {
+            symbol: { $regex: searchRegex },
+          },
+          {
+            name: { $regex: searchRegex },
+          },
+        ];
+      }
     }
     const daos = await DaoModel.aggregate([
       {

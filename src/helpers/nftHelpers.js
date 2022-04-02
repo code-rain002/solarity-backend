@@ -66,3 +66,14 @@ export const checkIfOwnsNft = async (publicAddress) => {
   });
   return Boolean(nfts.length);
 };
+
+export const getCollectionsOwned = async (publicAddress) => {
+  const connection = new Connection(process.env.SOLANA_RPC_ENDPOINT);
+  const nfts = await getParsedNftAccountsByOwner({
+    publicAddress,
+    connection,
+    serialization: true,
+  });
+  console.log(nfts);
+  return nfts;
+};

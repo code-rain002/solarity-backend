@@ -115,27 +115,21 @@ export const profilePicSchema = yup.object({
 
 export const selectNftsForRoomSchema = yup.object({
   body: yup.object({
-    mints: yup
-      .array()
-      .of(
-        yup
-          .object({
-            mint: yup
-              .string()
-              .typeError("Nft mint address must be a string")
-              .required("NFT mint address is required"),
-            location: yup
-              .string()
-              .typeError("Location must be a string")
-              .required("Location is required"),
-          })
-          .typeError(
-            "Nft mint address must be an object containing the location and address"
-          )
-          .nullable(false)
-      )
-      .max(7, "You cannot provide more than 7 Nfts to display")
-      .typeError("The mint addresses must be an array of addresses")
-      .required("The array of mint addresses is required"),
+    roomId: yup
+      .string()
+      .typeError("Room Id must be a string")
+      .required("Room Id is required"),
+    picNo: yup
+      .string()
+      .typeError("Picture no must be a string")
+      .required("Picture no is required"),
+    mintAddress: yup
+      .string()
+      .typeError("Nft mint address must be a string")
+      .required("NFT mint address is required"),
+    link: yup
+      .string()
+      .typeError("Location must be a string")
+      .required("Location is required"),
   }),
 });

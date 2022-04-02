@@ -49,7 +49,7 @@ const daoSchema = new Schema(
     supply: { type: Number, default: 0 },
     floorPrice: {
       value: {
-        type: Number,
+        type: mongoose.Schema.Types.Decimal128,
         default: 0,
       },
       lastUpdate: {

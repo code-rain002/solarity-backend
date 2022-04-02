@@ -25,7 +25,6 @@ export const getSingleDaoController = async (req, res) => {
     if (daoFetch.length == 0)
       throwError("No DAO exists with the matching symbol");
     const dao = daoFetch[0];
-
     if (
       !dao.floorPrice ||
       !dao.floorPriceLastUpdate ||
@@ -39,7 +38,7 @@ export const getSingleDaoController = async (req, res) => {
           { symbol },
           {
             floorPrice: {
-              value: newFloorPrice,
+              value: parseFloat(newFloorPrice),
               lastUpdate: new Date(),
             },
           }
@@ -48,6 +47,7 @@ export const getSingleDaoController = async (req, res) => {
       } catch (err) {}
     }
     delete dao.floorPriceLastUpdate;
+    dao.floorPrice = `${dao.floorPrice} SOL`;
     return successResponse({ res, response: { dao } });
   } catch (err) {
     return errorResponse({ res, err });

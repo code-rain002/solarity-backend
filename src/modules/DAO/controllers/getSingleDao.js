@@ -3,7 +3,6 @@ import DaoModel from "../model";
 
 export const getSingleDaoController = async (req, res) => {
   try {
-    console.log(req);
     const { symbol } = req.params;
     const dao = await DaoModel.aggregate([
       {

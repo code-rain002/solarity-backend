@@ -108,6 +108,7 @@ class Server {
     console.log("> Starting public routes");
     this.express.use("/api/test", testModule);
     this.express.use("/api/auth", authModule);
+    this.express.use("/api/daos", daoModule);
   }
   initPrivateRoutes() {
     // put here the private routes
@@ -117,7 +118,6 @@ class Server {
     this.express.use("/api/collections", nftCollectionModule);
     this.express.use("/api/tweets", tweetModule);
     this.express.use("/api/coins", coinModule);
-    this.express.use("/api/dao", daoModule);
     this.express.use("/api/users", userModule);
     this.express.use("/api/*", (req, res, next) => {
       const err = new Error("Not Found");
@@ -136,6 +136,7 @@ class Server {
         "https://solarity-web-git-master-hassan-sk.vercel.app",
         "https://solarityvr.github.io/",
         "https://127.0.0.1:5501",
+        "http://127.0.0.1:5500/",
       ],
       //      preflightContinue: true,
       methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
@@ -178,7 +179,6 @@ class Server {
       if (global.rollbar) {
         global.rollbar.error(err);
       }
-      console.log(err);
       return res.send("ERROR: NOT FOUND");
     });
   }

@@ -12,7 +12,7 @@ export const errorResponse = ({
 }) => {
   if (err) {
     if (global.rollbar) global.rollbar.error(err);
-    if (process.env.NODE_ENV !== "production") console.log(err);
+    // if (process.env.NODE_ENV !== "production") console.log(err);
     switch (err.name) {
       case "ValidationError":
         message = err.errors[0];

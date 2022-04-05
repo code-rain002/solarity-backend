@@ -7,13 +7,18 @@ import DaoModel from "../model";
 
 export const getDaosController = async (req, res) => {
   try {
-    let { member, term } = req.query;
+    let {
+      session: { userId },
+      query: { member, term },
+    } = req;
     const findOptions = {};
-    if (member) {
-      const ownedCollections = await getCollectionsOwned(
-        "31W6QazPT8dSXvWLCg8yPktLga5nSg6cXysbwnuSQPPu"
-      );
-      console.log(ownedCollections);
+    if (member && userId) {
+      const user = await req.profile();
+      const ownedCollections = await getCollectionsOwned(user.publicAddress);
+      const names = ownedCollections.map(({ name }) => name);
+      findOptions["collectionInfo.name"] = {
+        $in: names,
+      };
     } else {
       if (term) {
         const searchRegex = new RegExp(`.*${term}.*`, "i");

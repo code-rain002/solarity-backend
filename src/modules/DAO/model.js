@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { string } from "yup";
 
 const Schema = mongoose.Schema;
 const daoSchema = new Schema(
@@ -58,7 +59,8 @@ const daoSchema = new Schema(
     },
     token: { type: String },
     stackingRewards: { type: Number, default: 0 },
-    nftCollection: { type: [String], default: [] },
+    nfts: { type: [String], default: [] },
+    collectionInfo: { name: { type: String }, family: { type: String } },
   },
   {
     autoIndex: true,

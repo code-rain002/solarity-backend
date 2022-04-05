@@ -62,6 +62,7 @@ export const checkIfOwnsNft = async (publicAddress) => {
   const nfts = await getParsedNftAccountsByOwner({
     publicAddress,
     connection,
+    sanitize: false,
     serialization: true,
   });
   return Boolean(nfts.length);
@@ -74,6 +75,14 @@ export const getCollectionsOwned = async (publicAddress) => {
     connection,
     serialization: true,
   });
-  console.log(nfts);
-  return nfts;
+  const fetches = nfts.map(
+    async ({ mint, data: { uri } }) =>
+      await axios.get(`https://api.all.art/v1/solana/${mint}`)
+  );
+  const rawData = await Promise.all(fetches);
+  const data = rawData.map(({ data }) => data).filter((data) => Boolean(data));
+  const collections = data.map(({ Properties: { collection } }) => collection);
+  return collections.filter(
+    (a, i) => collections.findIndex((s) => a.name === s.name) === i
+  );
 };

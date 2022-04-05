@@ -197,6 +197,7 @@ class Server {
     // twitter api init
     const twitterClient = new TwitterApi(process.env.TWITTER_BEARER_TOKEN);
     const twitterApi = twitterClient.readOnly;
+    // twitterApi.v2.userTimeline()
     this.express.set("twitterApi", twitterApi);
     // rollbar api
     let rollbar = new Rollbar({

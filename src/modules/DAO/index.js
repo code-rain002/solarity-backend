@@ -4,6 +4,7 @@ import {
   followDaoController,
   getDaoFollowingStatusController,
   getDaosController,
+  getMemberDaos,
   getSingleDaoController,
   unfollowDaoController,
 } from "./controllers";
@@ -12,29 +13,17 @@ import { getDaosSchema } from "./schema";
 
 class DaoModule extends RouteModule {
   publicRoutes() {
-    this.router.get("/d", async (req, res) => {
-      try {
-        const dao = await DaoModel.create({
-          symbol: "chicken",
-          name: "Chicken Boys",
-          description:
-            "4,444 Money Boys Building the metaverse. For the best insights and NFT analytic tools visit our platform.",
-          supply: "4444",
-          floorPrice: "20",
-          token: "$MBC",
-          stackingRewards: "130",
-          nftCollection: [],
-        });
-        return successResponse({ res });
-      } catch (err) {
-        return errorResponse({ err, res });
-      }
-    });
+    this.router.get(
+      "/member/:username",
+      this.validateSchema(null, { idParamCheck: true, idName: "username" }),
+      getMemberDaos
+    );
     this.router.get(
       "/",
       this.validateSchema(getDaosSchema, { includeQuery: true }),
       getDaosController
     );
+
     this.router.get(
       "/:symbol",
       this.validateSchema(null, { idParamCheck: true, idName: "symbol" }),

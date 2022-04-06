@@ -85,6 +85,12 @@ export const getCollectionsOwned = async (publicAddress) => {
 
   const collections = data.map(({ Properties: { collection } }) => collection);
   return collections.filter(
-    (a, i) => collections.findIndex((s) => a.name === s.name) === i
+    (a, i) =>
+      collections.findIndex((s) => {
+        if (a.name && s.name) {
+          return a.name === s.name;
+        }
+        return false;
+      }) === i
   );
 };

@@ -75,12 +75,15 @@ export const getCollectionsOwned = async (publicAddress) => {
     connection,
     serialization: true,
   });
+  console.log("nft count: " + nfts.length);
   const fetches = nfts.map(
     async ({ mint, data: { uri } }) =>
       await axios.get(`https://api.all.art/v1/solana/${mint}`)
   );
   const rawData = await Promise.all(fetches);
   const data = rawData.map(({ data }) => data).filter((data) => Boolean(data));
+  console.log("data count: " + data.length);
+
   const collections = data.map(({ Properties: { collection } }) => collection);
   return collections.filter(
     (a, i) => collections.findIndex((s) => a.name === s.name) === i

@@ -124,6 +124,7 @@ class Server {
     console.log("> Starting public routes");
     this.express.use("/api/test", testModule);
     this.express.use("/api/auth", authModule);
+    this.express.use("/api/daos", daoModule);
   }
   initPrivateRoutes() {
     // put here the private routes
@@ -133,7 +134,6 @@ class Server {
     this.express.use("/api/collections", nftCollectionModule);
     this.express.use("/api/tweets", tweetModule);
     this.express.use("/api/coins", coinModule);
-    this.express.use("/api/dao", daoModule);
     this.express.use("/api/users", userModule);
     this.express.use("/api/*", (req, res, next) => {
       const err = new Error("Not Found");
@@ -150,10 +150,10 @@ class Server {
         "http://localhost:3000",
         "http://localhost:3002",
         "https://solarity-web-git-master-hassan-sk.vercel.app",
-        "https://solarityvr.github.io/",
+        "https://solarityvr.github.io",
         "https://127.0.0.1:5501",
+        "http://127.0.0.1:5500",
       ],
-      //      preflightContinue: true,
       methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
       credentials: true, //access-control-allow-credentials:true
       optionSuccessStatus: 200,
@@ -194,7 +194,6 @@ class Server {
       if (global.rollbar) {
         global.rollbar.error(err);
       }
-      console.log(err);
       return res.send("ERROR: NOT FOUND");
     });
   }
@@ -214,6 +213,7 @@ class Server {
     // twitter api init
     const twitterClient = new TwitterApi(process.env.TWITTER_BEARER_TOKEN);
     const twitterApi = twitterClient.readOnly;
+    // twitterApi.v2.userTimeline()
     this.express.set("twitterApi", twitterApi);
     // rollbar api
     let rollbar = new Rollbar({

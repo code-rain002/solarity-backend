@@ -1,17 +1,28 @@
 import { errorResponse, successResponse, throwError } from "../../helpers";
 import UserModel from "../User/model";
+import DaoModel from "../DAO/model";
 import { Types } from "mongoose";
 
 export const getTweets = async (req, res) => {
   try {
     let {
-      query: { maxResults, username, communityId },
+      query: { maxResults, username, symbol },
       session: { userId: loggedInUserId },
     } = req;
     const twitterApi = req.app.get("twitterApi");
-    let twitterId;
-    if (!maxResults) maxResults = 20;
-    if (communityId) {
+    let twitterUsername;
+    if (!maxResults) maxResults = 100;
+    if (symbol) {
+      let dao;
+      try {
+        const findOptions = {};
+        findOptions.symbol = symbol;
+        dao = await DaoModel.findOne(findOptions, { externalLinks: 1 });
+        if (!dao) throw false;
+        twitterUsername = dao.externalLinks.twitter.username;
+      } catch (err) {
+        throwError("No DAO with the provided symbol exists");
+      }
     } else {
       let user;
       try {
@@ -21,21 +32,29 @@ export const getTweets = async (req, res) => {
         } else {
           findOptions["_id"] = new Types.ObjectId(loggedInUserId);
         }
-        user = await UserModel.findOne(findOptions, { twitterId: 1 });
+        user = await UserModel.findOne(findOptions, { externalLinks: 1 });
+        if (!user) throw false;
+        twitterUsername = user.externalLinks.twitter.username;
       } catch (err) {
-        console.log(err);
         throwError("No user with the provided User Id exists");
       }
-      twitterId = user.twitterId;
-      if (!twitterId) {
+      if (!twitterUsername) {
         throwError("No twitter account associated with the profile");
       }
     }
-    const timeline = await twitterApi.v1.userTimeline(twitterId, {
-      max_results: maxResults,
-      exclude: ["replies", "retweets"],
-    });
-    const { _realData: data } = timeline;
+    let data = [];
+    if (twitterUsername) {
+      const {
+        data: { id },
+      } = await twitterApi.v2.userByUsername(twitterUsername);
+      const timeline = await twitterApi.v1.userTimeline(id, {
+        max_results: maxResults,
+        include_rts: true,
+        exclude_replies: true,
+      });
+      const { _realData } = timeline;
+      data = _realData;
+    }
     return successResponse({ res, response: { data } });
   } catch (err) {
     return errorResponse({ res, err });

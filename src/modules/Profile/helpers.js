@@ -17,9 +17,7 @@ export const validateTwitterUsername = async (req, username) => {
       throwError("Unable to verify twitter account ownership");
     }
   }
-  console.log(username);
   const twitterData = await twitterApi.v2.userByUsername(username);
-  console.log(twitterData);
   if (twitterData.errors) throwError("Invalid twitter username");
   return twitterData;
 };

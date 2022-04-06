@@ -22,7 +22,6 @@ router.get(
   validateSchema(null, { idParamCheck: true, idName: "mint" }),
   async (req, res) => {
     try {
-      console.log(req.params);
       const {
         params: { mint },
       } = req;

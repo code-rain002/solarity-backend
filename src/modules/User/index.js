@@ -1,5 +1,3 @@
-import express from "express";
-import { authenticate, validateSchema } from "../../middlewares";
 import {
   followUserController,
   getUserController,

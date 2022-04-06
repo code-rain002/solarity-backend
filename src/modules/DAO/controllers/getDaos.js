@@ -14,10 +14,7 @@ export const getDaosController = async (req, res) => {
     const findOptions = {};
     if (member && userId) {
       const user = await req.profile();
-      const ownedCollections = await getCollectionsOwned(
-        "6BnAzdBGmUdgcRaTaFGBvMAiAgC2cELiU5q12hBYb8YN"
-        // user.publicAddress
-      );
+      const ownedCollections = await getCollectionsOwned(user.publicAddress);
       const names = ownedCollections.map(({ name }) => name);
       findOptions["collectionInfo.name"] = {
         $in: names,

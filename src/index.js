@@ -83,7 +83,6 @@ class Server {
         maxAge: 1000 * 60 * 60 * 48,
       };
     }
-    console.log(opts);
     this.express.use(
       session({
         ...opts,

@@ -81,7 +81,6 @@ export const getCollectionsOwned = async (publicAddress) => {
   );
   const rawData = await Promise.all(fetches);
   const data = rawData.map(({ data }) => data).filter((data) => Boolean(data));
-  console.log(data);
 
   const collections = data.map(({ Properties: { collection } }) => collection);
   return collections.filter(

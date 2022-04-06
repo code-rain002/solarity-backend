@@ -28,7 +28,6 @@ export const getUserFollowersController = async (req, res) => {
         $match: { isFollowing: true },
       },
     ]);
-    console.log(followers);
     return successResponse({ res, response: { followers } });
   } catch (err) {
     return errorResponse({ res, err });

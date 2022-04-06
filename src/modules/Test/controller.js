@@ -23,7 +23,6 @@ export const getTweets = async (req, res) => {
 export const getCollections = async (req, res) => {
   try {
     const profile = await req.profile();
-    console.log(profile);
     const { symbol } = req.params;
     const collection = await NftCollections.findOne({ symbol });
     return successResponse({ res, response: { collection } });

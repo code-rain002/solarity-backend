@@ -8,16 +8,10 @@ import {
   getSingleDaoController,
   unfollowDaoController,
 } from "./controllers";
-import DaoModel from "./model";
 import { getDaosSchema } from "./schema";
 
 class DaoModule extends RouteModule {
   publicRoutes() {
-    this.router.get(
-      "/member/:username",
-      this.validateSchema(null, { idParamCheck: true, idName: "username" }),
-      getMemberDaos
-    );
     this.router.get(
       "/",
       this.validateSchema(getDaosSchema, { includeQuery: true }),

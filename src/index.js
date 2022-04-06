@@ -1,5 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
+import socket from 'socket.io';
 import MongoStore from "connect-mongo";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
@@ -27,18 +28,34 @@ import NodeCache from "node-cache";
 import { testModule } from "./modules/Test";
 import { nftCollectionModule } from "./modules/NFTCollections";
 import { getProfileData } from "./modules/Profile/helpers";
+import { socketService } from './services/socket';
 import { clusterApiUrl, Connection } from "@solana/web3.js";
 
 class Server {
   constructor({ port }) {
     this.express = express();
     this.express.set("port", port);
+    this.server = require('http').createServer(this.express);
+    this.io = require('socket.io')(this.server, {
+      cors: {
+          origin: [
+            "http://localhost:3000",
+            "http://localhost:3002",
+            "https://solarity-web-git-master-hassan-sk.vercel.app",
+            "https://solarityvr.github.io/",
+            "https://127.0.0.1:5501",
+          ],
+          methods: ["GET", "POST"],
+          credentials: true
+      }
+  });
     this.start();
-    return this.express;
+    return this.server;
   }
 
   async start() {
     this.connectDatabase();
+    socketService(this.io);
     this.initSessions();
     this.initCache();
     this.initMiddleware();
@@ -83,7 +100,6 @@ class Server {
         maxAge: 1000 * 60 * 60 * 48,
       };
     }
-    console.log(opts);
     this.express.use(
       session({
         ...opts,

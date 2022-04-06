@@ -14,7 +14,7 @@ export * from "./unfollowDao";
 export const getMemberDaos = async (req, res) => {
   try {
     const { username } = req.params;
-    const user = await UserModel.find({ username });
+    const user = await UserModel.findOne({ username });
     const ownedCollections = await getCollectionsOwned(user.publicAddress);
     return successResponse({ res, response: { ownedCollections } });
   } catch (err) {

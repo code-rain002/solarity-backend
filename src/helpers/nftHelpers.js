@@ -69,6 +69,7 @@ export const checkIfOwnsNft = async (publicAddress) => {
 };
 
 export const getCollectionsOwned = async (publicAddress) => {
+  console.log(publicAddress);
   const connection = new Connection(process.env.SOLANA_RPC_ENDPOINT);
   const nfts = await getParsedNftAccountsByOwner({
     publicAddress,

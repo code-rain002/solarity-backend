@@ -46,7 +46,6 @@ export const socketService = (io) => {
             curRoom = 'room' + roomId;
             if (!rooms[curRoom]) {
                 rooms[curRoom] = {
-                    name: roomId,
                     occupants: {},
                 };
             }

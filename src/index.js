@@ -36,7 +36,6 @@ class Server {
     this.start();
     return this.express;
   }
-
   async start() {
     this.connectDatabase();
     this.initSessions();

@@ -4,7 +4,7 @@ import {
   followDaoController,
   getDaoFollowingStatusController,
   getDaosController,
-  getMemberDaos,
+  getDaoTokenAddressesController,
   getSingleDaoController,
   unfollowDaoController,
 } from "./controllers";
@@ -17,6 +17,8 @@ class DaoModule extends RouteModule {
       this.validateSchema(getDaosSchema, { includeQuery: true }),
       getDaosController
     );
+
+    this.router.get("/tokenAddresses", getDaoTokenAddressesController);
 
     this.router.get(
       "/:symbol",

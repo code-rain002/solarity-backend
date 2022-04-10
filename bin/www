@@ -13,12 +13,7 @@ var http = require("http");
  */
 
 var port = normalizePort(process.env.PORT || "3004");
-const app = new Server({ port });
-
-/*
- * Create HTTP server.
- */
-var server = http.createServer(app);
+const server = new Server({ port });
 
 /**
  * Listen on provided port, on all network interfaces.

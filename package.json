@@ -44,6 +44,7 @@
     "nodemailer": "^6.7.2",
     "password-validator": "^5.2.1",
     "rollbar": "^2.24.0",
+    "socket.io": "^4.4.1",
     "theblockchainapi": "^1.0.936",
     "tweetnacl": "^1.0.3",
     "twitter-api-v2": "^1.11.0",

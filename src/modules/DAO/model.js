@@ -58,6 +58,7 @@ const daoSchema = new Schema(
       },
     },
     token: { type: String },
+    tokenAddress: { type: String },
     stackingRewards: { type: Number, default: 0 },
     nfts: { type: [String], default: [] },
     collectionInfo: { name: { type: String }, family: { type: String } },

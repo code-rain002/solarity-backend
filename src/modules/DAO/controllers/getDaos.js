@@ -19,7 +19,6 @@ export const getDaosController = async (req, res) => {
       findOptions["collectionInfo.name"] = {
         $in: names,
       };
-      console.log(findOptions);
     } else {
       if (term) {
         const searchRegex = new RegExp(`.*${term}.*`, "i");

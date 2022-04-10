@@ -52,7 +52,6 @@ class Server {
     this.start();
     return this.server;
   }
-
   async start() {
     this.connectDatabase();
     socketService(this.io);

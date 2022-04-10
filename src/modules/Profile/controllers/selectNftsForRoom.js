@@ -17,7 +17,7 @@ export const selectNftsForRoomController = async (req, res) => {
     if(!rooms) {
       return;
     }
-    let roomIndex = rooms.findIndex(s => s.roomId == "62440237e3a684a5c4271457");
+    let roomIndex = rooms.length - 1;
     if(roomIndex == -1) {
       rooms.push({
         roomId: "62440237e3a684a5c4271457",

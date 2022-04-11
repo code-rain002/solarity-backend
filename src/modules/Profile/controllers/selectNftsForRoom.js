@@ -13,9 +13,9 @@ export const selectNftsForRoomController = async (req, res) => {
       session: { userId },
     } = req;
     const profile = await req.profile();
-    const rooms = profile.rooms;
+    var rooms = profile.rooms;
     if(!rooms) {
-      return;
+      rooms = [];
     }
     let roomIndex = rooms.length - 1;
     if(roomIndex == -1) {

@@ -16,6 +16,7 @@ export const socketService = (io) => {
       }
       io.to(data.to).emit("send", data);
     });
+    
 
     socket.on("broadcast", data => {
       if(!!socket.username) {

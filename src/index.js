@@ -49,7 +49,6 @@ class Server {
           credentials: true
       }
   });
-  
     this.start();
     return this.server;
   }

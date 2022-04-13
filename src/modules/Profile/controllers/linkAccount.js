@@ -37,7 +37,7 @@ const linkDiscord = async (userId, code) => {
       scope: "identity",
       redirect_uri:
         process.env.PRODUCTION === "true"
-          ? "https://solarity-web-git-master-hassan-sk.vercel.app/profile?view=link_accounts"
+          ? "https://solarity-web-git-master-hassan-sk.vercel.app/profile?view=link_accounts&link=discord"
           : "http://localhost:3000/profile?view=link_accounts&link=discord",
     };
     const params = new URLSearchParams(data);

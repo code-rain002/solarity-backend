@@ -16,6 +16,7 @@ export const socketService = (io) => {
       }
       io.to(data.to).emit("send", data);
     });
+    
 
     socket.on("broadcast", data => {
       if(!!socket.username) {
@@ -157,7 +158,7 @@ export const socketService = (io) => {
             var room = await roomService.getRoom(roomId);
             if(!!room) {
                 var clients = room.clients.filter(s => s != socket.id);
-        
+                
                 clients.forEach((clientId) => {
                     io.to(clientId).emit(ACTIONS.REMOVE_PEER, {
                         peerId: socket.id,

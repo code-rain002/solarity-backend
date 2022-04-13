@@ -133,3 +133,22 @@ export const selectNftsForRoomSchema = yup.object({
       .required("Location is required"),
   }),
 });
+
+export const linkAccountSchema = yup.object({
+  body: yup.object({
+    link: yup
+      .string()
+      .required("The account link name is required")
+      .oneOf(["discord", "twitter"]),
+    code: yup.string().required("The connection code is required"),
+  }),
+});
+
+export const unlinkAccountSchema = yup.object({
+  body: yup.object({
+    link: yup
+      .string()
+      .required("The account link name is required")
+      .oneOf(["discord", "twitter"]),
+  }),
+});

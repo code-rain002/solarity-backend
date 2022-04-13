@@ -28,6 +28,7 @@ const PROFILE_DATA_UNSET = {
   updatedAt: 0,
   nonce: 0,
   profileImage: 0,
+  externalLinks: 0,
 };
 
 const PROFILE_DATA_ADD_FIELDS = {
@@ -35,7 +36,8 @@ const PROFILE_DATA_ADD_FIELDS = {
   profileImageAddress: "$profileImage.address",
   twitterUsername: "$externalLinks.twitter.username",
   githubUsername: "$externalLinks.github.username",
-  discordHandle: "$externalLinks.discord.handle",
+  discordUsername: "$externalLinks.discord.username",
+  discordConnected: "$externalLinks.discord.connected",
 };
 
 export const getProfileData = async (req) => {

@@ -36,8 +36,10 @@ const userSchema = new Schema(
         },
       },
       discord: {
-        handle: String,
-        verified: {
+        username: String,
+        accessToken: String,
+        refreshToken: String,
+        connected: {
           type: Boolean,
           default: false,
         },
@@ -57,15 +59,15 @@ const userSchema = new Schema(
     rooms: [
       {
         roomId: { type: mongoose.Types.ObjectId, required: false },
-        nftCount: {type: Number, required: false, default: 0},
+        nftCount: { type: Number, required: false, default: 0 },
         nftStates: [
           {
             no: { type: Number },
-            nftAddress: { type: String, trim: true},
+            nftAddress: { type: String, trim: true },
             link: { type: String, required: false },
-          }
-        ]
-      }
+          },
+        ],
+      },
     ],
     nonce: String,
     lastAnalysisTime: Date,

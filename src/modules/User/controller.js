@@ -10,6 +10,7 @@ const USER_DATA_UNSET = {
   profileImage: 0,
   stepsCompleted: 0,
   visible: true,
+  externalLinks: 0,
 };
 
 const USER_DATA_ADD_FIELDS = {
@@ -17,7 +18,8 @@ const USER_DATA_ADD_FIELDS = {
   profileImageAddress: "$profileImage.address",
   twitterUsername: "$externalLinks.twitter.username",
   githubUsername: "$externalLinks.github.username",
-  discordHandle: "$externalLinks.discord.handle",
+  discordUsername: "$externalLinks.discord.username",
+  discordConnected: "$externalLinks.discord.connected",
 };
 
 // NOT OK!!! ADD AGGREGATE HERE!!!!!!!!!!

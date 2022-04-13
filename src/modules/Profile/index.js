@@ -7,6 +7,8 @@ import {
   updateProfilePicController,
   checkUsernameAvailabilityController,
   selectNftsForRoomController,
+  linkAccountController,
+  unlinkAccountController,
 } from "./controllers";
 import {
   updatePublicAddressSchema,
@@ -14,6 +16,8 @@ import {
   setupProfileInfoSchema,
   profilePicSchema,
   selectNftsForRoomSchema,
+  linkAccountSchema,
+  unlinkAccountSchema,
 } from "./schema";
 
 class ProfileModule extends RouteModule {
@@ -73,6 +77,19 @@ class ProfileModule extends RouteModule {
       "/selectNftsForRoom",
       this.validateSchema(selectNftsForRoomSchema),
       selectNftsForRoomController
+    );
+
+    // link profile to external accounts
+    this.router.post(
+      "/linkAccounts",
+      this.validateSchema(linkAccountSchema),
+      linkAccountController
+    );
+    // link profile to external accounts
+    this.router.post(
+      "/unlinkAccounts",
+      this.validateSchema(unlinkAccountSchema),
+      unlinkAccountController
     );
   }
 }

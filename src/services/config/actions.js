@@ -1,4 +1,5 @@
 const ACTIONS = {
+    GET_USERS: 'get-users',
     ROOM_READY: 'room-ready',
     ROOM_LIST: 'room-list',
     CREATE_ROOM: 'create-room',

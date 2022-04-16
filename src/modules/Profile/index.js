@@ -9,6 +9,7 @@ import {
   selectNftsForRoomController,
   linkAccountController,
   unlinkAccountController,
+  buyRoomController,
 } from "./controllers";
 import {
   updatePublicAddressSchema,
@@ -18,6 +19,7 @@ import {
   selectNftsForRoomSchema,
   linkAccountSchema,
   unlinkAccountSchema,
+  buyRoomSchema,
 } from "./schema";
 
 class ProfileModule extends RouteModule {
@@ -91,7 +93,14 @@ class ProfileModule extends RouteModule {
       this.validateSchema(unlinkAccountSchema),
       unlinkAccountController
     );
-  }
+
+    // buy a room
+    this.router.post(
+      "/buyRoom",
+      this.validateSchema(buyRoomSchema),
+      buyRoomController
+    );
+  } 
 }
 
 export const profileModule = new ProfileModule();

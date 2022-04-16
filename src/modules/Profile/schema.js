@@ -13,6 +13,23 @@ export const updatePublicAddressSchema = yup.object({
   }),
 });
 
+export const buyRoomSchema = yup.object({
+  body: yup.object({
+    title: yup
+      .string()
+      .typeError("Title must be a string")
+      .required("The title is required"),
+    imageUrl: yup
+      .string()
+      .typeError("The image url must be a string")
+      .required("The image url is required"),
+    currentBid: yup
+      .string()
+      .typeError("The current bid price must be a number")
+      .required("The current bid price is required"),
+  }),
+});
+
 export const updatePasswordSchema = yup.object({
   body: yup.object({
     currentPassword: yup

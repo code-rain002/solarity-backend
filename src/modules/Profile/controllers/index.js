@@ -7,3 +7,4 @@ export * from "./selectNftsForRoom";
 export * from "./updateProfilePic";
 export * from "./linkAccount";
 export * from "./unlinkAccount";
+export * from "./buyRoom";

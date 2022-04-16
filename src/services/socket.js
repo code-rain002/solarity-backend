@@ -1,5 +1,6 @@
 import ACTIONS from './config/actions';
 import roomService from './room';
+import User from '../modules/User/model';
 export const socketService = (io) => {
   const socketUserMapping = {}
   var roomIndex = 0;
@@ -91,6 +92,21 @@ export const socketService = (io) => {
             }
         } catch(err) {console.log(err)}
     });
+
+    socket.on(ACTIONS.GET_USERS, () => {console.log('aaa');
+        try {
+            User.find()
+                .then((users, err) => {
+                    if(err) {
+                        console.log('User Error', err);
+                        return;
+                    }
+                    socket.emit(ACTIONS.GET_USERS, users);
+                })
+        } catch (error) {
+            console.log('GET_USERS', error);
+        }
+    })
 
     socket.on(ACTIONS.ROOM_LIST, () => {
         io.sockets.emit(ACTIONS.ROOM_LIST, {rooms: roomService.getAllRooms()});

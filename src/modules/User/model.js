@@ -59,7 +59,11 @@ const userSchema = new Schema(
     rooms: [
       {
         roomId: { type: mongoose.Types.ObjectId, required: false },
-        nftCount: { type: Number, required: false, default: 0 },
+        title: { type: String, required: true },
+        subTitle: { type: String },
+        currentBid: { type: Number, required: true },
+        imageUrl: { type: String },
+        modelAssets: { type: Object },
         nftStates: [
           {
             no: { type: Number },

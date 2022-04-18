@@ -1,3 +1,4 @@
+import User from "../modules/User/model";
 const roomModel = [];
 
 class RoomService {
@@ -12,6 +13,8 @@ class RoomService {
             modelIndex,
             clients: [],
             speakers: [],
+            states: [],
+            links: [],
             models: [],
             msgs: [],
         });
@@ -48,6 +51,17 @@ class RoomService {
             roomModel[roomIndex].clients.splice(clientIndex, 1);
             roomModel[roomIndex].models.splice(clientIndex, 1);
             if(roomModel[roomIndex].clients.length == 0) {
+                if(roomModel[roomIndex].states.length != 0) {
+                    roomModel[roomIndex].states.map(async (state) => {
+                        let user = await User.findOne({username: state});
+                        let invitations = user.invitations;
+                        let invitationIndex = invitations.findIndex(s => s.roomId == roomId && s.state == false);
+                        if(invitationIndex > -1) {
+                            user.invitations[invitationIndex].state = true;
+                            user.save();
+                        }
+                    })
+                }
                 roomModel.splice(roomIndex, 1);
                 return;
             }
@@ -58,6 +72,34 @@ class RoomService {
         var roomIndex = roomModel.findIndex(s => s.roomId == roomId);
         if(roomIndex != -1) {
             roomModel[roomIndex].msgs.push(msg);
+        }
+    }
+
+    async inviteFriend (username, roomId, link) {
+        var roomIndex = roomModel.findIndex(s => s.roomId == roomId);
+        if(roomIndex != -1) {
+            roomModel[roomIndex].states.push(username);
+            roomModel[roomIndex].links.push(link);
+            return roomModel[roomIndex].roomName;
+        }
+        return '';
+    }
+
+    async completeInvitation (username, roomId) {
+        var roomIndex = roomModel.findIndex(s => s.roomId == roomId);
+        if(roomIndex != -1) {
+            var stateIndex = roomModel[roomIndex].states.findIndex(s => s == username);
+            if(stateIndex > -1) {
+                roomModel[roomIndex].states.splice(stateIndex, -1); 
+                roomModel[roomIndex].links.splice(stateIndex, -1); 
+            }
+        }
+        let user = await User.findOne({username: username});
+        let invitations = user.invitations;
+        let invitationIndex = invitations.findIndex(s => s.roomId == roomId && s.state == false);
+        if(invitationIndex > -1) {
+            user.invitations[invitationIndex].state = true;
+            user.save();
         }
     }
 

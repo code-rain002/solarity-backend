@@ -47,6 +47,15 @@ export const getUsersController = async (req, res) => {
   }
 };
 
+export const getAllUsersController = async (req, res) => {
+  try {
+    const data = await UserModel.find()
+    return successResponse({ res, response: { data } });
+  } catch (err) {
+    return errorResponse({ res, err });
+  }
+};
+
 // OK
 export const getUserController = async (req, res) => {
   try {

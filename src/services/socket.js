@@ -1,10 +1,12 @@
 import ACTIONS from './config/actions';
 import roomService from './room';
+import User from '../modules/User/model';
 export const socketService = (io) => {
   const socketUserMapping = {}
   var roomIndex = 0;
   //aframe
   const rooms = {};
+  const userlist = {};
   ////////////
   io.on('connection', (socket) => {
 
@@ -29,6 +31,9 @@ export const socketService = (io) => {
 
     console.log('new connection', socket.id);
     socket.socket_id = socket.id;
+    socket.on(ACTIONS.SET_USER_NAME, ({username}) => {
+        userlist[username] = socket;
+    })
 
     socket.on(ACTIONS.JOIN, async ({ roomId, user }) => {
         try{
@@ -92,8 +97,80 @@ export const socketService = (io) => {
         } catch(err) {console.log(err)}
     });
 
+    socket.on(ACTIONS.GET_USERS, () => {
+        try {
+            User.find()
+                .then((users, err) => {
+                    if(err) {
+                        console.log('User Error', err);
+                        return;
+                    }
+                    socket.emit(ACTIONS.GET_USERS, users);
+                })
+        } catch (error) {
+            console.log('GET_USERS', error);
+        }
+    })
+
     socket.on(ACTIONS.ROOM_LIST, () => {
         io.sockets.emit(ACTIONS.ROOM_LIST, {rooms: roomService.getAllRooms()});
+    })
+
+    socket.on(ACTIONS.INVITE_FRIEND, async (data) => {
+        try {
+            let { username, roomId } = data;
+            let user = await User.findOne({username: username});
+            let invitations = !!user.invitations ? user.invitations: [];
+            let link = user.publicAddress.slice(5, 10) + user.nonce.slice(1,3) + roomId + user.createdAt.toString().slice(20, 22);
+            let roomName = await roomService.inviteFriend(username, roomId, link);
+            invitations.push({
+                name: username,
+                roomId: roomId,
+                roomName: roomName,
+                link: link,
+                state: false,
+            })
+            user.invitations = invitations;
+            user.save();
+            io.sockets.emit(ACTIONS.ROOM_LIST, {rooms: roomService.getAllRooms()});
+        } catch (error) {
+            console.log("Invite Friend: ", error);
+        }
+    })
+
+    socket.on(ACTIONS.ACEEPT_INVITATION, async (data) => {
+        let { username, roomId } = data;
+        await roomService.completeInvitation(username, roomId);
+    })
+
+    socket.on(ACTIONS.GET_INVITATIONS, ({username}) => {
+        try {
+            User.findOne({username: username})
+                .then(async (user) => {
+                    if(user) {
+                        try {
+                            var invitations = [];
+                            for (let index = 0; index < user.invitations.length; index++) {
+                                const invitation = user.invitations[index];
+                                if(invitation.state == false) {
+                                    let room = await roomService.getRoom(invitation.roomId);
+                                    if(!!room) {
+                                        invitations.push(invitation);
+                                    } else {
+                                        user.Invitations[index].state = true;
+                                    }
+                                }   
+                            }
+                            user.save();
+                            socket.emit(ACTIONS.GET_INVITATIONS, {invitations});
+                        } catch (error) {
+                            console.log('User', error);
+                        }
+                    }
+                })
+        } catch (error) {
+            console.log('get invitations: ', error);
+        }
     })
 
     socket.on(ACTIONS.SEND_MSG, ({roomId, data}) => {
@@ -168,8 +245,10 @@ export const socketService = (io) => {
                 })
                 socket.leave('room' + roomId);
                 socket.roomId = -1;
+                
                 roomService.leaveRoom(roomId, {name: user.name, sid: socket.id});
                 io.sockets.emit(ACTIONS.ROOM_LIST, {rooms: roomService.getAllRooms()});
+                delete userlist[user.name];
                 delete socketUserMapping[socket.id];
             }
         } catch(err) {console.log('leave', err)}

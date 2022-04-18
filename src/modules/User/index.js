@@ -3,18 +3,28 @@ import {
   getUserController,
   getUserFollowingStatusController,
   getUsersController,
+  getAllUsersController,
   unfollowUserController,
 } from "./controller";
 import { getUsersSchema } from "./schema";
 import { RouteModule } from "../RouteModuleClass";
 import { getUserFollowersController } from "./controllers";
+import { getLinkInfoController } from "./controllers";
 
 class UserModule extends RouteModule {
   publicRoutes() {
     this.router.get(
+      "/getLinkInfo/:link",
+      getLinkInfoController
+    );
+    this.router.get(
       "/",
       this.validateSchema(getUsersSchema, { includeQuery: true }),
       getUsersController
+    );
+    this.router.get(
+      "/getUsers",
+      getAllUsersController
     );
     this.router.get(
       "/:username",

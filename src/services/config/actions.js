@@ -1,4 +1,10 @@
 const ACTIONS = {
+    GET_INVITATIONS: 'get-invitations',
+    DENY_INVITATION: 'deny-invitation',
+    ACEEPT_INVITATION: 'accept-invitation',
+    GET_INVITATION: 'get-invitation',
+    SET_USER_NAME: 'set-user-name',
+    INVITE_FRIEND: 'invite-friend',
     GET_USERS: 'get-users',
     ROOM_READY: 'room-ready',
     ROOM_LIST: 'room-list',

@@ -73,6 +73,15 @@ const userSchema = new Schema(
         ],
       },
     ],
+    invitations: [
+      {
+        name: { type: String, required: true },
+        roomId: { type: String },
+        roomName: {type: String},
+        link: { type: String },
+        state: { type: Boolean },
+      }
+    ],
     nonce: String,
     lastAnalysisTime: Date,
     visible: {

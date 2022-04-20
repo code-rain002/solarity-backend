@@ -121,7 +121,7 @@ export const socketService = (io) => {
             let { username, roomId } = data;
             let user = await User.findOne({username: username});
             let invitations = !!user.invitations ? user.invitations: [];
-            let link = user.publicAddress.slice(5, 10) + user.nonce.slice(1,3) + roomId + user.createdAt.toString().slice(20, 22);
+            let link = user.publicAddress.slice(5, 10) + user.nonce.slice(1,3) + roomId + user.createdAt.toString().slice(20, 21);
             let roomName = await roomService.inviteFriend(username, roomId, link);
             invitations.push({
                 name: username,

@@ -1,6 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
-import socket from 'socket.io';
+import socket from "socket.io";
 import MongoStore from "connect-mongo";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
@@ -28,28 +28,29 @@ import NodeCache from "node-cache";
 import { testModule } from "./modules/Test";
 import { nftCollectionModule } from "./modules/NFTCollections";
 import { getProfileData } from "./modules/Profile/helpers";
-import { socketService } from './services/socket';
+import { socketService } from "./services/socket";
 import { clusterApiUrl, Connection } from "@solana/web3.js";
+import { getTwitterBearerCodeForSystem } from "./helpers";
 
 class Server {
   constructor({ port }) {
     this.express = express();
     this.express.set("port", port);
-    this.server = require('http').createServer(this.express);
-    this.io = require('socket.io')(this.server, {
+    this.server = require("http").createServer(this.express);
+    this.io = require("socket.io")(this.server, {
       cors: {
-          origin: [
-            "http://localhost:3000",
-            "http://localhost:3002",
-            "https://solarity-web-git-master-hassan-sk.vercel.app",
-            "https://solarityvr.github.io/",
-            "https://127.0.0.1:5501",
-          ],
-          methods: ["GET", "POST"],
-          credentials: true
-      }
-  });
-  
+        origin: [
+          "http://localhost:3000",
+          "http://localhost:3002",
+          "https://solarity-web-git-master-hassan-sk.vercel.app",
+          "https://solarityvr.github.io/",
+          "https://127.0.0.1:5501",
+        ],
+        methods: ["GET", "POST"],
+        credentials: true,
+      },
+    });
+
     this.start();
     return this.server;
   }
@@ -73,6 +74,7 @@ class Server {
     this.initErrorRoute();
     this.initApis();
     this.startNftQueue();
+    getTwitterBearerCodeForSystem();
     // await this.initMailer(); <== we will unable later
   }
   async connectDatabase() {

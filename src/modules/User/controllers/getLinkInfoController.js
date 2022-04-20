@@ -6,6 +6,7 @@ export const getLinkInfoController = async (req, res) => {
     const {
       params: { link },
     } = req;
+
     let user = await UserModel.findOne({"invitations.link": link});
     if(user) {
       let invitation = user.invitations.find(s => s.link == link);
@@ -13,6 +14,7 @@ export const getLinkInfoController = async (req, res) => {
         return successResponse({ res, response: { invitation } });
       }
     }
+    
     return errorResponse({ res, err: "" });
   } catch (err) {
     return errorResponse({ res, err });

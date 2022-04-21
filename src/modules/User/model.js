@@ -77,6 +77,7 @@ const userSchema = new Schema(
     invitations: [
       {
         name: { type: String, required: true },
+        invitor: { type: String },
         roomId: { type: String },
         roomName: { type: String },
         link: { type: String },

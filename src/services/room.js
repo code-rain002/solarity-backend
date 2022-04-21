@@ -85,21 +85,36 @@ class RoomService {
         return '';
     }
 
-    async completeInvitation (username, roomId) {
-        var roomIndex = roomModel.findIndex(s => s.roomId == roomId);
-        if(roomIndex != -1) {
-            var stateIndex = roomModel[roomIndex].states.findIndex(s => s == username);
-            if(stateIndex > -1) {
-                roomModel[roomIndex].states.splice(stateIndex, -1); 
-                roomModel[roomIndex].links.splice(stateIndex, -1); 
+    async completeInvitation (roomId, username) {
+        try {
+            var roomIndex = roomModel.findIndex(s => s.roomId == roomId);
+            if(roomIndex != -1) {
+                var stateIndex = roomModel[roomIndex].states.findIndex(s => s == username);
+                if(stateIndex > -1) {
+                    roomModel[roomIndex].states.splice(stateIndex, -1); 
+                    roomModel[roomIndex].links.splice(stateIndex, -1); 
+                }
             }
-        }
-        let user = await User.findOne({username: username});
-        let invitations = user.invitations;
-        let invitationIndex = invitations.findIndex(s => s.roomId == roomId && s.state == false);
-        if(invitationIndex > -1) {
-            user.invitations[invitationIndex].state = true;
-            user.save();
+            let user = await User.findOne({username: username});
+            if(!!user) {
+                let invitations = user.invitations;
+                if(!!invitations) {
+                    let invitationIndexList = [];
+                    for(var i = 0; i < invitations.length; i ++) {
+                        if(invitations[i].roomId == roomId && invitations[i].state == false) {
+                            invitationIndexList.push(i);
+                        }
+                    }
+                    if(invitationIndexList.length != 0) {
+                        for(var j = 0; j < invitationIndexList.length; j ++) {
+                            user.invitations[invitationIndexList[j]].state = true;
+                        }
+                        user.save();
+                    }
+                }
+            }
+        } catch (error) {
+            console.log('completeInvitation', error);
         }
     }
 

@@ -1,8 +1,6 @@
-import axios from "axios";
 import {
   successResponse,
   errorResponse,
-  throwError,
   getDiscordUser,
   getTwitterAccessToken,
   getDiscordAccessToken,

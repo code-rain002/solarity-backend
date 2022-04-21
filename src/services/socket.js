@@ -36,7 +36,7 @@ export const socketService = (io) => {
     })
 
     socket.on(ACTIONS.JOIN, async ({ roomId, user }) => {
-        try{
+        try {
             const { modelIndex, name, roomName } = user;
             socketUserMapping[socket.id] = user;
             if(roomId == -1) {
@@ -118,13 +118,14 @@ export const socketService = (io) => {
 
     socket.on(ACTIONS.INVITE_FRIEND, async (data) => {
         try {
-            let { username, roomId } = data;
+            let { username, roomId, invitor } = data;
             let user = await User.findOne({username: username});
             let invitations = !!user.invitations ? user.invitations: [];
-            let link = user.publicAddress.slice(5, 10) + user.nonce.slice(1,3) + roomId + user.createdAt.toString().slice(20, 21);
+            let link = user.publicAddress.slice(5, 10) + roomId + user.createdAt.toString().slice(20, 21);
             let roomName = await roomService.inviteFriend(username, roomId, link);
             invitations.push({
                 name: username,
+                invitor: invitor,
                 roomId: roomId,
                 roomName: roomName,
                 link: link,
@@ -139,8 +140,8 @@ export const socketService = (io) => {
     })
 
     socket.on(ACTIONS.ACEEPT_INVITATION, async (data) => {
-        let { username, roomId } = data;
-        await roomService.completeInvitation(username, roomId);
+        let { roomId, username } = data;
+        await roomService.completeInvitation(roomId, username);
     })
 
     socket.on(ACTIONS.GET_INVITATIONS, ({username}) => {

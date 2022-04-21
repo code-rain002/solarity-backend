@@ -4,7 +4,6 @@ import {
   errorResponse,
   throwError,
   getDiscordUser,
-  getTwitterBearerCodeForSystem,
   getTwitterAccessToken,
   getDiscordAccessToken,
 } from "../../../helpers";

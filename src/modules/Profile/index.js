@@ -1,3 +1,4 @@
+import { TwitterApi } from "twitter-api-v2";
 import { RouteModule } from "../RouteModuleClass";
 import {
   getProfileController,
@@ -100,7 +101,7 @@ class ProfileModule extends RouteModule {
       this.validateSchema(buyRoomSchema),
       buyRoomController
     );
-  } 
+  }
 }
 
 export const profileModule = new ProfileModule();

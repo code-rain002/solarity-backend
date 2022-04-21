@@ -20,6 +20,7 @@ const USER_DATA_ADD_FIELDS = {
   githubUsername: "$externalLinks.github.username",
   discordUsername: "$externalLinks.discord.username",
   discordConnected: "$externalLinks.discord.connected",
+  twitterConnected: "$externalLinks.twitter.connected",
 };
 
 // NOT OK!!! ADD AGGREGATE HERE!!!!!!!!!!
@@ -49,7 +50,7 @@ export const getUsersController = async (req, res) => {
 
 export const getAllUsersController = async (req, res) => {
   try {
-    const data = await UserModel.find()
+    const data = await UserModel.find();
     return successResponse({ res, response: { data } });
   } catch (err) {
     return errorResponse({ res, err });

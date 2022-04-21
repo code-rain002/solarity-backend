@@ -1,60 +1,41 @@
 import axios from "axios";
-import SystemModel from "../modules/System/model";
+import base64 from "base-64";
+import UserModel from "../modules/User/model";
 
-export const getTwitterBearerCodeForSystem = async () => {
-  try {
-    const data = await SystemModel.findOne({ code: "twitter" });
-    if (!data || !data.data || !data.data.bearerToken) {
-      const token = `${process.env.TWITTER_API_KEY}:${process.env.TWITTER_API_KEY_SECRET}`;
-      const encodedToken = Buffer.from(token).toString("base64");
-      const config = {
-        method: "post",
-        url: "https://api.twitter.com/oauth2/token?grant_type=client_credentials",
-        headers: { Authorization: "Basic " + encodedToken },
-      };
-      const {
-        data: { access_token },
-      } = await axios(config);
-      await SystemModel.updateOne(
-        { code: "twitter" },
-        {
-          ...data._doc,
-          data: { bearerToken: access_token },
-        },
-        {
-          upsert: true,
-        }
-      );
-      return access_token;
-    }
-    return data.data.bearerToken;
-  } catch (err) {
-    // LOG ERROR TO ROLLBAR!!!!
-    console.log("ERROR fetch bearer token from twitter");
-  }
-};
+export const twitterAuthorizationToken = (() => {
+  const token = `${process.env.TWITTER_CLIENT_ID}:${process.env.TWITTER_CLIENT_SECRET}`;
+  const encodedToken = base64.encode(token);
+  return "Basic " + encodedToken;
+})();
 
-export const getTwitterAccessToken = async (code, redirect_uri) => {
-  console.log(code);
-  console.log(redirect_uri);
-  let data = {
+export const getTwitterAccessToken = async (userId, code, redirect_uri) => {
+  let params = {
     client_id: process.env.TWITTER_CLIENT_ID,
     grant_type: "authorization_code",
     code,
     code_verifier: "challenge",
     redirect_uri,
   };
-  const params = new URLSearchParams(data);
+  const paramString = new URLSearchParams(params);
   let headers = {
+    Authorization: twitterAuthorizationToken,
     "Content-Type": "application/x-www-form-urlencoded",
   };
-  const response = await axios.post(
-    "ttps://api.twitter.com/2/oauth2/token'",
-    params,
+  const { data } = await axios.post(
+    "https://api.twitter.com/2/oauth2/token",
+    paramString,
     {
       headers,
     }
   );
-  console.log(response);
-  return response;
+  await UserModel.updateOne(
+    { _id: userId },
+    {
+      "externalLinks.twitter": {
+        accessToken: data.access_token,
+        refreshToken: data.refresh_token,
+      },
+    }
+  );
+  return data.access_token;
 };

@@ -1,4 +1,5 @@
 const ACTIONS = {
+    DUPLICATION_INVITATION: 'duplication-invitation',
     GET_INVITATIONS: 'get-invitations',
     DENY_INVITATION: 'deny-invitation',
     ACEEPT_INVITATION: 'accept-invitation',

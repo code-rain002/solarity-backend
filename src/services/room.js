@@ -16,6 +16,7 @@ class RoomService {
             states: [],
             links: [],
             models: [],
+            guests: [],
             msgs: [],
         });
         return roomId;
@@ -50,15 +51,30 @@ class RoomService {
             roomModel[roomIndex].speakers.splice(clientIndex, 1);
             roomModel[roomIndex].clients.splice(clientIndex, 1);
             roomModel[roomIndex].models.splice(clientIndex, 1);
+            var guestIndex = roomModel[roomIndex].guests.findIndex(s => s.guestname == user.name)
+            if(guestIndex != -1) {
+                roomModel[roomIndex].guests.splice(guestIndex, -1);
+            }
             if(roomModel[roomIndex].clients.length == 0) {
                 if(roomModel[roomIndex].states.length != 0) {
                     roomModel[roomIndex].states.map(async (state) => {
                         let user = await User.findOne({username: state});
-                        let invitations = user.invitations;
-                        let invitationIndex = invitations.findIndex(s => s.roomId == roomId && s.state == false);
-                        if(invitationIndex > -1) {
-                            user.invitations[invitationIndex].state = true;
-                            user.save();
+                        if(!!user) {
+                            let invitations = user.invitations;
+                            if(!!invitations) {
+                                let invitationIndexList = [];
+                                for(var i = 0; i < invitations.length; i ++) {
+                                    if(invitations[i].roomId == roomId && invitations[i].state == false) {
+                                        invitationIndexList.push(i);
+                                    }
+                                }
+                                if(invitationIndexList.length != 0) {
+                                    for(var j = 0; j < invitationIndexList.length; j ++) {
+                                        user.invitations[invitationIndexList[j]].state = true;
+                                    }
+                                    user.save();
+                                }
+                            }
                         }
                     })
                 }
@@ -75,7 +91,7 @@ class RoomService {
         }
     }
 
-    async inviteFriend (username, roomId, link) {
+    async inviteFriend (username, roomId, link) {console.log("sss");
         var roomIndex = roomModel.findIndex(s => s.roomId == roomId);
         if(roomIndex != -1) {
             roomModel[roomIndex].states.push(username);
@@ -85,32 +101,17 @@ class RoomService {
         return '';
     }
 
-    async completeInvitation (roomId, username) {
+    async completeInvitation (roomId, username, guestname, type) {
         try {
             var roomIndex = roomModel.findIndex(s => s.roomId == roomId);
             if(roomIndex != -1) {
+                if(type) {
+                    roomModel[roomIndex].guests.push({ guestname: guestname, username: username });
+                }
                 var stateIndex = roomModel[roomIndex].states.findIndex(s => s == username);
                 if(stateIndex > -1) {
                     roomModel[roomIndex].states.splice(stateIndex, -1); 
                     roomModel[roomIndex].links.splice(stateIndex, -1); 
-                }
-            }
-            let user = await User.findOne({username: username});
-            if(!!user) {
-                let invitations = user.invitations;
-                if(!!invitations) {
-                    let invitationIndexList = [];
-                    for(var i = 0; i < invitations.length; i ++) {
-                        if(invitations[i].roomId == roomId && invitations[i].state == false) {
-                            invitationIndexList.push(i);
-                        }
-                    }
-                    if(invitationIndexList.length != 0) {
-                        for(var j = 0; j < invitationIndexList.length; j ++) {
-                            user.invitations[invitationIndexList[j]].state = true;
-                        }
-                        user.save();
-                    }
                 }
             }
         } catch (error) {

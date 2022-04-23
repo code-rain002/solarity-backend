@@ -120,6 +120,14 @@ export const socketService = (io) => {
         try {
             let { username, roomId, invitor } = data;
             let user = await User.findOne({username: username});
+            if(!!user.invitations) {
+                for (var i = 0; i < user.invitations.length; i ++) {
+                    if(user.invitations[i].roomId == roomId) {
+                        socket.emit(ACTIONS.DUPLICATION_INVITATION, {});
+                        return;
+                    }
+                }
+            }
             let invitations = !!user.invitations ? user.invitations: [];
             let link = user.publicAddress.slice(5, 10) + roomId + user.createdAt.toString().slice(20, 21);
             let roomName = await roomService.inviteFriend(username, roomId, link);
@@ -140,8 +148,8 @@ export const socketService = (io) => {
     })
 
     socket.on(ACTIONS.ACEEPT_INVITATION, async (data) => {
-        let { roomId, username } = data;
-        await roomService.completeInvitation(roomId, username);
+        let { roomId, username, guestname, type } = data;
+        await roomService.completeInvitation(roomId, username, guestname, type);
     })
 
     socket.on(ACTIONS.GET_INVITATIONS, ({username}) => {

@@ -2,6 +2,7 @@ import { errorResponse, successResponse } from "../../helpers";
 import { RouteModule } from "../RouteModuleClass";
 import {
   followDaoController,
+  getDaoAnnouncementsController,
   getDaoFollowingStatusController,
   getDaosController,
   getDaoTokenAddressesController,
@@ -41,6 +42,11 @@ class DaoModule extends RouteModule {
       "/:symbol/unfollow",
       this.validateSchema(null, { idParamCheck: true, idName: "symbol" }),
       unfollowDaoController
+    );
+    this.router.get(
+      "/:symbol/announcements",
+      this.validateSchema(null, { idParamCheck: true, idName: "symbol" }),
+      getDaoAnnouncementsController
     );
   }
 }

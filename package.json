@@ -26,6 +26,7 @@
     "aws-sdk": "^2.1092.0",
     "axios": "^0.26.0",
     "babel-loader": "^8.0.0-beta.0",
+    "base-64": "^1.0.0",
     "bluebird": "^3.7.2",
     "bs58": "^5.0.0",
     "connect-mongo": "^4.6.0",
@@ -50,7 +51,7 @@
     "socket.io": "^4.4.1",
     "theblockchainapi": "^1.0.936",
     "tweetnacl": "^1.0.3",
-    "twitter-api-v2": "^1.11.0",
+    "twitter-api-v2": "^1.12.0",
     "yup": "^0.32.11"
   },
   "devDependencies": {

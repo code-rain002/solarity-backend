@@ -1,9 +1,11 @@
 import axios from "axios";
+import { TwitterApi } from "twitter-api-v2";
 import {
   successResponse,
   errorResponse,
   throwError,
   revokeDiscord,
+  twitterAuthorizationToken,
 } from "../../../helpers";
 import UserModel from "../../User/model";
 
@@ -17,7 +19,7 @@ export const unlinkAccountController = async (req, res) => {
         await unlinkDiscord(user);
         break;
       case "twitter":
-        throwError("Twitter connection not yet available");
+        throwError("Unavailable");
         break;
     }
     let profile = await req.profile();
@@ -38,4 +40,33 @@ const unlinkDiscord = async (user) => {
       },
     }
   );
+};
+
+const unlinkTwitter = async (user) => {
+  const { accessToken } = user.externalLinks.twitter;
+  try {
+    let params = {
+      access_token: accessToken,
+    };
+    console.log(accessToken);
+    const paramString = new URLSearchParams(params);
+    const { response } = await axios.post(
+      "https://api.twitter.com/2/oauth2/invalidate_token",
+      paramString,
+      {
+        Authorization: twitterAuthorizationToken,
+      }
+    );
+    console.log(response);
+  } catch (err) {
+    console.log(err.response.data);
+  }
+  // await UserModel.updateOne(
+  //   { _id: user._id },
+  //   {
+  //     "externalLinks.twitter": {
+  //       connected: false,
+  //     },
+  //   }
+  // );
 };

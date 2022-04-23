@@ -158,6 +158,7 @@ export const linkAccountSchema = yup.object({
       .required("The account link name is required")
       .oneOf(["discord", "twitter"]),
     code: yup.string().required("The connection code is required"),
+    url: yup.string().required("The URL is required"),
   }),
 });
 

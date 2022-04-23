@@ -38,6 +38,7 @@ const PROFILE_DATA_ADD_FIELDS = {
   githubUsername: "$externalLinks.github.username",
   discordUsername: "$externalLinks.discord.username",
   discordConnected: "$externalLinks.discord.connected",
+  twitterConnected: "$externalLinks.twitter.connected",
 };
 
 export const getProfileData = async (req) => {

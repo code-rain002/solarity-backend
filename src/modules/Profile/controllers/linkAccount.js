@@ -1,25 +1,24 @@
-import axios from "axios";
 import {
   successResponse,
   errorResponse,
-  throwError,
   getDiscordUser,
-  getTwitterBearerCodeForSystem,
   getTwitterAccessToken,
+  getDiscordAccessToken,
 } from "../../../helpers";
 import UserModel from "../../User/model";
+import { TwitterApi } from "twitter-api-v2";
 
 export const linkAccountController = async (req, res) => {
   try {
     let profile = await req.profile();
     const { _id } = profile;
-    const { code, link } = req.body;
+    const { code, link, url } = req.body;
     switch (link) {
       case "discord":
-        await linkDiscord(String(_id), code);
+        await linkDiscord(String(_id), code, url);
         break;
       case "twitter":
-        await linkTwitter(String(_id), code);
+        await linkTwitter(String(_id), code, url);
         break;
     }
     profile = await req.profile();
@@ -29,72 +28,30 @@ export const linkAccountController = async (req, res) => {
   }
 };
 
-const linkDiscord = async (userId, code) => {
-  const getAccessCode = async () => {
-    let data = {
-      client_id: process.env.DISCORD_CLIENT_ID,
-      client_secret: process.env.DISCORD_CLIENT_SECRET,
-      grant_type: "authorization_code",
-      code,
-      scope: "identity",
-      redirect_uri:
-        process.env.PRODUCTION === "true"
-          ? "https://solarity-web-git-master-hassan-sk.vercel.app/profile?view=link_accounts&link=discord"
-          : "http://localhost:3000/profile?view=link_accounts&link=discord",
-    };
-    const params = new URLSearchParams(data);
-    let headers = {
-      "Content-Type": "application/x-www-form-urlencoded",
-    };
-    const { data: response } = await axios.post(
-      "https://discord.com/api/oauth2/token",
-      params,
-      {
-        headers,
-      }
-    );
-    return response;
-  };
-  const data = await getAccessCode();
-  const { access_token: accessToken, refresh_token: refreshToken } = data;
+// link discord
+const linkDiscord = async (userId, code, url) => {
+  const accessToken = await getDiscordAccessToken(userId, code, url);
   const user = await getDiscordUser(accessToken);
   await UserModel.updateOne(
     { _id: userId },
     {
       "externalLinks.discord.username": user.username,
-      "externalLinks.discord.accessToken": accessToken,
-      "externalLinks.discord.refreshToken": refreshToken,
       "externalLinks.discord.connected": true,
     }
   );
 };
 
-const linkTwitter = async (userId, code) => {
-  const bearerToken = await getTwitterBearerCodeForSystem();
-  const accessToken = await getTwitterAccessToken(
-    code,
-    "http://localhost:3000/profile?view=link_accounts"
+const linkTwitter = async (userId, code, url) => {
+  const accessToken = await getTwitterAccessToken(userId, code, url);
+  const client = new TwitterApi(accessToken);
+  const {
+    data: { username },
+  } = await client.v2.me();
+  await UserModel.updateOne(
+    { _id: userId },
+    {
+      "externalLinks.twitter.connected": true,
+      "externalLinks.twitter.username": username,
+    }
   );
-  console.log(accessToken);
-  // const getAccessCode = async () => {
-  //   let data = {
-  //     client_id: process.env.TWITTER_CLIENT_ID,
-  //     token: code,
-  //   };
-  //   const params = new URLSearchParams(data);
-  //   let headers = {
-  //     "Content-Type": "application/x-www-form-urlencoded",
-  //   };
-  //   const { data: response } = await axios.post(
-  //     "https://api.twitter.com/2/oauth2/access_token",
-  //     params,
-  //     {
-  //       headers,
-  //     }
-  //   );
-  //   return response;
-  // };
-  // const data = await getAccessCode();
-  // console.log(data);
-  // console.log(code);
 };

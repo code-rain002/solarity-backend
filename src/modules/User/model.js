@@ -21,9 +21,10 @@ const userSchema = new Schema(
     bio: { type: String, required: false, trim: true },
     externalLinks: {
       twitter: {
-        id: String,
         username: String,
-        verified: {
+        accessToken: String,
+        refreshToken: String,
+        connected: {
           type: Boolean,
           default: false,
         },
@@ -78,10 +79,10 @@ const userSchema = new Schema(
         name: { type: String, required: true },
         invitor: { type: String },
         roomId: { type: String },
-        roomName: {type: String},
+        roomName: { type: String },
         link: { type: String },
         state: { type: Boolean },
-      }
+      },
     ],
     nonce: String,
     lastAnalysisTime: Date,

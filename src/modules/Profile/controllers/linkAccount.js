@@ -28,6 +28,7 @@ export const linkAccountController = async (req, res) => {
   }
 };
 
+// link discord
 const linkDiscord = async (userId, code, url) => {
   const accessToken = await getDiscordAccessToken(userId, code, url);
   const user = await getDiscordUser(accessToken);

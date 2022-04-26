@@ -91,7 +91,7 @@ class RoomService {
         }
     }
 
-    async inviteFriend (username, roomId, link) {console.log("sss");
+    async inviteFriend (username, roomId, link) {
         var roomIndex = roomModel.findIndex(s => s.roomId == roomId);
         if(roomIndex != -1) {
             roomModel[roomIndex].states.push(username);

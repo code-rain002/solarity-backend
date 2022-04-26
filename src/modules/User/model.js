@@ -60,11 +60,13 @@ const userSchema = new Schema(
     rooms: [
       {
         roomId: { type: mongoose.Types.ObjectId, required: false },
+        roomNo: { type: Number },
         title: { type: String, required: true },
         subTitle: { type: String },
         currentBid: { type: Number, required: true },
         imageUrl: { type: String },
         modelAssets: { type: Object },
+        active: { type: Boolean, default: false},
         nftStates: [
           {
             no: { type: Number },

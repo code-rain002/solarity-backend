@@ -80,6 +80,27 @@ export const getUserController = async (req, res) => {
   }
 };
 
+export const getUserWithWalletAddressController = async (req, res) => {
+  try {
+    const {
+      params: { address: address },
+    } = req;
+    const user = await UserModel.aggregate([
+      {
+        $match: { publicAddress: address },
+      },
+      {
+        $addFields: USER_DATA_ADD_FIELDS,
+      },
+      { $unset: Object.keys(USER_DATA_UNSET) },
+    ]);
+    if (user.length == 0) throwError("No user with the username exists");
+    return successResponse({ res, response: { user: user[0] } });
+  } catch (err) {
+    return errorResponse({ res, err });
+  }
+};
+
 export const getUserFollowingStatusController = async (req, res) => {
   try {
     const {

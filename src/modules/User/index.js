@@ -5,6 +5,7 @@ import {
   getUsersController,
   getAllUsersController,
   unfollowUserController,
+  getUserWithWalletAddressController
 } from "./controller";
 import { getUsersSchema } from "./schema";
 import { RouteModule } from "../RouteModuleClass";
@@ -30,6 +31,10 @@ class UserModule extends RouteModule {
       "/:username",
       this.validateSchema(null, { idParamCheck: true, idName: "username" }),
       getUserController
+    );
+    this.router.get(
+      "/wallet/:address",
+      getUserWithWalletAddressController
     );
     this.router.get(
       "/:username/followers",

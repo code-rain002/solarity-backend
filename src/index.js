@@ -30,6 +30,7 @@ import { nftCollectionModule } from "./modules/NFTCollections";
 import { getProfileData } from "./modules/Profile/helpers";
 import { socketService } from "./services/socket";
 import { clusterApiUrl, Connection } from "@solana/web3.js";
+import { getTwitterBearerCodeForSystem } from "./helpers";
 
 class Server {
   constructor({ port }) {
@@ -73,6 +74,7 @@ class Server {
     this.initErrorRoute();
     this.initApis();
     this.startNftQueue();
+    getTwitterBearerCodeForSystem();
     // await this.initMailer(); <== we will unable later
   }
   async connectDatabase() {

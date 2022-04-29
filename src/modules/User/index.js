@@ -14,22 +14,16 @@ import { getLinkInfoController } from "./controllers";
 
 class UserModule extends RouteModule {
   publicRoutes() {
-    this.router.get(
-      "/getLinkInfo/:link",
-      getLinkInfoController
-    );
+    this.router.get("/getLinkInfo/:link", getLinkInfoController);
     this.router.get(
       "/",
       this.validateSchema(getUsersSchema, { includeQuery: true }),
       getUsersController
     );
+    this.router.get("/getUsers", getAllUsersController);
     this.router.get(
-      "/getUsers",
-      getAllUsersController
-    );
-    this.router.get(
-      "/:username",
-      this.validateSchema(null, { idParamCheck: true, idName: "username" }),
+      "/:id",
+      this.validateSchema(null, { idParamCheck: true, idName: "id" }),
       getUserController
     );
     this.router.get(

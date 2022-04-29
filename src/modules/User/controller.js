@@ -61,12 +61,11 @@ export const getAllUsersController = async (req, res) => {
 export const getUserController = async (req, res) => {
   try {
     const {
-      params: { username: _username },
+      params: { id },
     } = req;
-    const username = _username.toLowerCase();
     const user = await UserModel.aggregate([
       {
-        $match: { username },
+        $match: { $or: [{ username: id }, { publicAddress: id }] },
       },
       {
         $addFields: USER_DATA_ADD_FIELDS,

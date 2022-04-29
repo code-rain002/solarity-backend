@@ -65,7 +65,13 @@ export const getUserController = async (req, res) => {
     } = req;
     const user = await UserModel.aggregate([
       {
-        $match: { $or: [{ username: id }, { publicAddress: id }] },
+        $match: {
+          $or: [
+            { username: id },
+            { publicAddress: id },
+            { "externalLinks.twitter.username": id },
+          ],
+        },
       },
       {
         $addFields: USER_DATA_ADD_FIELDS,

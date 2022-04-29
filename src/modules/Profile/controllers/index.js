@@ -8,3 +8,5 @@ export * from "./updateProfilePic";
 export * from "./linkAccount";
 export * from "./unlinkAccount";
 export * from "./buyRoom";
+export * from "./checkRoom";
+export * from "./setActiveRoom";

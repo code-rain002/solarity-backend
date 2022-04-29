@@ -11,6 +11,8 @@ import {
   linkAccountController,
   unlinkAccountController,
   buyRoomController,
+  checkRoomController,
+  setActiveRoomController,
 } from "./controllers";
 import {
   updatePublicAddressSchema,
@@ -21,6 +23,8 @@ import {
   linkAccountSchema,
   unlinkAccountSchema,
   buyRoomSchema,
+  checkRoomSchema,
+  setActiveRoomSchema,
 } from "./schema";
 
 class ProfileModule extends RouteModule {
@@ -100,6 +104,20 @@ class ProfileModule extends RouteModule {
       "/buyRoom",
       this.validateSchema(buyRoomSchema),
       buyRoomController
+    );
+
+    // check room with no
+    this.router.post(
+      "/checkRoom",
+      this.validateSchema(checkRoomSchema),
+      checkRoomController
+    );
+
+    // Set Active Room
+    this.router.post(
+      "/setActiveRoom",
+      this.validateSchema(setActiveRoomSchema),
+      setActiveRoomController
     );
   }
 }

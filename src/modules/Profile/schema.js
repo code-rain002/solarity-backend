@@ -27,6 +27,28 @@ export const buyRoomSchema = yup.object({
       .string()
       .typeError("The current bid price must be a number")
       .required("The current bid price is required"),
+    roomNo: yup
+      .string()
+      .typeError("The current bid roomNo must be a number")
+      .required("The current bid roomNo is required"),
+  }),
+});
+
+export const checkRoomSchema = yup.object({
+  body: yup.object({
+    roomNo: yup
+      .string()
+      .typeError("The current bid roomNo must be a number")
+      .required("The current bid roomNo is required"),
+  }),
+});
+
+export const setActiveRoomSchema = yup.object({
+  body: yup.object({
+    roomNo: yup
+      .string()
+      .typeError("The current bid roomNo must be a number")
+      .required("The current bid roomNo is required"),
   }),
 });
 

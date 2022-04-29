@@ -9,6 +9,7 @@ export const buyRoomController = async (req, res) => {
           subTitle,
           imageUrl,
           currentBid,
+          roomNo,
       },
       session: { userId },
     } = req;
@@ -17,7 +18,14 @@ export const buyRoomController = async (req, res) => {
     if(!rooms) {
       rooms = [];
     }
+
+    const roomIndex = rooms.findIndex(s => s.roomNo == roomNo);
+    if(roomIndex != -1) {
+      return errorResponse({ res, err: "Room is already available." });
+    }
+
     rooms.push({
+        roomNo: roomNo,
         title: title,
         subTitle: subTitle,
         currentBid: currentBid,

@@ -5,9 +5,9 @@ import {
   getUsersController,
   getAllUsersController,
   unfollowUserController,
-  getUserWithWalletAddressController
+  getUserWithWalletAddressController,
 } from "./controller";
-import { getUsersSchema } from "./schema";
+import { getUserSchema, getUsersSchema } from "./schema";
 import { RouteModule } from "../RouteModuleClass";
 import { getUserFollowersController } from "./controllers";
 import { getLinkInfoController } from "./controllers";
@@ -23,13 +23,10 @@ class UserModule extends RouteModule {
     this.router.get("/getUsers", getAllUsersController);
     this.router.get(
       "/:id",
-      this.validateSchema(null, { idParamCheck: true, idName: "id" }),
+      this.validateSchema(getUserSchema, { includeQuery: true }),
       getUserController
     );
-    this.router.get(
-      "/wallet/:address",
-      getUserWithWalletAddressController
-    );
+    this.router.get("/wallet/:address", getUserWithWalletAddressController);
     this.router.get(
       "/:username/followers",
       this.validateSchema(null, { idParamCheck: true, idName: "username" }),

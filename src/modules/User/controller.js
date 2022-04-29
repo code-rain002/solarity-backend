@@ -21,6 +21,8 @@ const USER_DATA_ADD_FIELDS = {
   discordUsername: "$externalLinks.discord.username",
   discordConnected: "$externalLinks.discord.connected",
   twitterConnected: "$externalLinks.twitter.connected",
+  ethereumWalletAddress: "$ethereum.walletAddress",
+  ethereumConnected: "$ethereum.connected",
 };
 
 // NOT OK!!! ADD AGGREGATE HERE!!!!!!!!!!

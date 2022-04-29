@@ -39,6 +39,8 @@ const PROFILE_DATA_ADD_FIELDS = {
   discordUsername: "$externalLinks.discord.username",
   discordConnected: "$externalLinks.discord.connected",
   twitterConnected: "$externalLinks.twitter.connected",
+  ethereumWalletAddress: "$ethereum.walletAddress",
+  ethereumConnected: "$ethereum.connected",
 };
 
 export const getProfileData = async (req) => {

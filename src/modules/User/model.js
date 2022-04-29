@@ -18,6 +18,19 @@ const userSchema = new Schema(
       trim: true,
       sparse: true,
     },
+    ethereum: {
+      walletAddress: {
+        type: String,
+        index: true,
+        unique: true,
+        trim: true,
+        sparse: true,
+      },
+      connected: {
+        type: Boolean,
+        default: false,
+      },
+    },
     bio: { type: String, required: false, trim: true },
     externalLinks: {
       twitter: {
@@ -66,7 +79,7 @@ const userSchema = new Schema(
         currentBid: { type: Number, required: true },
         imageUrl: { type: String },
         modelAssets: { type: Object },
-        active: { type: Boolean, default: false},
+        active: { type: Boolean, default: false },
         nftStates: [
           {
             no: { type: Number },

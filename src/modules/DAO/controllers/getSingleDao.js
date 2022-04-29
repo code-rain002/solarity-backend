@@ -19,6 +19,8 @@ export const getSingleDaoController = async (req, res) => {
           twitterUsername: "$externalLinks.twitter.username",
           githubUsername: "$externalLinks.github.username",
           discordHandle: "$externalLinks.discord.handle",
+          ethereumWalletAddress: "$ethereum.walletAddress",
+          ethereumConnected: "$ethereum.connected",
         },
       },
     ]);

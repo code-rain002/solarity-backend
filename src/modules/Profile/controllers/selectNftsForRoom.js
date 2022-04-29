@@ -17,11 +17,14 @@ export const selectNftsForRoomController = async (req, res) => {
     if(!rooms) {
       rooms = [];
     }
-    let roomIndex = rooms.length - 1;
+    let roomIndex = rooms.findIndex(s => s._id == roomId);
     if(roomIndex == -1) {
       rooms.push({
-        roomId: "62440237e3a684a5c4271457",
-        nftCount: 5,
+        roomNo: -1,
+        title:"default",
+        currentBid: 0,
+        imageUrl: "",
+        active: false,
         nftStates: [],
       });
       roomIndex = 0;

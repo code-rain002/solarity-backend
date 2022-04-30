@@ -21,12 +21,27 @@ export const unlinkAccountController = async (req, res) => {
       case "twitter":
         throwError("Unavailable");
         break;
+      case "ethereum":
+        await unlinkEthereum(user);
+        break;
     }
     let profile = await req.profile();
     return successResponse({ res, response: { profile } });
   } catch (err) {
     return errorResponse({ res, err });
   }
+};
+
+const unlinkEthereum = async (user) => {
+  await UserModel.updateOne(
+    { _id: user._id },
+    {
+      ethereum: {
+        connected: false,
+        walletAddress: "",
+      },
+    }
+  );
 };
 
 const unlinkDiscord = async (user) => {

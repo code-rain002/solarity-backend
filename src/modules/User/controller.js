@@ -1,6 +1,9 @@
 import { errorResponse, successResponse, throwError } from "../../helpers";
 import UserModel from "./model";
+import DaoModel from "../DAO/model";
+
 import { Types } from "mongoose";
+import axios from "axios";
 
 const USER_DATA_UNSET = {
   following: 0,
@@ -21,6 +24,8 @@ const USER_DATA_ADD_FIELDS = {
   discordUsername: "$externalLinks.discord.username",
   discordConnected: "$externalLinks.discord.connected",
   twitterConnected: "$externalLinks.twitter.connected",
+  ethereumWalletAddress: "$ethereum.walletAddress",
+  ethereumConnected: "$ethereum.connected",
 };
 
 // NOT OK!!! ADD AGGREGATE HERE!!!!!!!!!!
@@ -30,19 +35,24 @@ export const getUsersController = async (req, res) => {
       query: { page = 1, count = 10, term = "" },
     } = req;
     let searchTerm = new RegExp(term.toLowerCase(), "i");
-    const findOptions = {
-      $or: [
-        { username: searchTerm },
-        { email: searchTerm },
-        { fullName: searchTerm },
-      ],
-    };
-    const totalCount = await UserModel.count(findOptions);
-    const totalPages = Math.ceil(totalCount / count);
-    const data = await UserModel.find(findOptions, userDataFormat)
-      .skip((page - 1) * count)
-      .limit(count);
-    return successResponse({ res, response: { data, totalPages, totalCount } });
+
+    const data = await UserModel.aggregate([
+      {
+        $match: {
+          $or: [
+            { username: searchTerm },
+            { email: searchTerm },
+            { fullName: searchTerm },
+          ],
+        },
+      },
+      {
+        $addFields: USER_DATA_ADD_FIELDS,
+      },
+      { $unset: Object.keys(USER_DATA_UNSET) },
+    ]);
+
+    return successResponse({ res, response: { data } });
   } catch (err) {
     return errorResponse({ res, err });
   }
@@ -62,18 +72,55 @@ export const getUserController = async (req, res) => {
   try {
     const {
       params: { id },
+      query: { includeDao },
     } = req;
-    const user = await UserModel.aggregate([
+    const userData = await UserModel.aggregate([
       {
-        $match: { $or: [{ username: id }, { publicAddress: id }] },
+        $match: {
+          $or: [
+            { username: id },
+            { publicAddress: id },
+            { "externalLinks.twitter.username": id },
+          ],
+        },
       },
       {
         $addFields: USER_DATA_ADD_FIELDS,
       },
       { $unset: Object.keys(USER_DATA_UNSET) },
     ]);
-    if (user.length == 0) throwError("No user with the username exists");
-    return successResponse({ res, response: { user: user[0] } });
+    if (userData.length == 0) throwError("No user with the username exists");
+    let user = userData[0];
+    if (includeDao) {
+      const { data: nfts } = await axios.get(
+        `https://api.all.art/v1/wallet/${user.publicAddress}`
+      );
+      const allNfts = [...nfts.unlistedNfts, ...nfts.listedNfts];
+      const families = [
+        ...new Set(
+          allNfts
+            .map(
+              ({ Properties }) =>
+                Properties.collection && Properties.collection.family
+            )
+            .filter((x) => x !== undefined)
+        ),
+      ];
+      const daos = await DaoModel.find(
+        {
+          "collectionInfo.family": {
+            $in: families,
+          },
+        },
+        {
+          name: 1,
+          symbol: 1,
+          description: 1,
+        }
+      );
+      user = { ...userData[0], daos };
+    }
+    return successResponse({ res, response: { user } });
   } catch (err) {
     return errorResponse({ res, err });
   }

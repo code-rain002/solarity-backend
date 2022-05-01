@@ -94,6 +94,8 @@ const userSchema = new Schema(
         name: { type: String, required: true },
         invitor: { type: String },
         roomId: { type: String },
+        type: { type: Boolean },
+        roomNo: { type: Number },
         roomName: { type: String },
         link: { type: String },
         state: { type: Boolean },

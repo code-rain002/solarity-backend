@@ -4,11 +4,14 @@ const roomModel = [];
 class RoomService {
     
     create(roomId, payload) {
-        const { name, sid, roomName, modelIndex } = payload;
+        const { name, sid, roomName, modelIndex, title, type, roomNo } = payload;
         roomModel.push({
             roomId,
             roomName,
             name,
+            title,
+            type,
+            roomNo,
             sid,
             modelIndex,
             clients: [],

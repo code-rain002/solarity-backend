@@ -37,15 +37,15 @@ export const socketService = (io) => {
 
     socket.on(ACTIONS.JOIN, async ({ roomId, user }) => {
         try {
-            const { modelIndex, name, roomName } = user;
+            const { modelIndex, name, roomName, title, type, roomNo } = user;
             socketUserMapping[socket.id] = user;
             if(roomId == -1) {
-                roomId = roomService.create(roomIndex, {name: name, modelIndex, roomName, sid: socket.id});
-                socket.emit(ACTIONS.ROOM_READY, {roomId});
+                roomId = roomService.create(roomIndex, { name: name, modelIndex, roomName, title, type, roomNo, sid: socket.id });
+                socket.emit(ACTIONS.ROOM_READY, { roomId, title, type, roomNo });
                 roomIndex ++;
                 return;
             } else {
-                roomService.joinRoom(roomId, {name: name, modelIndex, sid: socket.id});
+                roomService.joinRoom(roomId, { name: name, modelIndex, sid: socket.id });
             }
 
             ////////////////////- Aframe Content -////////////////////
@@ -118,7 +118,7 @@ export const socketService = (io) => {
 
     socket.on(ACTIONS.INVITE_FRIEND, async (data) => {
         try {
-            let { username, roomId, invitor } = data;
+            let { username, roomId, invitor, type, roomNo } = data;
             let user = await User.findOne({username: username});
             if(!!user.invitations) {
                 for (var i = 0; i < user.invitations.length; i ++) {
@@ -135,6 +135,8 @@ export const socketService = (io) => {
                 name: username,
                 invitor: invitor,
                 roomId: roomId,
+                type: type,
+                roomNo: roomNo,
                 roomName: roomName,
                 link: link,
                 state: false,

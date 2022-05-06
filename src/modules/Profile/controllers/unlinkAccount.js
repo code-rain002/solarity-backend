@@ -84,7 +84,7 @@ const unlinkEthereum = async (user) => {
   await UserModel.updateOne(
     { _id: user._id },
     {
-      ethereumAddress: "",
+      ethereumAddress: null,
     }
   );
 };
@@ -96,7 +96,7 @@ const unlinkSolana = async (user) => {
   await UserModel.updateOne(
     { _id: user._id },
     {
-      solanaAddress: "",
+      solanaAddress: null,
     }
   );
 };

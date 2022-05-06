@@ -13,17 +13,19 @@ const userSchema = new Schema(
     },
     solanaAddress: {
       type: String,
-      index: true,
-      unique: true,
       trim: true,
-      sparse: true,
+      index: {
+        unique: true,
+        partialFilterExpression: { solanaAddress: { $type: "string" } },
+      },
     },
     ethereumAddress: {
       type: String,
-      index: true,
-      unique: true,
       trim: true,
-      sparse: true,
+      index: {
+        unique: true,
+        partialFilterExpression: { ethereumAddress: { $type: "string" } },
+      },
     },
     bio: { type: String, required: false, trim: true },
     externalLinks: {

@@ -83,7 +83,7 @@ export const loginUserController = async (req, res) => {
     await req.session.save();
 
     if (registerFlag) {
-      await saveOwnedNfts(publicAddress);
+      await saveOwnedNfts(publicKey);
     }
 
     const profile = await getProfileData(req);

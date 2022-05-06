@@ -24,24 +24,15 @@ export const unlinkAccountController = async (req, res) => {
       case "ethereum":
         await unlinkEthereum(user);
         break;
+      case "solana":
+        await unlinkSolana(user);
+        break;
     }
     let profile = await req.profile();
     return successResponse({ res, response: { profile } });
   } catch (err) {
     return errorResponse({ res, err });
   }
-};
-
-const unlinkEthereum = async (user) => {
-  await UserModel.updateOne(
-    { _id: user._id },
-    {
-      ethereum: {
-        connected: false,
-        walletAddress: "",
-      },
-    }
-  );
 };
 
 const unlinkDiscord = async (user) => {
@@ -84,4 +75,28 @@ const unlinkTwitter = async (user) => {
   //     },
   //   }
   // );
+};
+
+const unlinkEthereum = async (user) => {
+  if (!user.solanaAddress) {
+    throwError("At least one wallet must be linked");
+  }
+  await UserModel.updateOne(
+    { _id: user._id },
+    {
+      ethereumAddress: "",
+    }
+  );
+};
+
+const unlinkSolana = async (user) => {
+  if (!user.ethereumAddress) {
+    throwError("At least one wallet must be linked");
+  }
+  await UserModel.updateOne(
+    { _id: user._id },
+    {
+      solanaAddress: "",
+    }
+  );
 };

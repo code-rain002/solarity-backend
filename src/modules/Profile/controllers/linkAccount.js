@@ -5,11 +5,10 @@ import {
   getTwitterAccessToken,
   getDiscordAccessToken,
   throwError,
+  verifySignature,
 } from "../../../helpers";
 import UserModel from "../../User/model";
 import { TwitterApi } from "twitter-api-v2";
-import { recoverPersonalSignature } from "eth-sig-util";
-import { bufferToHex } from "ethereumjs-util";
 
 export const linkAccountController = async (req, res) => {
   try {
@@ -25,6 +24,9 @@ export const linkAccountController = async (req, res) => {
         break;
       case "ethereum":
         await linkEthereum(String(_id), signature, walletAddress);
+        break;
+      case "solana":
+        await linkSolana(String(_id), signature, walletAddress);
         break;
     }
     profile = await req.profile();
@@ -63,19 +65,25 @@ const linkTwitter = async (userId, code, url) => {
 };
 
 const linkEthereum = async (userId, signature, walletAddress) => {
-  const messageBufferHex = bufferToHex(Buffer.from(userId, "utf8"));
-  const retrievedAddress = recoverPersonalSignature({
-    data: messageBufferHex,
-    sig: signature,
-  });
-  if (retrievedAddress !== walletAddress) {
+  if (!verifySignature(userId, signature, walletAddress, "ethereum")) {
     throwError("Invalid address/signature combo provided");
   }
   await UserModel.updateOne(
     { _id: userId },
     {
-      "ethereum.walletAddress": walletAddress,
-      "ethereum.connected": true,
+      ethereumAddress: walletAddress,
+    }
+  );
+};
+
+const linkSolana = async (userId, signature, walletAddress) => {
+  if (!verifySignature(userId, signature, walletAddress, "solana")) {
+    throwError("Invalid address/signature combo provided");
+  }
+  await UserModel.updateOne(
+    { _id: userId },
+    {
+      solanaAddress: walletAddress,
     }
   );
 };

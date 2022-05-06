@@ -12,65 +12,73 @@ import {
 } from "../../helpers";
 import { isValidSolanaAddress } from "@nfteyez/sol-rayz";
 import { saveOwnedNfts } from "../../helpers/nftHelpers";
+import { isValidAddress } from "ethereumjs-util";
 
 // CHECKED
 export const loginUserController = async (req, res) => {
   try {
-    const { requestNonce, publicAddress, signature } = req.body;
+    const { requestNonce, publicKey, walletType, signature } = req.body;
     const cache = req.app.get("registerNonceCache");
 
     let registerFlag = false;
     // check if the address is a valid solana address
-    if (!isValidSolanaAddress(publicAddress)) {
-      throwError("Invalid public address");
+    if (
+      (!isValidSolanaAddress(publicKey) && walletType === "solana") ||
+      (!isValidAddress(publicKey) && walletType === "ethereum")
+    ) {
+      throwError("Invalid public key");
     }
 
     // generate nonce regardless
     const nonce = String(Math.ceil(Math.random() * 99999) + 10000);
-
-    const user = await UserModel.findOne(
-      { publicAddress },
-      { publicAddress: 1, nonce: 1 }
-    );
-
-    if (!user) registerFlag = true;
+    const user = await UserModel.aggregate([
+      {
+        $match: {
+          $or: [{ solanaAddress: publicKey }, { ethereumAddress: publicKey }],
+        },
+      },
+    ]);
+    if (user.length === 0) registerFlag = true;
 
     if (requestNonce) {
       if (registerFlag) {
-        cache.set(publicAddress, nonce);
+        cache.set(publicKey, nonce);
       } else {
-        await UserModel.updateOne({ _id: user.id }, { nonce });
+        await UserModel.updateOne({ _id: user[0]._id }, { nonce });
       }
       return successResponse({ res, response: { nonce } });
     }
 
     let nonceToVerify;
     if (registerFlag) {
-      nonceToVerify = cache.get(publicAddress);
+      nonceToVerify = cache.get(publicKey);
     } else {
-      nonceToVerify = user.nonce;
+      nonceToVerify = user[0].nonce;
     }
 
-    const verified = verifySignature(nonceToVerify, signature, publicAddress);
-
+    const verified = verifySignature(
+      nonceToVerify,
+      signature,
+      publicKey,
+      walletType
+    );
     if (!verified) throwError("Invalid signature, unable to login");
 
     let userId;
     if (registerFlag) {
       const user = await UserModel.create({
-        publicAddress,
+        [walletType + "Address"]: publicKey,
         stepsCompleted: {
           infoAdded: false,
           daoClaimed: false,
         },
       });
-      userId = user.id;
+      userId = user._id;
     } else {
       await UserModel.updateOne({ _id: user.id }, { nonce });
-      userId = user.id;
+      userId = user[0]._id;
     }
-
-    req.session.userId = userId;
+    req.session.userId = userId.toString();
     req.session.logged = true;
     await req.session.save();
 

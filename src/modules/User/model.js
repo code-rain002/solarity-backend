@@ -11,25 +11,19 @@ const userSchema = new Schema(
       sparse: true,
       trim: true,
     },
-    publicAddress: {
+    solanaAddress: {
       type: String,
       index: true,
       unique: true,
       trim: true,
       sparse: true,
     },
-    ethereum: {
-      walletAddress: {
-        type: String,
-        index: true,
-        unique: true,
-        trim: true,
-        sparse: true,
-      },
-      connected: {
-        type: Boolean,
-        default: false,
-      },
+    ethereumAddress: {
+      type: String,
+      index: true,
+      unique: true,
+      trim: true,
+      sparse: true,
     },
     bio: { type: String, required: false, trim: true },
     externalLinks: {

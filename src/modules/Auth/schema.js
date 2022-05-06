@@ -2,10 +2,14 @@ const yup = require("yup");
 
 export const LoginUserSchema = yup.object({
   body: yup.object({
-    publicAddress: yup
+    publicKey: yup
       .string()
-      .typeError("Public address must be a string")
-      .required("The public address is required"),
+      .typeError("Public key must be a string")
+      .required("The public key is required"),
+    walletType: yup
+      .string()
+      .oneOf(["solana", "ethereum"])
+      .required("The wallet type is required"),
     requestNonce: yup
       .boolean()
       .typeError("Request nonce can either be true or false")

@@ -64,8 +64,11 @@ export const getRoomInfoController = async (req, res) => {
       params: { name: name, roomNo: roomNo },
     } = req;
 
-    const user = await UserModel.findOne({ username: name, "rooms.roomNo": roomNo})
-    const roomInfoData = user.rooms.find(s => s.roomNo == roomNo);
+    const user = await UserModel.findOne({
+      username: name,
+      "rooms.roomNo": roomNo,
+    });
+    const roomInfoData = user.rooms.find((s) => s.roomNo == roomNo);
     return successResponse({ res, response: { roomInfoData } });
   } catch (err) {
     return errorResponse({ res, err });
@@ -93,7 +96,8 @@ export const getUserController = async (req, res) => {
         $match: {
           $or: [
             { username: id },
-            { publicAddress: id },
+            { solanaAddress: id },
+            { ethereumAddress: id },
             { "externalLinks.twitter.username": id },
           ],
         },
@@ -105,33 +109,36 @@ export const getUserController = async (req, res) => {
     ]);
     if (userData.length == 0) throwError("No user with the username exists");
     let user = userData[0];
-    if (includeDao) {
-      const { data: nfts } = await axios.get(
-        `https://api.all.art/v1/wallet/${user.publicAddress}`
-      );
-      const allNfts = [...nfts.unlistedNfts, ...nfts.listedNfts];
-      const families = [
-        ...new Set(
-          allNfts
-            .map(
-              ({ Properties }) =>
-                Properties.collection && Properties.collection.family
-            )
-            .filter((x) => x !== undefined)
-        ),
-      ];
-      const daos = await DaoModel.find(
-        {
-          "collectionInfo.family": {
-            $in: families,
+    if (includeDao && user.solanaAddress) {
+      let daos = [];
+      try {
+        const { data: nfts } = await axios.get(
+          `https://api.all.art/v1/wallet/${user.solanaAddress}`
+        );
+        const allNfts = [...nfts.unlistedNfts, ...nfts.listedNfts];
+        const families = [
+          ...new Set(
+            allNfts
+              .map(
+                ({ Properties }) =>
+                  Properties.collection && Properties.collection.family
+              )
+              .filter((x) => x !== undefined)
+          ),
+        ];
+        daos = await DaoModel.find(
+          {
+            "collectionInfo.family": {
+              $in: families,
+            },
           },
-        },
-        {
-          name: 1,
-          symbol: 1,
-          description: 1,
-        }
-      );
+          {
+            name: 1,
+            symbol: 1,
+            description: 1,
+          }
+        );
+      } catch {}
       user = { ...userData[0], daos };
     }
     return successResponse({ res, response: { user } });
@@ -147,7 +154,7 @@ export const getUserWithWalletAddressController = async (req, res) => {
     } = req;
     const user = await UserModel.aggregate([
       {
-        $match: { publicAddress: address },
+        $match: { solanaAddress: address },
       },
       {
         $addFields: USER_DATA_ADD_FIELDS,

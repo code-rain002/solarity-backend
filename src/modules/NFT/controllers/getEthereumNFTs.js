@@ -1,6 +1,5 @@
 import { successResponse, errorResponse, throwError } from "../../../helpers";
 import UserModel from "../../User/model";
-import Moralis from "moralis/node";
 import axios from "axios";
 
 export const getEthereumNFTsController = async (req, res) => {

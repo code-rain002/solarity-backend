@@ -7,6 +7,7 @@ import {
   getNftAnalysisController,
   getNftFromMagicEdenController,
 } from "./controller";
+import { getEthereumNFTsController } from "./controllers/getEthereumNFTs";
 import { getNftsSchema, nftAnalysisSchema } from "./schema";
 
 const router = express.Router();
@@ -15,6 +16,12 @@ router.get(
   "/",
   validateSchema(getNftsSchema, { includeQuery: true }),
   getNftsController
+);
+
+router.get(
+  "/eth",
+  validateSchema(getNftsSchema, { includeQuery: true }),
+  getEthereumNFTsController
 );
 
 router.get("/analysis", getNftAnalysisController);

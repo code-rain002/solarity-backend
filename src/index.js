@@ -10,6 +10,8 @@ import Agenda from "agenda";
 import { TwitterApi } from "twitter-api-v2";
 import Rollbar from "rollbar";
 import cors from "cors";
+import Moralis from "moralis/node";
+
 const theblockchainapi = require("theblockchainapi");
 
 import {
@@ -205,6 +207,12 @@ class Server {
     });
   }
   initApis() {
+    // moralis init
+    Moralis.start({
+      serverUrl: process.env.MORALIS_SERVER_URL,
+      appId: process.env.MORALIS_APP_ID,
+      moralisSecret: process.env.MORALIS_SECRET,
+    });
     // theblockchainapi init
     let defaultClient = theblockchainapi.ApiClient.instance;
     let APIKeyID = defaultClient.authentications["APIKeyID"];
@@ -225,6 +233,7 @@ class Server {
     });
     this.express.set("rollbar", rollbar);
     global.rollbar = rollbar;
+    Moralis.start({ serverUrl, appId, moralisSecret });
   }
   startNftQueue() {
     const nftQueue = new Agenda({

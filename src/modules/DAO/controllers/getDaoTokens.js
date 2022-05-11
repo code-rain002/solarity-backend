@@ -1,7 +1,7 @@
 import { errorResponse, successResponse } from "../../../helpers";
 import DaoModel from "../model";
 
-export const getDaoTokenAddressesController = async (req, res) => {
+export const getDaoTokensController = async (req, res) => {
   try {
     const tokenAddresses = await DaoModel.aggregate([
       {

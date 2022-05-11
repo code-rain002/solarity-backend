@@ -6,7 +6,8 @@ import {
   getAllUsersController,
   unfollowUserController,
   getUserWithWalletAddressController,
-  getRoomInfoController
+  getRoomInfoController,
+  getUserInfoController
 } from "./controller";
 import { getUserSchema, getUsersSchema } from "./schema";
 import { RouteModule } from "../RouteModuleClass";
@@ -23,6 +24,7 @@ class UserModule extends RouteModule {
     );
     this.router.get("/getUsers", getAllUsersController);
     this.router.get("/getRoomInfo/:name/:roomNo", getRoomInfoController);
+    this.router.get("/getUserInfo/:name", getUserInfoController);
     this.router.get(
       "/:id",
       this.validateSchema(getUserSchema, { includeQuery: true }),

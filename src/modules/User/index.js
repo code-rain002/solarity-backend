@@ -24,7 +24,7 @@ class UserModule extends RouteModule {
     );
     this.router.get("/getUsers", getAllUsersController);
     this.router.get("/getRoomInfo/:name/:roomNo", getRoomInfoController);
-    this.router.post("/getUserInfo/:name", getUserInfoController);
+    this.router.get("/getUserInfo/:name", getUserInfoController);
     this.router.get(
       "/:id",
       this.validateSchema(getUserSchema, { includeQuery: true }),

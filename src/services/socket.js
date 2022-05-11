@@ -1,6 +1,8 @@
 import ACTIONS from './config/actions';
 import roomService from './room';
+import userService from './user';
 import User from '../modules/User/model';
+import user from './user';
 export const socketService = (io) => {
   const socketUserMapping = {}
   var roomIndex = 0;
@@ -33,6 +35,46 @@ export const socketService = (io) => {
     socket.socket_id = socket.id;
     socket.on(ACTIONS.SET_USER_NAME, ({username}) => {
         userlist[username] = socket;
+    })
+
+    socket.on(ACTIONS.JOIN_EXTENSION, ({name}) => {
+        try {
+            socket.extension_user_name = name;
+            const userIndex = userService.userModel.findIndex(s => s.user.name == name);
+            var userInfo = {};
+            if(userIndex != -1) {
+                if(userInfo.onlineFlag) {
+                    userInfo.socket.emit('logout', {});
+                    return;
+                }
+                userInfo = userService.joinUser({userIndex, socket});
+            } else {
+                userInfo = userService.createUser({name, socket});
+            }
+            const users = userService.getOnlineUser(name);
+            if(userInfo != {}) {
+                socket.emit(ACTIONS.USER_INFO_EXTENSION, !!users ? users: []);
+                io.sockets.emit(ACTIONS.ADD_USER_EXTENSION, userInfo.user);
+            }
+            console.log('join in extension ', socket.id);
+        } catch (error) {
+            console.log('JOIN_EXTENSION :', error);
+        }
+    })
+
+    socket.on(ACTIONS.SEND_MSG_EXTENSION, (msg) => {
+        try {
+            const senderIndex = userService.userModel.findIndex(s => s.user.name == msg.members[0]);
+            const receiverIndex = userService.userModel.findIndex(s => s.user.name == msg.members[1]);
+            if(senderIndex > -1 && receiverIndex > -1) {
+                userService.userModel[senderIndex].user.msgs.push(msg);
+                userService.userModel[receiverIndex].user.msgs.push(msg);
+                userService.userModel[senderIndex].socket.emit(ACTIONS.SEND_MSG_EXTENSION, msg);
+                userService.userModel[receiverIndex].socket.emit(ACTIONS.SEND_MSG_EXTENSION, msg);
+            }
+        } catch (error) {
+            console.log('SEND_MSG_EXTENSION :', error);
+        }
     })
 
     socket.on(ACTIONS.JOIN, async ({ roomId, user }) => {
@@ -268,6 +310,11 @@ export const socketService = (io) => {
     socket.on(ACTIONS.LEAVE, leaveRoomFunc)
     socket.on('disconnect', () => {
         leaveRoomFunc({roomId: socket.roomId, user: {name: socket.username}});
+        const user = userService.userModel.find(s => s.socket.id == socket.socket_id);
+        if(!!user) {
+            user.user.onlineFlag = false;
+            io.sockets.emit(ACTIONS.REMOVE_USER_EXTENSION, socket.extension_user_name);
+        }
         console.log('disconnection ' + socket.socket_id);
     })
   });

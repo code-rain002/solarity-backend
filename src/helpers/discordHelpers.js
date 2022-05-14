@@ -7,9 +7,10 @@ export const getDiscordAccessToken = async (userId, code, redirect_uri) => {
     client_secret: process.env.DISCORD_CLIENT_SECRET,
     grant_type: "authorization_code",
     code,
-    scope: "identify connections applications.builds.read guilds",
+    scope: "identify connections guilds guilds.members.read dm_channels.read",
     redirect_uri,
   };
+
   const paramsString = new URLSearchParams(params);
   let headers = {
     "Content-Type": "application/x-www-form-urlencoded",
@@ -62,11 +63,18 @@ export const revokeDiscord = async (accessToken) => {
   return response;
 };
 
-export const getDiscordChannel = async (accessToken) => {
-  // const { data } = await axios.get(`https://discord.com/api/channels/${channel.id}`, {
-  console.log(accessToken);
+export const getDiscordGuilds = async (accessToken) => {
+  const { data } = await axios.get(`https://discord.com/api/users/@me/guilds`, {
+    headers: {
+      authorization: `Bearer ${accessToken}`,
+    },
+  });
+  return data;
+};
+
+export const getDiscordChannelMessages = async (channelId, accessToken) => {
   const { data } = await axios.get(
-    `https://discord.com/api/users/@me/guilds/725371605378924594`,
+    `https://discord.com/api/channels/${channelId}`,
     {
       headers: {
         authorization: `Bearer ${accessToken}`,

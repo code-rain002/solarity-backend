@@ -4,34 +4,31 @@ import UserModel from "../../User/model";
 export const buyRoomController = async (req, res) => {
   try {
     const {
-      body: {
-          title,
-          subTitle,
-          imageUrl,
-          currentBid,
-          roomNo,
-      },
+      body: { title, subTitle, imageUrl, currentBid, roomNo },
       session: { userId },
     } = req;
     const profile = await req.profile();
     var rooms = profile.rooms;
-    if(!rooms) {
+    if (!rooms) {
       rooms = [];
     }
 
-    const roomIndex = rooms.findIndex(s => s.roomNo == roomNo);
-    if(roomIndex != -1) {
-      return errorResponse({ res, err: "Room is already available." });
+    const roomIndex = rooms.findIndex((s) => s.roomNo == roomNo);
+    if (roomIndex != -1) {
+      // comment below
+      return successResponse({ res, response: { profile } });
+      // uncomment below
+      // return errorResponse({ res, err: "Room is already available." });
     }
 
     rooms.push({
-        roomNo: roomNo,
-        title: title,
-        subTitle: subTitle,
-        currentBid: currentBid,
-        imageUrl: imageUrl,
-        modelAssets: {},
-        nftStates: [],
+      roomNo: roomNo,
+      title: title,
+      subTitle: subTitle,
+      currentBid: currentBid,
+      imageUrl: imageUrl,
+      modelAssets: {},
+      nftStates: [],
     });
 
     await UserModel.updateOne(

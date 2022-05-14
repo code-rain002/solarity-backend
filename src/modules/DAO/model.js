@@ -12,6 +12,10 @@ const daoSchema = new Schema(
       sparse: true,
       trim: true,
     },
+    discord: {
+      guildId: { type: String, trim: true },
+      channelId: { type: String, trim: true },
+    },
     name: { type: String, required: true, trim: true },
     description: { type: String, required: false, trim: true },
     externalLinks: {

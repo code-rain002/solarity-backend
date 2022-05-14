@@ -3,7 +3,8 @@ import DaoModel from "../model";
 import { Types } from "mongoose";
 import {
   errorResponse,
-  getDiscordChannel,
+  getDiscordChannelMessages,
+  getDiscordGuilds,
   getDiscordUser,
   refreshDiscordToken,
   successResponse,
@@ -16,6 +17,11 @@ export const getDaoAnnouncementsController = async (req, res) => {
       params: { symbol },
       session: { userId },
     } = req;
+    const { discord } = await DaoModel.findOne({ symbol }, { discord: 1 });
+    if (!discord || !discord.guildId || !discord.channelId) {
+      throwError("The DAO has not provided the discord info");
+    }
+    const { channelId, guildId } = discord;
     const {
       externalLinks: {
         discord: { connected, accessToken, refreshToken },
@@ -25,9 +31,13 @@ export const getDaoAnnouncementsController = async (req, res) => {
     // const newToken = await refreshDiscordToken(refreshToken, userId);
     // console.log(newToken);
 
-    const data = await getDiscordChannel(accessToken);
-
-    console.log(data);
+    const data = await getDiscordGuilds(accessToken);
+    const isMember = data.find(({ id }) => id === guildId);
+    if (!isMember) {
+      throwError("You cannot view the announcements of this DAO");
+    }
+    const messages = await getDiscordChannelMessages(channelId, accessToken);
+    console.log(messages);
     return successResponse({ res });
   } catch (err) {
     console.log(err);

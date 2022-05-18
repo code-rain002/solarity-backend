@@ -67,13 +67,6 @@ export const updatePasswordSchema = yup.object({
 
 export const updateProfileSchema = yup.object({
   body: yup.object({
-    fullName: yup
-      .string()
-      .trim()
-      .typeError("Full name is invalid")
-      .min(4, "Full name is too short")
-      .max(60, "Full name is too long")
-      .nullable(),
     username: yup
       .string()
       .trim()
@@ -81,74 +74,67 @@ export const updateProfileSchema = yup.object({
       .min(3, "Username is too short")
       .max(60, "Username is too long")
       .nullable(),
-    bio: yup
-      .string()
-      .trim()
-      .typeError("Bio is invalid")
-      .min(10, "Bio is too short")
-      .max(500, "Bio is too long")
-      .nullable(),
-    email: yup.string().email().trim().typeError("Email is invalid").nullable(),
-    githubUsername: yup
-      .string()
-      .trim()
-      .typeError("Github username is invalid")
-      .nullable(),
-    discordHandle: yup
-      .string()
-      .trim()
-      .typeError("Discord handle is invalid")
-      .nullable(),
-    twitterUsername: yup
-      .string()
-      .trim()
-      .typeError("Twitter Username handle is invalid")
-      .nullable(),
+    bio: yup.string().trim().typeError("Bio is invalid").nullable(),
   }),
 });
 
-export const setupProfileInfoSchema = yup.object({
+export const profileSetupSchema = yup.object({
   body: yup.object({
-    username: yup
+    action: yup
       .string()
-      .trim()
-      .typeError("Username is invalid")
-      .min(3, "Username is too short")
-      .max(60, "Username is too long")
-      .required("Username is required"),
-    githubUsername: yup
-      .string()
-      .trim()
-      .typeError("Github username is invalid")
-      .required("Github username is required"),
-    discordHandle: yup
-      .string()
-      .trim()
-      .typeError("Discord handle is invalid")
-      .required("Discord Handle is required"),
-    twitterUsername: yup
-      .string()
-      .trim()
-      .typeError("Twitter Username handle is invalid")
-      .required("Twitter Username is required"),
-  }),
-});
+      .oneOf(["info", "link", "profilePic", "dao"])
+      .required("The setup action is required"),
+    username: yup.string().when("action", (action) => {
+      if (action === "info") {
+        return yup
+          .string()
+          .trim()
+          .typeError("Username is invalid")
+          .min(3, "Username is too short")
+          .max(60, "Username is too long")
+          .required("Username is required");
+      }
+    }),
+    bio: yup.string().trim().typeError("Bio is invalid"),
 
-export const connectTwitterSchema = yup.object({
-  body: yup.object({
-    username: yup
+    imageNetwork: yup.string().when("action", (action) => {
+      if (action === "profilePic") {
+        return yup
+          .string()
+          .oneOf(["Solana", "Ethereum"])
+          .required("NFT mint address is required");
+      }
+    }),
+    mintAddress: yup
       .string()
-      .typeError("Twitter username must be a string")
-      .required("Twitter username is required"),
-  }),
-});
-
-export const profilePicSchema = yup.object({
-  body: yup.object({
-    mint: yup
+      .when(["action", "imageNetwork"], (action, imageNetwork) => {
+        if (action === "profilePic" && imageNetwork == "Solana") {
+          return yup
+            .string()
+            .typeError("NFT mint address must be a string")
+            .required("NFT mint address is required");
+        }
+      }),
+    contractAddress: yup
       .string()
-      .typeError("Nft mint address must be a string")
-      .required("NFT mint address is required"),
+      .when(["action", "imageNetwork"], (action, imageNetwork) => {
+        if (action === "profilePic" && imageNetwork == "Ethereum") {
+          return yup
+            .string()
+            .typeError("NFT contract address must be a string")
+            .required("NFT contract address is required");
+        }
+      }),
+    tokenId: yup
+      .string()
+      .when(["action", "imageNetwork"], (action, imageNetwork) => {
+        if (action === "profilePic" && imageNetwork == "Ethereum") {
+          return yup
+            .string()
+            .typeError("NFT token ID must be a string")
+            .required("NFT token ID is required");
+        }
+      }),
   }),
 });
 

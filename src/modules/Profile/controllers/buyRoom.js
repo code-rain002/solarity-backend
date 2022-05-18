@@ -1,4 +1,4 @@
-import { successResponse, errorResponse } from "../../../helpers";
+import { successResponse, errorResponse } from "../../../utils";
 import UserModel from "../../User/model";
 
 export const buyRoomController = async (req, res) => {

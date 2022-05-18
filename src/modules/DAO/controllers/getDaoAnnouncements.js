@@ -1,15 +1,12 @@
 import UserModel from "../../User/model";
 import DaoModel from "../model";
-import { Types } from "mongoose";
 import {
   errorResponse,
   getDiscordChannelMessages,
   getDiscordGuilds,
-  getDiscordUser,
-  refreshDiscordToken,
   successResponse,
   throwError,
-} from "../../../helpers";
+} from "../../../utils";
 
 export const getDaoAnnouncementsController = async (req, res) => {
   try {

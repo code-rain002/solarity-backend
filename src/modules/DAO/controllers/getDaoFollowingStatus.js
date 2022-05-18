@@ -1,7 +1,7 @@
 import UserModel from "../../User/model";
 import DaoModel from "../model";
 import { Types } from "mongoose";
-import { errorResponse, successResponse } from "../../../helpers";
+import { errorResponse, successResponse } from "../../../utils";
 
 export const getDaoFollowingStatusController = async (req, res) => {
   try {

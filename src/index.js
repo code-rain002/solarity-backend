@@ -23,11 +23,10 @@ import {
 import { authenticate } from "./middlewares";
 import Mailer from "./mailer";
 import { fetchAllNftInCollection } from "./helpers/magicedenHelpers";
-import { coinModule } from "./modules/Coin";
 import { daoModule } from "./modules/DAO";
 import NodeCache from "node-cache";
 import { testModule } from "./modules/Test";
-import { nftCollectionModule } from "./modules/NFTCollections";
+// import { nftCollectionModule } from "./modules/NFTCollections";
 import { getProfileData } from "./modules/Profile/helpers";
 import { socketService } from "./services/socket";
 import { clusterApiUrl, Connection } from "@solana/web3.js";
@@ -134,9 +133,7 @@ class Server {
     console.log("> Starting private routes");
     this.express.use("/api/profile", authenticate, profileModule);
     this.express.use("/api/nfts", nftModule);
-    this.express.use("/api/collections", nftCollectionModule);
     this.express.use("/api/tweets", tweetModule);
-    this.express.use("/api/coins", coinModule);
     this.express.use("/api/users", userModule);
     this.express.use("/api/*", (req, res, next) => {
       const err = new Error("Not Found");

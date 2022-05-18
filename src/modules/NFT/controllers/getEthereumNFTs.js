@@ -1,4 +1,4 @@
-import { successResponse, errorResponse, throwError } from "../../../helpers";
+import { successResponse, errorResponse } from "../../../utils";
 import UserModel from "../../User/model";
 import axios from "axios";
 
@@ -7,13 +7,13 @@ export const getEthereumNFTsController = async (req, res) => {
     const {
       query: { owner },
     } = req;
-    const { ethereumAddress } = await UserModel.findOne({ username: owner });
+    const user = await UserModel.findOne({ username: owner });
     let nfts = [];
-    if (ethereumAddress) {
+    if (user && user.ethereumAddress) {
       const {
         data: { ownedNfts },
       } = await axios.get(
-        `${process.env.ALCHEMY_HTTP}/getNFTs/?owner=${ethereumAddress}`
+        `${process.env.ALCHEMY_HTTP}/getNFTs/?owner=${user.ethereumAddress}`
       );
       nfts = ownedNfts;
     }

@@ -1,9 +1,9 @@
-import { errorResponse, successResponse, throwError } from "../../helpers";
-import UserModel from "../User/model";
-import DaoModel from "../DAO/model";
+import { errorResponse, successResponse, throwError } from "../../../utils";
+import UserModel from "../../User/model";
+import DaoModel from "../../DAO/model";
 import { Types } from "mongoose";
 
-export const getTweets = async (req, res) => {
+export const getTweetsController = async (req, res) => {
   try {
     let {
       query: { maxResults, username, symbol },
@@ -55,24 +55,6 @@ export const getTweets = async (req, res) => {
       const { _realData } = timeline;
       data = _realData;
     }
-    return successResponse({ res, response: { data } });
-  } catch (err) {
-    return errorResponse({ res, err });
-  }
-};
-
-export const getTweetsByUsername = async (req, res) => {
-  try {
-    const { username } = req.params;
-    const twitterApi = req.app.get("twitterApi");
-    const user = await twitterApi.v2.userByUsername(username);
-    const {
-      data: { id },
-    } = user;
-    const timeline = await twitterApi.v1.userTimeline(id, {
-      exclude: ["replies", "retweets"],
-    });
-    const { _realData: data } = timeline;
     return successResponse({ res, response: { data } });
   } catch (err) {
     return errorResponse({ res, err });

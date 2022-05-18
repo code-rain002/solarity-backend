@@ -1,7 +1,5 @@
 import _ from "lodash";
-import { errorResponse, successResponse } from "../../helpers";
-import NftCollections from "../NFTCollections/model";
-
+import { errorResponse, successResponse } from "../../utils";
 export const getTweets = async (req, res) => {
   try {
     const { username } = req.params;
@@ -20,14 +18,14 @@ export const getTweets = async (req, res) => {
   }
 };
 
-export const getCollections = async (req, res) => {
-  try {
-    const profile = await req.profile();
-    const { symbol } = req.params;
-    const collection = await NftCollections.findOne({ symbol });
-    return successResponse({ res, response: { collection } });
-  } catch (err) {
-    console.log(err);
-    return errorResponse({ res, err });
-  }
-};
+// export const getCollections = async (req, res) => {
+//   try {
+//     const profile = await req.profile();
+//     const { symbol } = req.params;
+//     const collection = await NftCollections.findOne({ symbol });
+//     return successResponse({ res, response: { collection } });
+//   } catch (err) {
+//     console.log(err);
+//     return errorResponse({ res, err });
+//   }
+// };

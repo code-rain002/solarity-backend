@@ -6,7 +6,7 @@ import {
   throwError,
   revokeDiscord,
   twitterAuthorizationToken,
-} from "../../../helpers";
+} from "../../../utils";
 import UserModel from "../../User/model";
 
 export const unlinkAccountController = async (req, res) => {

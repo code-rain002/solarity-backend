@@ -1,53 +1,74 @@
-import {
-  followUserController,
-  getUserController,
-  getUserFollowingStatusController,
-  getUsersController,
-  getAllUsersController,
-  unfollowUserController,
-  getUserWithWalletAddressController,
-  getRoomInfoController,
-  getUserInfoController
-} from "./controller";
-import { getUserSchema, getUsersSchema } from "./schema";
 import { RouteModule } from "../RouteModuleClass";
-import { getUserFollowersController } from "./controllers";
-import { getLinkInfoController } from "./controllers";
+import { getUserSchema, getUsersSchema } from "./schema";
+
+import {
+  getAllUsersController,
+  getUserWithWalletAddressController,
+  getUserInfoController,
+  getUserFollowersController,
+  getLinkInfoController,
+  getUsersController,
+  followUserController,
+  unfollowUserController,
+  getFollowingStatusController,
+  getUserController,
+  getRoomInfoController,
+} from "./controllers";
 
 class UserModule extends RouteModule {
   publicRoutes() {
-    this.router.get("/getLinkInfo/:link", getLinkInfoController);
+    // get all users on the system
     this.router.get(
       "/",
       this.validateSchema(getUsersSchema, { includeQuery: true }),
       getUsersController
     );
-    this.router.get("/getUsers", getAllUsersController);
-    this.router.get("/getRoomInfo/:name/:roomNo", getRoomInfoController);
-    this.router.get("/getUserInfo/:name", getUserInfoController);
-    this.router.get(
-      "/:id",
-      this.validateSchema(getUserSchema, { includeQuery: true }),
-      getUserController
-    );
+
+    // get a user using the wallet address
     this.router.get("/wallet/:address", getUserWithWalletAddressController);
+
+    // GOOD TO GO
+    this.router.get("/getLinkInfo/:link", getLinkInfoController);
+
+    // GOOD TO GO
+    this.router.get("/getRoomInfo/:name/:roomNo", getRoomInfoController);
+
+    // REDUNDANT with the GET / endpoint. Confirm removal later
+    this.router.get("/getUsers", getAllUsersController);
+
+    // REDUNDANT with the GET /:id endpoint. Confirm removal later
+    this.router.get("/getUserInfo/:name", getUserInfoController);
+
+    // get all the followers of a user
     this.router.get(
       "/:username/followers",
       this.validateSchema(null, { idParamCheck: true, idName: "username" }),
       getUserFollowersController
     );
+    // get a user by id
+    this.router.get(
+      "/:id",
+      this.validateSchema(getUserSchema, { includeQuery: true }),
+      getUserController
+    );
   }
+
   privateRoutes() {
+    // get following status
     this.router.get(
       "/:username/follow",
       this.validateSchema(null, { idParamCheck: true, idName: "username" }),
-      getUserFollowingStatusController
+      getFollowingStatusController
     );
+
+    // follow a user
     this.router.post(
       "/:username/follow",
       this.validateSchema(null, { idParamCheck: true, idName: "username" }),
       followUserController
     );
+
+    // unfollow a user
     this.router.post(
       "/:username/unfollow",
       this.validateSchema(null, { idParamCheck: true, idName: "username" }),

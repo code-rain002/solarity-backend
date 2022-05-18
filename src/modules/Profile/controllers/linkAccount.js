@@ -6,7 +6,7 @@ import {
   getDiscordAccessToken,
   throwError,
   verifySignature,
-} from "../../../helpers";
+} from "../../../utils";
 import UserModel from "../../User/model";
 import { TwitterApi } from "twitter-api-v2";
 
@@ -52,6 +52,7 @@ const linkDiscord = async (userId, code, url) => {
 const linkTwitter = async (userId, code, url) => {
   const accessToken = await getTwitterAccessToken(userId, code, url);
   const client = new TwitterApi(accessToken);
+  console.log(code);
   const {
     data: { username },
   } = await client.v2.me();

@@ -1,8 +1,9 @@
 import {
   errorResponse,
   getCollectionsOwned,
+  getDaoMemberships,
   successResponse,
-} from "../../../helpers";
+} from "../../../utils";
 import DaoModel from "../model";
 
 export const getDaosController = async (req, res) => {
@@ -14,8 +15,7 @@ export const getDaosController = async (req, res) => {
     const findOptions = {};
     if (member && userId) {
       const user = await req.profile();
-      const ownedCollections = await getCollectionsOwned(user.publicAddress);
-      const names = ownedCollections.map(({ name }) => name);
+      const names = await getDaoMemberships(user.solanaAddress);
       findOptions["collectionInfo.name"] = {
         $in: names,
       };

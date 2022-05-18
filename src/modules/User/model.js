@@ -57,7 +57,10 @@ const userSchema = new Schema(
     },
     profileImage: {
       link: { type: String, required: false, trim: true },
-      address: { type: String, required: false, trim: true },
+      network: { type: String, required: false, trim: true },
+      contractAddress: { type: String, required: false, trim: true },
+      tokenId: { type: String, required: false, trim: true },
+      mintAddress: { type: String, required: false, trim: true },
     },
     followerCount: { type: Number, required: false, default: 0 },
     following: {
@@ -105,6 +108,10 @@ const userSchema = new Schema(
     },
     stepsCompleted: {
       infoAdded: {
+        type: Boolean,
+        default: false,
+      },
+      accountsLinked: {
         type: Boolean,
         default: false,
       },

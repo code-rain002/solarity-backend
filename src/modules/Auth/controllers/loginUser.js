@@ -1,36 +1,32 @@
-import md5 from "md5";
 import _ from "lodash";
+import UserModel from "../../User/model";
 
-import UserModel from "../User/model";
-import { getProfileData } from "../Profile/helpers";
-import { validatePassword } from "../../helpers/authHelpers";
 import {
   errorResponse,
   successResponse,
   throwError,
   verifySignature,
-} from "../../helpers";
+} from "../../../utils";
+
 import { isValidSolanaAddress } from "@nfteyez/sol-rayz";
-import { saveOwnedNfts } from "../../helpers/nftHelpers";
 import { isValidAddress } from "ethereumjs-util";
 
-// CHECKED
-export const loginUserController = async (req, res) => {
+export const loginUserController = async (req, res, next) => {
   try {
     const { requestNonce, publicKey, walletType, signature } = req.body;
     const cache = req.app.get("registerNonceCache");
-
     let registerFlag = false;
     // check if the address is a valid solana address
     if (
       (!isValidSolanaAddress(publicKey) && walletType === "solana") ||
       (!isValidAddress(publicKey) && walletType === "ethereum")
     ) {
-      throwError("Invalid public key");
+      throwError(`Invalid ${walletType} wallet address provided`);
     }
 
     // generate nonce regardless
     const nonce = String(Math.ceil(Math.random() * 99999) + 10000);
+
     const user = await UserModel.aggregate([
       {
         $match: {
@@ -38,8 +34,11 @@ export const loginUserController = async (req, res) => {
         },
       },
     ]);
+
+    // if no matching user == a user is trying to register
     if (user.length === 0) registerFlag = true;
 
+    // in case the user is requesting a nonce
     if (requestNonce) {
       if (registerFlag) {
         cache.set(publicKey, nonce);
@@ -50,66 +49,54 @@ export const loginUserController = async (req, res) => {
     }
 
     let nonceToVerify;
+    // fetch the nonce depending if the user is logging or registering
     if (registerFlag) {
       nonceToVerify = cache.get(publicKey);
     } else {
       nonceToVerify = user[0].nonce;
     }
 
+    // verify the nonce
     const verified = verifySignature(
       nonceToVerify,
       signature,
       publicKey,
       walletType
     );
+
+    // throw an error, if the signature is invalid
     if (!verified) throwError("Invalid signature, unable to login");
 
     let userId;
+
+    // register in case the user is logging in for the first time
     if (registerFlag) {
       const user = await UserModel.create({
         [walletType + "Address"]: publicKey,
         stepsCompleted: {
           infoAdded: false,
           daoClaimed: false,
+          profilePicUpdated: false,
         },
       });
+      // set the id to the new user
       userId = user._id;
     } else {
+      // if the user exists, then just update the nonce and set the id
       await UserModel.updateOne({ _id: user.id }, { nonce });
       userId = user[0]._id;
     }
+
+    // set the session user ID
     req.session.userId = userId.toString();
     req.session.logged = true;
     await req.session.save();
-
-    if (registerFlag) {
-      await saveOwnedNfts(publicKey);
-    }
-
-    const profile = await getProfileData(req);
-    return successResponse({ res, response: { profile } });
+    return next();
   } catch (err) {
     return errorResponse({
       res,
       err,
       location: "loginUserController",
     });
-  }
-};
-
-// CHECKED
-export const logoutUserController = async (req, res, next) => {
-  await req.session.destroy();
-  return successResponse({ res });
-};
-
-// CHECKED
-export const checkLoginController = async (req, res) => {
-  try {
-    const { userId } = req.session;
-    const profile = await getProfileData(req);
-    return successResponse({ res, response: { profile } });
-  } catch (err) {
-    return errorResponse({ res, err });
   }
 };

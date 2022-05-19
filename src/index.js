@@ -40,14 +40,7 @@ class Server {
     this.server = require("http").createServer(this.express);
     this.io = require("socket.io")(this.server, {
       cors: {
-        origin: [
-          "http://localhost:3000",
-          "http://localhost:3002",
-          "https://solarity-web-git-master-hassan-sk.vercel.app",
-          "https://solarity-frontend.vercel.app",
-          "https://solarityvr.github.io/",
-          "https://127.0.0.1:5501",
-        ],
+        origins: '*:*',
         methods: ["GET", "POST"],
         credentials: true,
       },
@@ -150,15 +143,16 @@ class Server {
     this.express.use(helmet());
     this.express.set("trust proxy", 1);
     const corsOptions = {
-      origin: [
-        "http://localhost:3000",
-        "http://localhost:3002",
-        "https://solarity-web-git-master-hassan-sk.vercel.app",
-        "https://solarity-frontend.vercel.app",
-        "https://solarityvr.github.io",
-        "https://127.0.0.1:5501",
-        "http://127.0.0.1:5500",
-      ],
+      // origin: [
+      //   "http://localhost:3000",
+      //   "http://localhost:3002",
+      //   "https://solarity-web-git-master-hassan-sk.vercel.app",
+      //   "https://solarity-frontend.vercel.app",
+      //   "https://solarityvr.github.io",
+      //   "https://127.0.0.1:5501",
+      //   "http://127.0.0.1:5500",
+      // ],
+      origin: true,
       methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
       credentials: true, //access-control-allow-credentials:true
       optionSuccessStatus: 200,

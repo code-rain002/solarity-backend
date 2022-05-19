@@ -1,6 +1,7 @@
 import ACTIONS from "./config/actions";
 import roomService from "./room";
 import userService from "./user";
+import groupService from "./group";
 import User from "../modules/User/model";
 import user from "./user";
 export const socketService = (io) => {
@@ -9,6 +10,7 @@ export const socketService = (io) => {
   //aframe
   const rooms = {};
   const userlist = {};
+  groupService.create();
   ////////////
   io.on("connection", (socket) => {
     //aframe
@@ -64,28 +66,37 @@ export const socketService = (io) => {
 
     socket.on(ACTIONS.SEND_MSG_EXTENSION, (msg) => {
       try {
-        const senderIndex = userService.userModel.findIndex(
-          (s) => s.user.name == msg.members[0]
-        );
-        const receiverIndex = userService.userModel.findIndex(
-          (s) => s.user.name == msg.members[1]
-        );
-        if (senderIndex > -1 && receiverIndex > -1) {
-          userService.userModel[senderIndex].user.msgs.push(msg);
-          userService.userModel[receiverIndex].user.msgs.push(msg);
-          userService.userModel[senderIndex].socket.emit(
-            ACTIONS.SEND_MSG_EXTENSION,
-            msg
+        if(msg.groupType == false) {
+          const senderIndex = userService.userModel.findIndex(
+            (s) => s.user.name == msg.members[0]
           );
-          userService.userModel[receiverIndex].socket.emit(
-            ACTIONS.SEND_MSG_EXTENSION,
-            msg
+          const receiverIndex = userService.userModel.findIndex(
+            (s) => s.user.name == msg.members[1]
           );
+          if (senderIndex > -1 && receiverIndex > -1) {
+            userService.userModel[senderIndex].user.msgs.push(msg);
+            userService.userModel[receiverIndex].user.msgs.push(msg);
+            userService.userModel[senderIndex].socket.emit(
+              ACTIONS.SEND_MSG_EXTENSION,
+              msg
+            );
+            userService.userModel[receiverIndex].socket.emit(
+              ACTIONS.SEND_MSG_EXTENSION,
+              msg
+            );
+          }
+        } else {
+          groupService.setMsg(msg);
+          io.sockets.emit(ACTIONS.SEND_MSG_EXTENSION, msg);
         }
       } catch (error) {
         console.log("SEND_MSG_EXTENSION :", error);
       }
     });
+
+    socket.on(ACTIONS.GET_GROUP_MSGS, ({daoId}) => {
+      socket.emit(ACTIONS.GET_GROUP_MSGS, {daoId, msgs: groupService.getGroupMsgs(daoId)})
+    })
 
     socket.on(ACTIONS.JOIN, async ({ roomId, user }) => {
       try {

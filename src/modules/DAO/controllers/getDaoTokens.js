@@ -1,4 +1,4 @@
-import { errorResponse, successResponse } from "../../../helpers";
+import { errorResponse, successResponse } from "../../../utils";
 import DaoModel from "../model";
 
 export const getDaoTokensController = async (req, res) => {

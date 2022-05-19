@@ -1,9 +1,13 @@
-import { errorResponse, successResponse, throwError } from "../../../helpers";
-import { getCollectionStats } from "../../../helpers/magicedenHelpers";
+import {
+  errorResponse,
+  successResponse,
+  throwError,
+  getCollectionStats,
+} from "../../../utils";
 import DaoModel from "../model";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 
-export const getSingleDaoController = async (req, res) => {
+export const getDaoController = async (req, res) => {
   try {
     const { symbol } = req.params;
     const daoFetch = await DaoModel.aggregate([

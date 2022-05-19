@@ -1,2 +1,11 @@
+export * from "./getUsers";
+export * from "./getAllUsers"; // redundant
+export * from "./getUser";
+export * from "./getUserInfo"; // redundant
 export * from "./getUserFollowers";
-export * from "./getLinkInfoController";
+export * from "./getLinkInfo";
+export * from "./unfollowUser";
+export * from "./followUser";
+export * from "./getFollowingStatus";
+export * from "./getUserWithWalletAddress";
+export * from "./getRoomInfo";

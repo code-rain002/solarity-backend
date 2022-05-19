@@ -1,8 +1,14 @@
-import { successResponse, errorResponse, throwError } from "../../../helpers";
+import {
+  successResponse,
+  errorResponse,
+  throwError,
+  getProfileData,
+} from "../../../utils";
 
 export const getProfileController = async (req, res) => {
   try {
-    const profile = await req.profile();
+    const { userId } = req.session;
+    const profile = await getProfileData(userId);
     if (!profile) {
       await res.session.destroy();
       throwError("Please login again");

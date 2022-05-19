@@ -1,7 +1,7 @@
 import UserModel from "../../User/model";
 import DaoModel from "../model";
 import { Types } from "mongoose";
-import { errorResponse, successResponse, throwError } from "../../../helpers";
+import { errorResponse, successResponse, throwError } from "../../../utils";
 
 // OK
 export const unfollowDaoController = async (req, res) => {

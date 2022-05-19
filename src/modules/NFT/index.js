@@ -1,47 +1,15 @@
-import express from "express";
-import { validateSchema } from "../../middlewares";
-import {
-  getNftsController,
-  getNftController,
-  nftAnalysisController,
-  getNftAnalysisController,
-  getNftFromMagicEdenController,
-} from "./controller";
-import { getEthereumNFTsController } from "./controllers/getEthereumNFTs";
-import { getNftsSchema, nftAnalysisSchema } from "./schema";
+import { RouteModule } from "../RouteModuleClass";
+import { getEthereumNFTsController } from "./controllers";
+import { getNftsSchema } from "./schema";
 
-const router = express.Router();
+class NftModule extends RouteModule {
+  publicRoutes() {
+    this.router.get(
+      "/eth",
+      this.validateSchema(getNftsSchema, { includeQuery: true }),
+      getEthereumNFTsController
+    );
+  }
+}
 
-router.get(
-  "/",
-  validateSchema(getNftsSchema, { includeQuery: true }),
-  getNftsController
-);
-
-router.get(
-  "/eth",
-  validateSchema(getNftsSchema, { includeQuery: true }),
-  getEthereumNFTsController
-);
-
-router.get("/analysis", getNftAnalysisController);
-
-router.get(
-  "/:mint/magiceden",
-  validateSchema(null, { idParamCheck: true, idName: "mint" }),
-  getNftFromMagicEdenController
-);
-
-router.get(
-  "/:mint",
-  validateSchema(null, { idParamCheck: true, idName: "mint" }),
-  getNftController
-);
-
-router.post(
-  "/analysis",
-  validateSchema(nftAnalysisSchema),
-  nftAnalysisController
-);
-
-export { router as nftModule };
+export const nftModule = new NftModule();

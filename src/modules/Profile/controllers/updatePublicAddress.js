@@ -3,7 +3,7 @@ import {
   errorResponse,
   throwError,
   verifySignature,
-} from "../../../helpers";
+} from "../../../utils";
 import UserModel from "../../User/model";
 import _ from "lodash";
 import { isValidSolanaAddress } from "@nfteyez/sol-rayz";

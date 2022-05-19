@@ -1,6 +1,11 @@
-import { successResponse, errorResponse, throwError } from "../../../helpers";
+import {
+  successResponse,
+  errorResponse,
+  throwError,
+  removeWhiteSpaces,
+  isProfileVisible,
+} from "../../../utils";
 import UserModel from "../../User/model";
-import { removeWhiteSpaces } from "../../../utils";
 
 const formatForId = (value) => {
   if (typeof value === "string") {
@@ -9,38 +14,28 @@ const formatForId = (value) => {
   return undefined;
 };
 
-export const updateProfileController = async (req, res) => {
+export const updateProfileInfoController = async (req, res, next) => {
   try {
     const {
       session: { userId },
-      body,
+      body: { action, username, bio },
     } = req;
 
-    validateProfileData(body);
+    if (action !== undefined && action !== "info") return next();
+    validatUsername(username);
 
-    const user = await UserModel.findById(userId);
-
-    const newVal = (key) => body[key] || user[key] || "";
-
-    const updateObject = {};
-    // FORMAT USERNAME
-    updateObject.username = formatForId(newVal("username"));
-    // FORMAT BIO
-    updateObject.bio = removeWhiteSpaces(newVal("bio"));
-    // GENERATE EXTERNAL LINKS
-    injectExternalLinks(updateObject, body, user);
-
-    // REMOVE EMPTY
-    Object.keys(updateObject).forEach((key) => {
-      if (updateObject[key] === user[key] || !updateObject[key])
-        delete updateObject[key];
-    });
-
+    const updateObject = {
+      username: formatForId(username),
+      bio: removeWhiteSpaces(bio),
+    };
+    let userData = await req.profile();
+    userData.stepsCompleted.infoAdded = true;
+    const visible = isProfileVisible(userData);
+    userData.visible = visible;
     await UserModel.updateOne(
       { _id: userId },
-      { ...updateObject, "stepsCompleted.infoAdded": true }
+      { ...updateObject, "stepsCompleted.infoAdded": true, visible }
     );
-    const userData = await req.profile();
 
     return successResponse({ res, response: { profile: userData } });
   } catch (err) {
@@ -48,22 +43,8 @@ export const updateProfileController = async (req, res) => {
   }
 };
 
-const validateProfileData = (body) => {
-  const { username } = body;
+const validatUsername = (username) => {
   if (!username.match(/^[a-zA-Z][a-zA-Z0-9]*$/gm) || username.length < 3) {
     throwError("Invalid username");
-  }
-};
-
-const injectExternalLinks = (updateObject, body, user) => {
-  const { twitterUsername, githubUsername, discordHandle } = body;
-  if (twitterUsername) {
-    updateObject["externalLinks.twitter.username"] = twitterUsername;
-  }
-  if (githubUsername) {
-    updateObject["externalLinks.github.username"] = githubUsername;
-  }
-  if (discordHandle) {
-    updateObject["externalLinks.discord.handle"] = discordHandle;
   }
 };

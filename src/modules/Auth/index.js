@@ -1,23 +1,28 @@
-import express from "express";
-import { authenticate, validateSchema } from "../../middlewares";
-
+import { RouteModule } from "../RouteModuleClass";
 import {
-  logoutUserController,
-  checkLoginController,
   loginUserController,
-} from "./controller";
-
+  logoutUserController,
+  provideUserDataController,
+} from "./controllers";
 import { LoginUserSchema } from "./schema";
 
-const router = express.Router();
+class AuthModule extends RouteModule {
+  publicRoutes() {
+    // check the session of the user and provide data
+    this.router.get("/check", provideUserDataController);
 
-// OK
-router.get("/check", authenticate, checkLoginController);
+    // login/register the user
+    this.router.post(
+      "/login",
+      this.validateSchema(LoginUserSchema),
+      loginUserController,
+      provideUserDataController
+    );
+  }
 
-// OK
-router.post("/logout", logoutUserController);
+  privateRoutes() {
+    this.router.post("/logout", logoutUserController);
+  }
+}
 
-// OK
-router.post("/login", validateSchema(LoginUserSchema), loginUserController);
-
-export { router as authModule };
+export const authModule = new AuthModule();

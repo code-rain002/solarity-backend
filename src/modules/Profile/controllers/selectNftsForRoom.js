@@ -1,27 +1,22 @@
-import { successResponse, errorResponse } from "../../../helpers";
+import { successResponse, errorResponse } from "../../../utils";
 import UserModel from "../../User/model";
 
 export const selectNftsForRoomController = async (req, res) => {
   try {
     const {
-      body: { 
-        roomId,
-        picNo,
-        mintAddress,
-        link, 
-      },
+      body: { roomId, picNo, mintAddress, link },
       session: { userId },
     } = req;
     const profile = await req.profile();
     var rooms = profile.rooms;
-    if(!rooms) {
+    if (!rooms) {
       rooms = [];
     }
-    let roomIndex = rooms.findIndex(s => s._id == roomId);
-    if(roomIndex == -1) {
+    let roomIndex = rooms.findIndex((s) => s._id == roomId);
+    if (roomIndex == -1) {
       rooms.push({
         roomNo: -1,
-        title:"default",
+        title: "default",
         currentBid: 0,
         imageUrl: "",
         active: false,
@@ -29,19 +24,19 @@ export const selectNftsForRoomController = async (req, res) => {
       });
       roomIndex = 0;
     }
-    let picIndex = rooms[roomIndex].nftStates.findIndex(s => s.no == picNo);
-    if(picIndex > -1) {
+    let picIndex = rooms[roomIndex].nftStates.findIndex((s) => s.no == picNo);
+    if (picIndex > -1) {
       rooms[roomIndex].nftStates[picIndex] = {
         no: picNo,
         nftAddress: mintAddress,
         link: link,
-      }
+      };
     } else {
       rooms[roomIndex].nftStates.push({
         no: picNo,
         nftAddress: mintAddress,
         link: link,
-      })
+      });
     }
     await UserModel.updateOne(
       { _id: userId },

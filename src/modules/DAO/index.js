@@ -1,4 +1,3 @@
-import { errorResponse, successResponse } from "../../helpers";
 import { RouteModule } from "../RouteModuleClass";
 import {
   followDaoController,
@@ -7,42 +6,54 @@ import {
   getDaosController,
   getSingleDaoController,
   unfollowDaoController,
+  getDaoTokensController,
+  getDaoController,
 } from "./controllers";
-import { getDaoTokensController } from "./controllers/getDaoTokens";
 import { getDaosSchema } from "./schema";
 
 class DaoModule extends RouteModule {
   publicRoutes() {
+    //get all daos on the system
     this.router.get(
       "/",
       this.validateSchema(getDaosSchema, { includeQuery: true }),
       getDaosController
     );
 
+    // all the token associated with daos
     this.router.get("/tokens", getDaoTokensController);
 
+    // get a DAO using the associated magic eden symbol
     this.router.get(
       "/:symbol",
       this.validateSchema(null, { idParamCheck: true, idName: "symbol" }),
-      getSingleDaoController
+      getDaoController
     );
   }
+
   privateRoutes() {
+    // check if use is following a dao
     this.router.get(
       "/:symbol/follow",
       this.validateSchema(null, { idParamCheck: true, idName: "symbol" }),
       getDaoFollowingStatusController
     );
+
+    // follow a dao
     this.router.post(
       "/:symbol/follow",
       this.validateSchema(null, { idParamCheck: true, idName: "symbol" }),
       followDaoController
     );
+
+    // unfollow a dao
     this.router.post(
       "/:symbol/unfollow",
       this.validateSchema(null, { idParamCheck: true, idName: "symbol" }),
       unfollowDaoController
     );
+
+    // get the discord announcements from the dao
     this.router.get(
       "/:symbol/announcements",
       this.validateSchema(null, { idParamCheck: true, idName: "symbol" }),

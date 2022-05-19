@@ -2,7 +2,7 @@ import { TwitterApi } from "twitter-api-v2";
 import { RouteModule } from "../RouteModuleClass";
 import {
   getProfileController,
-  updateProfileController,
+  updateProfileInfoController,
   updatePublicAddressController,
   claimDaosController,
   updateProfilePicController,
@@ -13,6 +13,8 @@ import {
   buyRoomController,
   checkRoomController,
   setActiveRoomController,
+  updateProfileStepsController,
+  confirmAccountLinksController,
 } from "./controllers";
 import {
   updatePublicAddressSchema,
@@ -25,18 +27,29 @@ import {
   buyRoomSchema,
   checkRoomSchema,
   setActiveRoomSchema,
+  profileSetupSchema,
 } from "./schema";
 
 class ProfileModule extends RouteModule {
   privateRoutes() {
-    // get profile details
+    // get profile
     this.router.get("/", getProfileController);
+
+    // setup the profile
+    this.router.post(
+      "/setup",
+      this.validateSchema(profileSetupSchema),
+      updateProfileInfoController,
+      confirmAccountLinksController,
+      updateProfilePicController,
+      claimDaosController
+    );
 
     // update profile
     this.router.patch(
       "/",
       this.validateSchema(updateProfileSchema),
-      updateProfileController
+      updateProfileInfoController
     );
 
     // update profile pic using the nft
@@ -55,11 +68,6 @@ class ProfileModule extends RouteModule {
 
     // SETUP ROUTE
     // update the data for the profile
-    this.router.post(
-      "/setup/info",
-      this.validateSchema(setupProfileInfoSchema),
-      updateProfileController
-    );
 
     // SETUP ROUTE
     // claim the DAOs for the profile

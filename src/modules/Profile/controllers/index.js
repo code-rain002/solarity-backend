@@ -10,3 +10,4 @@ export * from "./unlinkAccount";
 export * from "./buyRoom";
 export * from "./checkRoom";
 export * from "./setActiveRoom";
+export * from "./confirmAccountLinks";

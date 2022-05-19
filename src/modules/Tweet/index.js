@@ -1,14 +1,15 @@
-import express from "express";
-import { validateSchema } from "../../middlewares";
-import { getTweets, getTweetsByUsername } from "./controller";
-import { getTweetsSchema, getTweetsUsernameSchema } from "./schema";
+import { getTweetsController } from "./controllers";
+import { getTweetsSchema } from "./schema";
+import { RouteModule } from "../RouteModuleClass";
 
-const router = express.Router();
+class TweetModule extends RouteModule {
+  privateRoutes() {
+    this.router.get(
+      "/",
+      this.validateSchema(getTweetsSchema, { includeQuery: true }),
+      getTweetsController
+    );
+  }
+}
 
-router.get(
-  "/",
-  validateSchema(getTweetsSchema, { includeQuery: true }),
-  getTweets
-);
-
-export { router as tweetModule };
+export const tweetModule = new TweetModule();

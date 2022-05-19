@@ -1,10 +1,3 @@
-import { errorResponse, successResponse, throwError } from "../../helpers";
-import UserModel from "./model";
-import DaoModel from "../DAO/model";
-
-import { Types } from "mongoose";
-import axios from "axios";
-
 const USER_DATA_UNSET = {
   following: 0,
   createdAt: 0,
@@ -58,43 +51,17 @@ export const getUsersController = async (req, res) => {
   }
 };
 
-export const getRoomInfoController = async (req, res) => {
-  try {
-    const {
-      params: { name: name, roomNo: roomNo },
-    } = req;
-
-    const user = await UserModel.findOne({
-      username: name,
-      "rooms.roomNo": roomNo,
-    });
-    const roomInfoData = user.rooms.find((s) => s.roomNo == roomNo);
-    return successResponse({ res, response: { roomInfoData } });
-  } catch (err) {
-    return errorResponse({ res, err });
-  }
-};
-
 export const getUserInfoController = async (req, res) => {
   try {
     const {
       params: { name: name },
     } = req;
 
-    const user = await UserModel.findOne({ username: name})
-    if(!user) {
+    const user = await UserModel.findOne({ username: name });
+    if (!user) {
       return errorResponse({ res, err: "User doesn't exist" });
     }
     return successResponse({ res, response: { user } });
-  } catch (err) {
-    return errorResponse({ res, err });
-  }
-};
-
-export const getAllUsersController = async (req, res) => {
-  try {
-    const data = await UserModel.find();
-    return successResponse({ res, response: { data } });
   } catch (err) {
     return errorResponse({ res, err });
   }
@@ -163,27 +130,6 @@ export const getUserController = async (req, res) => {
   }
 };
 
-export const getUserWithWalletAddressController = async (req, res) => {
-  try {
-    const {
-      params: { address: address },
-    } = req;
-    const user = await UserModel.aggregate([
-      {
-        $match: { solanaAddress: address },
-      },
-      {
-        $addFields: USER_DATA_ADD_FIELDS,
-      },
-      { $unset: Object.keys(USER_DATA_UNSET) },
-    ]);
-    if (user.length == 0) throwError("No user with the current wallet exists");
-    return successResponse({ res, response: { user: user[0] } });
-  } catch (err) {
-    return errorResponse({ res, err });
-  }
-};
-
 export const getUserFollowingStatusController = async (req, res) => {
   try {
     const {
@@ -211,93 +157,6 @@ export const getUserFollowingStatusController = async (req, res) => {
       following = result[0].following;
     }
     return successResponse({ res, response: { following } });
-  } catch (err) {
-    return errorResponse({ res, err });
-  }
-};
-
-// OK
-// WHAT if the user objects doesn't exist
-export const followUserController = async (req, res) => {
-  try {
-    const {
-      params: { username },
-      session: { userId },
-    } = req;
-
-    const userToFollow = await UserModel.findOne({ username }, { username: 1 });
-    if (!userToFollow) throwError("User doesn't exist");
-    if (userToFollow.id === userId) throwError("You cannot follow yourself");
-    const idObject = new Types.ObjectId(userToFollow._id);
-
-    const x = await UserModel.findById(userId, {
-      alreadyFollowing: {
-        $in: [idObject, "$following.users"],
-      },
-    });
-    if (x.get("alreadyFollowing")) {
-      throwError("You are already following the user");
-    }
-
-    await UserModel.updateOne(
-      { username },
-      {
-        $inc: { followerCount: 1 },
-      }
-    );
-    await UserModel.updateOne(
-      { _id: userId },
-      {
-        $push: { "following.users": userToFollow.id },
-      }
-    );
-
-    return successResponse({ res });
-  } catch (err) {
-    return errorResponse({ res, err });
-  }
-};
-
-// OK
-export const unfollowUserController = async (req, res) => {
-  try {
-    const {
-      params: { username },
-      session: { userId },
-    } = req;
-
-    const userToUnfollow = await UserModel.findOne(
-      { username },
-      { username: 1 }
-    );
-    if (!userToUnfollow) throwError("User doesn't exist");
-    if (userToUnfollow.id === userId)
-      throwError("You cannot unfollow yourself");
-
-    const idObject = new Types.ObjectId(userToUnfollow._id);
-
-    const x = await UserModel.findById(userId, {
-      alreadyFollowing: {
-        $in: [idObject, "$following.users"],
-      },
-    });
-    if (!x.get("alreadyFollowing")) {
-      throwError("You are not following the user");
-    }
-
-    await UserModel.updateOne(
-      { username },
-      {
-        $inc: { followerCount: -1 },
-      }
-    );
-    await UserModel.updateOne(
-      { _id: userId },
-      {
-        $pull: { "following.users": userToUnfollow.id },
-      }
-    );
-    return successResponse({ res });
   } catch (err) {
     return errorResponse({ res, err });
   }

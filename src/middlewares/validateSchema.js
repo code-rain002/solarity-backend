@@ -16,7 +16,12 @@ export const paginationSharedObject = {
 export const validateSchema =
   (
     schema = null,
-    options = { includeQuery: false, idParamCheck: false, idName: "id" }
+    options = {
+      includeQuery: false,
+      idParamCheck: false,
+      idName: "id",
+      stripUnknown: true,
+    }
   ) =>
   async (req, res, next) => {
     if (!options.idName) options.idName = "id";
@@ -36,7 +41,8 @@ export const validateSchema =
       };
       if (options.includeQuery) reqToValidate.query = req.query;
       const validated = await schema.validate(reqToValidate, {
-        stripUnknown: true,
+        stripUnknown:
+          options.stripUnknown !== undefined ? options.stripUnknown : true,
       });
       const { body, params, query } = validated;
       req.body = body;

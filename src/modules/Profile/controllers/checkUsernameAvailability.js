@@ -1,5 +1,9 @@
-import { successResponse, errorResponse, throwError } from "../../../utils";
-import UserModel from "../../User/model";
+import {
+  successResponse,
+  errorResponse,
+  throwError,
+  usernameValidator,
+} from "../../../utils";
 import _ from "lodash";
 
 export const checkUsernameAvailabilityController = async (req, res) => {
@@ -8,14 +12,8 @@ export const checkUsernameAvailabilityController = async (req, res) => {
       params: { username },
       session: { userId },
     } = req;
-    // check if username is valid
-    const exists = await UserModel.findOne(
-      { username },
-      { username: 1, userId: 1 }
-    );
-    if (exists && exists.id !== userId) {
-      throwError("Username is in use");
-    }
+    const { available, reason } = await usernameValidator(username, userId);
+    if (!available) throwError(reason);
     return successResponse({ res, response: { available: true } });
   } catch (err) {
     return errorResponse({ res, err });

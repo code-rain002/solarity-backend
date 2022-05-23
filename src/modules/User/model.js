@@ -30,6 +30,7 @@ const userSchema = new Schema(
     bio: { type: String, required: false, trim: true },
     externalLinks: {
       twitter: {
+        id: String,
         username: String,
         accessToken: String,
         refreshToken: String,

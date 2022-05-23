@@ -52,15 +52,15 @@ const linkDiscord = async (userId, code, url) => {
 const linkTwitter = async (userId, code, url) => {
   const accessToken = await getTwitterAccessToken(userId, code, url);
   const client = new TwitterApi(accessToken);
-  console.log(code);
   const {
-    data: { username },
+    data: { username, id },
   } = await client.v2.me();
   await UserModel.updateOne(
     { _id: userId },
     {
       "externalLinks.twitter.connected": true,
       "externalLinks.twitter.username": username,
+      "externalLinks.twitter.id": id,
     }
   );
 };
@@ -69,6 +69,12 @@ const linkEthereum = async (userId, signature, walletAddress) => {
   if (!verifySignature(userId, signature, walletAddress, "ethereum")) {
     throwError("Invalid address/signature combo provided");
   }
+  await entryExists(
+    userId,
+    "ethereumAddress",
+    walletAddress,
+    "Ethereum address"
+  );
   await UserModel.updateOne(
     { _id: userId },
     {
@@ -81,10 +87,18 @@ const linkSolana = async (userId, signature, walletAddress) => {
   if (!verifySignature(userId, signature, walletAddress, "solana")) {
     throwError("Invalid address/signature combo provided");
   }
+  await entryExists(userId, "solanaAddress", walletAddress, "Solana address");
   await UserModel.updateOne(
     { _id: userId },
     {
       solanaAddress: walletAddress,
     }
   );
+};
+
+const entryExists = async (userId, key, value, linkName) => {
+  const user = await UserModel.findOne({ [key]: value });
+  if (user && user.id !== userId) {
+    throwError(`Another user account is already linked to this ${linkName}`);
+  }
 };

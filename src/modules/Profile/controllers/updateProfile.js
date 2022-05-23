@@ -4,6 +4,7 @@ import {
   throwError,
   removeWhiteSpaces,
   isProfileVisible,
+  usernameValidator,
 } from "../../../utils";
 import UserModel from "../../User/model";
 
@@ -22,8 +23,8 @@ export const updateProfileInfoController = async (req, res, next) => {
     } = req;
 
     if (action !== undefined && action !== "info") return next();
-    validatUsername(username);
-
+    const { available, reason } = await usernameValidator(username, userId);
+    if (!available) throwError(reason);
     const updateObject = {
       username: formatForId(username),
       bio: removeWhiteSpaces(bio),

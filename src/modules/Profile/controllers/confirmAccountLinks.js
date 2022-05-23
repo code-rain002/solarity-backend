@@ -6,6 +6,7 @@ import {
   checkIfOwnsSolanaNft,
   checkIfOwnsEthereumNft,
   isProfileVisible,
+  getProfileData,
 } from "../../../utils";
 
 export const confirmAccountLinksController = async (req, res, next) => {
@@ -46,8 +47,8 @@ export const confirmAccountLinksController = async (req, res, next) => {
         { "stepsCompleted.profilePicUpdated": true, visible }
       );
     }
-
-    return successResponse({ res, response: { profile: userData } });
+    const profile = await getProfileData(userId);
+    return successResponse({ res, response: { profile } });
   } catch (err) {
     return errorResponse({ res, err });
   }

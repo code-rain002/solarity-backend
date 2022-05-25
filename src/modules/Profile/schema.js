@@ -196,3 +196,12 @@ export const unlinkAccountSchema = yup.object({
       .oneOf(["discord", "twitter", "ethereum", "solana"]),
   }),
 });
+
+export const getFollowingSchema = yup.object({
+  query: yup.object({
+    type: yup
+      .string()
+      .oneOf(["user", "dao"], "Type can only be 'user' or 'dao'")
+      .required("Type is required"),
+  }),
+});

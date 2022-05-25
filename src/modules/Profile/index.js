@@ -16,6 +16,7 @@ import {
   updateProfileStepsController,
   confirmAccountLinksController,
 } from "./controllers";
+import { getFollowingController } from "./controllers/getFollowing";
 import {
   updatePublicAddressSchema,
   updateProfileSchema,
@@ -28,6 +29,7 @@ import {
   checkRoomSchema,
   setActiveRoomSchema,
   profileSetupSchema,
+  getFollowingSchema,
 } from "./schema";
 
 class ProfileModule extends RouteModule {
@@ -126,6 +128,13 @@ class ProfileModule extends RouteModule {
       "/setActiveRoom",
       this.validateSchema(setActiveRoomSchema),
       setActiveRoomController
+    );
+
+    // Get the users and daos that the logged in user is following
+    this.router.get(
+      "/following",
+      this.validateSchema(getFollowingSchema, { includeQuery: true }),
+      getFollowingController
     );
   }
 }

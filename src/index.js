@@ -11,8 +11,6 @@ import { TwitterApi } from "twitter-api-v2";
 import Rollbar from "rollbar";
 import cors from "cors";
 
-const theblockchainapi = require("theblockchainapi");
-
 import {
   authModule,
   nftModule,
@@ -199,13 +197,6 @@ class Server {
     });
   }
   initApis() {
-    // theblockchainapi init
-    let defaultClient = theblockchainapi.ApiClient.instance;
-    let APIKeyID = defaultClient.authentications["APIKeyID"];
-    APIKeyID.apiKey = process.env.BLOCKCHAINAPI_KEY_ID;
-    var APISecretKey = defaultClient.authentications["APISecretKey"];
-    APISecretKey.apiKey = process.env.BLOCKCHAINAPI_SECRET_KEY;
-    this.express.set("theblockchainapi", theblockchainapi);
     // twitter api init
     const twitterClient = new TwitterApi(process.env.TWITTER_BEARER_TOKEN);
     const twitterApi = twitterClient.readOnly;
@@ -213,7 +204,7 @@ class Server {
     this.express.set("twitterApi", twitterApi);
     // rollbar api
     let rollbar = new Rollbar({
-      accessToken: process.env.ROLLBAR_ACCESSTOKEN,
+      accessToken: process.env.ROLLBAR_ACCESS_TOKEN,
       captureUncaught: true,
       captureUnhandledRejections: true,
     });

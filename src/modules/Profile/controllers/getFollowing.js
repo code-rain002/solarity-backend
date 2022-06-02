@@ -17,7 +17,7 @@ export const getFollowingController = async (req, res) => {
     const {
       following: { users, daos },
     } = user;
-    let response = null;
+    let response = [];
     if (type == "dao") {
       response = await DaoModel.find(
         { _id: { $in: daos } },

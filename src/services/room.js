@@ -1,28 +1,34 @@
+import md5 from "md5";
 import User from "../modules/User/model";
 const roomModel = [];
 
 class RoomService {
     
-    create(roomId, payload) {
-        const { name, sid, roomName, modelIndex, title, type, roomNo } = payload;
-        roomModel.push({
-            roomId,
-            roomName,
-            name,
-            title,
-            type,
-            roomNo,
-            sid,
-            modelIndex,
-            clients: [],
-            speakers: [],
-            states: [],
-            links: [],
-            models: [],
-            guests: [],
-            msgs: [],
-        });
-        return roomId;
+    async create(roomId, payload) {
+        try {
+            const { name, sid, roomName, modelIndex, title, type, roomNo } = payload;
+            roomModel.push({
+                invitationHash: md5(roomName + roomId),
+                roomId,
+                roomName,
+                name,
+                title,
+                type,
+                roomNo,
+                sid,
+                modelIndex,
+                clients: [],
+                speakers: [],
+                states: [],
+                links: [],
+                models: [],
+                guests: [],
+                msgs: [],
+            });
+            return roomId;
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     getAllRooms(types) {
@@ -31,6 +37,11 @@ class RoomService {
 
     async getRoom(roomId) {
         const room = await roomModel.find(s => s.roomId == roomId);
+        return room;
+    }
+
+    async getRoomWithHash(invitationHash) {
+        const room = await roomModel.find(s => s.invitationHash == invitationHash);
         return room;
     }
 

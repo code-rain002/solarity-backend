@@ -103,7 +103,7 @@ export const socketService = (io) => {
         const { modelIndex, name, roomName, title, type, roomNo } = user;
         socketUserMapping[socket.id] = user;
         if (roomId == -1) {
-          roomId = roomService.create(roomIndex, {
+          roomId = await roomService.create(roomIndex, {
             name: name,
             modelIndex,
             roomName,

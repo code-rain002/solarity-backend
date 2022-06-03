@@ -6,16 +6,16 @@ const REGEX_CHECK = /^[a-z][a-z\d]+$/;
 
 export const usernameValidator = async (username, userId) => {
   try {
+    username = username.toLowerCase();
     const validFormat = REGEX_CHECK.test(username);
     if (!validFormat) {
       return {
         available: false,
         reason:
-          "Username has invalid format, must be alphanumeric without any special characters and spaces",
+          "Username has invalid format, must be alphanumeric without any special characters and spaces, and must start with an alphabet",
       };
     }
 
-    console.log("length: " + username.length);
     const validLength = username.length >= MIN_LENGTH;
     if (!validLength) {
       return {
@@ -42,8 +42,11 @@ export const usernameValidator = async (username, userId) => {
         reason: `Username is in use`,
       };
     }
-    return { available: true };
+    return { username, available: true };
   } catch (err) {
-    return false;
+    return {
+      available: false,
+      reason: `Unable to validate the username`,
+    };
   }
 };

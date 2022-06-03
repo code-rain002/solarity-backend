@@ -28,9 +28,6 @@ export const updateProfilePicController = async (req, res) => {
       publicAddress:
         imageNetwork == "Ethereum" ? ethereumAddress : solanaAddress,
     });
-
-    console.log(owned);
-
     if (!owned) throwError("The NFT is not owned by you");
 
     const imageUrl = await getNftImageLink({

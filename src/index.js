@@ -1,6 +1,5 @@
 import express from "express";
 import mongoose from "mongoose";
-import socket from "socket.io";
 import MongoStore from "connect-mongo";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";

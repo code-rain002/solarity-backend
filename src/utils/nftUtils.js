@@ -134,7 +134,6 @@ export const checkIfNftOwner = async ({
       mintAddress,
       connection: new Connection(process.env.SOLANA_RPC_ENDPOINT),
     });
-    console.timeLog(owner);
     return owner == publicAddress;
   }
   if (network === "Ethereum") {

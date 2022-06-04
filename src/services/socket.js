@@ -100,7 +100,7 @@ export const socketService = (io) => {
 
     socket.on(ACTIONS.JOIN, async ({ roomId, user }) => {
       try {
-        const { modelIndex, name, roomName, title, type, roomNo } = user;
+        const { modelIndex, name, roomName, title, type, roomNo, avatarUrl } = user;
         socketUserMapping[socket.id] = user;
         if (roomId == -1) {
           roomId = await roomService.create(roomIndex, {
@@ -110,6 +110,7 @@ export const socketService = (io) => {
             title,
             type,
             roomNo,
+            avatarUrl,
             sid: socket.id,
           });
           socket.emit(ACTIONS.ROOM_READY, { roomId, title, type, roomNo });
@@ -119,6 +120,7 @@ export const socketService = (io) => {
           roomService.joinRoom(roomId, {
             name: name,
             modelIndex,
+            avatarUrl,
             sid: socket.id,
           });
         }
@@ -269,9 +271,10 @@ export const socketService = (io) => {
     socket.on(ACTIONS.SEND_MSG, ({ roomId, data }) => {
       io.to("room" + roomId).emit(ACTIONS.SEND_MSG, {
         user: socket.username,
-        msg: data,
+        avatarUrl: data.avatarUrl,
+        msg: data.sendData,
       });
-      roomService.addMsg(roomId, { user: socket.username, msg: data });
+      roomService.addMsg(roomId, { user: socket.username, avatarUrl: data.avatarUrl, msg: data.sendData });
     });
 
     // handel relay ice

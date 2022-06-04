@@ -27,6 +27,7 @@ export const buyRoomController = async (req, res) => {
       subTitle: subTitle,
       currentBid: currentBid,
       imageUrl: imageUrl,
+      active: rooms.length == 0 ? true: false,
       modelAssets: {},
       nftStates: [],
     });

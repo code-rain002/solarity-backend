@@ -33,6 +33,7 @@ export const updateProfileInfoController = async (req, res, next) => {
     userData.stepsCompleted.infoAdded = true;
     const visible = isProfileVisible(userData);
     userData.visible = visible;
+    userData = { ...userData, ...updateObject };
     await UserModel.updateOne(
       { _id: userId },
       { ...updateObject, "stepsCompleted.infoAdded": true, visible }

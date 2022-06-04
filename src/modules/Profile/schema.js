@@ -96,45 +96,68 @@ export const profileSetupSchema = yup.object({
       }
     }),
     bio: yup.string().trim().typeError("Bio is invalid"),
-
-    imageNetwork: yup.string().when("action", (action) => {
-      if (action === "profilePic") {
-        return yup
-          .string()
-          .oneOf(["Solana", "Ethereum"])
-          .required("NFT mint address is required");
-      }
-    }),
-    mintAddress: yup
+    skipImage: yup.boolean(),
+    imageNetwork: yup
       .string()
-      .when(["action", "imageNetwork"], (action, imageNetwork) => {
-        if (action === "profilePic" && imageNetwork == "Solana") {
+      .when(["action", "skipImage"], (action, skipImage) => {
+        if (action === "profilePic" && !skipImage) {
           return yup
             .string()
-            .typeError("NFT mint address must be a string")
+            .oneOf(["Solana", "Ethereum"])
             .required("NFT mint address is required");
         }
       }),
+    mintAddress: yup
+      .string()
+      .when(
+        ["action", "imageNetwork", "skipImage"],
+        (action, imageNetwork, skipImage) => {
+          if (
+            action === "profilePic" &&
+            imageNetwork == "Solana" &&
+            !skipImage
+          ) {
+            return yup
+              .string()
+              .typeError("NFT mint address must be a string")
+              .required("NFT mint address is required");
+          }
+        }
+      ),
     contractAddress: yup
       .string()
-      .when(["action", "imageNetwork"], (action, imageNetwork) => {
-        if (action === "profilePic" && imageNetwork == "Ethereum") {
-          return yup
-            .string()
-            .typeError("NFT contract address must be a string")
-            .required("NFT contract address is required");
+      .when(
+        ["action", "imageNetwork", "skipImage"],
+        (action, imageNetwork, skipImage) => {
+          if (
+            action === "profilePic" &&
+            imageNetwork == "Ethereum" &&
+            !skipImage
+          ) {
+            return yup
+              .string()
+              .typeError("NFT contract address must be a string")
+              .required("NFT contract address is required");
+          }
         }
-      }),
+      ),
     tokenId: yup
       .string()
-      .when(["action", "imageNetwork"], (action, imageNetwork) => {
-        if (action === "profilePic" && imageNetwork == "Ethereum") {
-          return yup
-            .string()
-            .typeError("NFT token ID must be a string")
-            .required("NFT token ID is required");
+      .when(
+        ["action", "imageNetwork", "skipImage"],
+        (action, imageNetwork, skipImage) => {
+          if (
+            action === "profilePic" &&
+            imageNetwork == "Ethereum" &&
+            !skipImage
+          ) {
+            return yup
+              .string()
+              .typeError("NFT token ID must be a string")
+              .required("NFT token ID is required");
+          }
         }
-      }),
+      ),
   }),
 });
 

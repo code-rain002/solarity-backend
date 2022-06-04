@@ -8,6 +8,7 @@ import { Promise } from "bluebird";
 import { NftModel } from "../modules/NFT/model";
 import { getSolanaNftDetails } from "../helpers";
 import { getAllNftsOwned } from "./magicEdenUtils";
+import { throwError } from "./responseUtils";
 
 export const saveOwnedNfts = async (publicAddress) => {
   try {

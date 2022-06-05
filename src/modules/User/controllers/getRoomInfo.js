@@ -11,7 +11,10 @@ export const getRoomInfoController = async (req, res) => {
       username: name,
       "rooms.roomNo": roomNo,
     });
-    const roomInfoData = user.rooms.find((s) => s.roomNo == roomNo);
+    let roomInfoData={};
+    if(!!user && !!user.rooms) {
+      roomInfoData = user.rooms.find((s) => s.roomNo == roomNo);
+    } 
     return successResponse({ res, response: { roomInfoData } });
   } catch (err) {
     return errorResponse({ res, err });

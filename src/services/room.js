@@ -6,7 +6,12 @@ class RoomService {
     
     async create(roomId, payload) {
         try {
-            const { name, sid, roomName, modelIndex, title, type, roomNo } = payload;
+            const { name, sid, roomName, modelIndex, title, type, roomNo, avatarUrl } = payload;
+            var imageUrl = "";
+            const userInfo = await User.findOne({username: name, "rooms.roomNo": roomNo});
+            if(userInfo && userInfo.rooms) {
+                imageUrl = userInfo.rooms.find(s => s.roomNo == roomNo).imageUrl;
+            }
             roomModel.push({
                 invitationHash: md5(roomName + roomId),
                 roomId,
@@ -15,10 +20,13 @@ class RoomService {
                 title,
                 type,
                 roomNo,
+                avatarUrl,
+                imageUrl,
                 sid,
                 modelIndex,
                 clients: [],
                 speakers: [],
+                avatars:[],
                 states: [],
                 links: [],
                 models: [],
@@ -49,6 +57,7 @@ class RoomService {
         var roomIndex = roomModel.findIndex(s => s.roomId == roomId);
         if(!!roomModel[roomIndex]) {
             roomModel[roomIndex].speakers.push(user.name);
+            roomModel[roomIndex].avatars.push(user.avatarUrl);
             roomModel[roomIndex].clients.push(user.sid);
             roomModel[roomIndex].models.push(user.modelIndex);
         }
@@ -65,6 +74,7 @@ class RoomService {
             roomModel[roomIndex].speakers.splice(clientIndex, 1);
             roomModel[roomIndex].clients.splice(clientIndex, 1);
             roomModel[roomIndex].models.splice(clientIndex, 1);
+            roomModel[roomIndex].avatars.splice(clientIndex, 1);
             var guestIndex = roomModel[roomIndex].guests.findIndex(s => s.guestname == user.name)
             if(guestIndex != -1) {
                 roomModel[roomIndex].guests.splice(guestIndex, -1);

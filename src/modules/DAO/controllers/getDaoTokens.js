@@ -12,6 +12,15 @@ export const getDaoTokensController = async (req, res) => {
       },
       { $match: { tokenAddress: { $ne: undefined } } },
     ]);
+    // manually pushing the verse token
+    tokenAddresses.unshift({
+      image:
+        "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/S8v4cS7dnKzV6LYvzFPuuiWQMM4KSz7URuGYWMGXyTG/logo.png",
+      token: "VERSE",
+      tokenAddress: "S8v4cS7dnKzV6LYvzFPuuiWQMM4KSz7URuGYWMGXyTG",
+      _id: "XOXOXOX",
+      showOnZero: true,
+    });
     return successResponse({ res, response: { tokenAddresses } });
   } catch (err) {
     return errorResponse({ res, err });

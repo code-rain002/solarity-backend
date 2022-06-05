@@ -17,6 +17,7 @@ import {
   confirmAccountLinksController,
 } from "./controllers";
 import { getFollowingController } from "./controllers/getFollowing";
+import { undoSetupController } from "./controllers/undoSetup";
 import {
   updatePublicAddressSchema,
   updateProfileSchema,
@@ -30,6 +31,7 @@ import {
   setActiveRoomSchema,
   profileSetupSchema,
   getFollowingSchema,
+  undoSetupSchema,
 } from "./schema";
 
 class ProfileModule extends RouteModule {
@@ -80,6 +82,12 @@ class ProfileModule extends RouteModule {
       "/setup/setProfilePic",
       this.validateSchema(profilePicSchema),
       updateProfilePicController
+    );
+
+    this.router.post(
+      "/setup/undo",
+      this.validateSchema(undoSetupSchema),
+      undoSetupController
     );
 
     // get the username availability

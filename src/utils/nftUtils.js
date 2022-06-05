@@ -123,6 +123,15 @@ export const checkIfNftOwner = async ({
   publicAddress,
 }) => {
   if (network === "Solana") {
+    // temp solution using magic eden
+    try {
+      const { data } = await axios.get(
+        `https://api-mainnet.magiceden.dev/v2/tokens/${mintAddress}`
+      );
+      if (data.owner === publicAddress) return true;
+    } catch {}
+    // temp solution ends
+
     const {
       account: {
         data: {
@@ -135,6 +144,7 @@ export const checkIfNftOwner = async ({
       mintAddress,
       connection: new Connection(process.env.SOLANA_RPC_ENDPOINT),
     });
+    console.log();
     return owner == publicAddress;
   }
   if (network === "Ethereum") {

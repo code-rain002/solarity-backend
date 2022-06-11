@@ -39,7 +39,7 @@ export const confirmAccountLinksController = async (req, res, next) => {
     }
 
     if (!nftsOwned) {
-      userData.profilePicUpdated = true;
+      userData.stepsCompleted.profilePicUpdated = true;
       const visible = isProfileVisible(userData);
       userData.visible = visible;
       await UserModel.updateOne(
@@ -47,6 +47,12 @@ export const confirmAccountLinksController = async (req, res, next) => {
         { "stepsCompleted.profilePicUpdated": true, visible }
       );
     }
+    userData.stepsCompleted.daoClaimed = true;
+    const newVisible = isProfileVisible(userData);
+    await UserModel.updateOne(
+      { _id: userId },
+      { "stepsCompleted.daoClaimed": true, visible: newVisible }
+    );
     const profile = await getProfileData(userId);
     return successResponse({ res, response: { profile } });
   } catch (err) {

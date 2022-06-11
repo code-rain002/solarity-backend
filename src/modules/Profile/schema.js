@@ -228,3 +228,12 @@ export const getFollowingSchema = yup.object({
       .required("Type is required"),
   }),
 });
+
+export const undoSetupSchema = yup.object({
+  body: yup.object({
+    stepName: yup
+      .string()
+      .oneOf(["info", "link", "profilePic", "dao"], "Invalid step name")
+      .required("Step name is required"),
+  }),
+});

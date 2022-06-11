@@ -18,6 +18,7 @@ export const socketService = (io) => {
     socket.on("send", (data) => {
       if (!!socket.username) {
         data["name"] = socket.username;
+        data['avatarUrl'] = socket.avatarUrl;
       }
       io.to(data.to).emit("send", data);
     });
@@ -25,6 +26,7 @@ export const socketService = (io) => {
     socket.on("broadcast", (data) => {
       if (!!socket.username) {
         data["name"] = socket.username;
+        data['avatarUrl'] = socket.avatarUrl;
       }
       socket.to(curRoom).emit("broadcast", data);
     });
@@ -146,6 +148,7 @@ export const socketService = (io) => {
         socket.modelIndex = modelIndex;
         socket.roomId = roomId;
         socket.roomName = roomName;
+        socket.avatarUrl = avatarUrl;
 
         const room = await roomService.getRoom(roomId);
         if (!!room) {

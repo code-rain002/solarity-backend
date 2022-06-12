@@ -30,7 +30,7 @@ export const getProfileData = async (userId) => {
     {
       $addFields: {
         profileImageLink: "$profileImage.link",
-        profileImageAddress: "$profileImage.address",
+        profileImageInfo: "$profileImage",
         twitterUsername: "$externalLinks.twitter.username",
         githubUsername: "$externalLinks.github.username",
         discordUsername: "$externalLinks.discord.username",

@@ -237,3 +237,36 @@ export const undoSetupSchema = yup.object({
       .required("Step name is required"),
   }),
 });
+
+export const profileImageUpdateSchema = yup.object({
+  body: yup.object({
+    imageNetwork: yup
+      .string()
+      .oneOf(["Solana", "Ethereum"])
+      .required("NFT mint address is required"),
+    mintAddress: yup.string().when(["imageNetwork"], (imageNetwork) => {
+      if (imageNetwork == "Solana") {
+        return yup
+          .string()
+          .typeError("NFT mint address must be a string")
+          .required("NFT mint address is required");
+      }
+    }),
+    contractAddress: yup.string().when(["imageNetwork"], (imageNetwork) => {
+      if (imageNetwork == "Ethereum") {
+        return yup
+          .string()
+          .typeError("NFT contract address must be a string")
+          .required("NFT contract address is required");
+      }
+    }),
+    tokenId: yup.string().when(["imageNetwork"], (action, imageNetwork) => {
+      if (imageNetwork == "Ethereum") {
+        return yup
+          .string()
+          .typeError("NFT token ID must be a string")
+          .required("NFT token ID is required");
+      }
+    }),
+  }),
+});

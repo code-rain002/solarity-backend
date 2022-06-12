@@ -1,4 +1,3 @@
-import { TwitterApi } from "twitter-api-v2";
 import { RouteModule } from "../RouteModuleClass";
 import {
   getProfileController,
@@ -13,7 +12,6 @@ import {
   buyRoomController,
   checkRoomController,
   setActiveRoomController,
-  updateProfileStepsController,
   confirmAccountLinksController,
 } from "./controllers";
 import { getFollowingController } from "./controllers/getFollowing";
@@ -21,7 +19,6 @@ import { undoSetupController } from "./controllers/undoSetup";
 import {
   updatePublicAddressSchema,
   updateProfileSchema,
-  setupProfileInfoSchema,
   profilePicSchema,
   selectNftsForRoomSchema,
   linkAccountSchema,
@@ -30,6 +27,7 @@ import {
   checkRoomSchema,
   setActiveRoomSchema,
   profileSetupSchema,
+  profileImageUpdateSchema,
   getFollowingSchema,
   undoSetupSchema,
 } from "./schema";
@@ -59,7 +57,7 @@ class ProfileModule extends RouteModule {
     // update profile pic using the nft
     this.router.post(
       "/profilePic",
-      this.validateSchema(profilePicSchema),
+      this.validateSchema(profileImageUpdateSchema),
       updateProfilePicController
     );
 
@@ -80,7 +78,7 @@ class ProfileModule extends RouteModule {
     // set the profile pic for the profile
     this.router.post(
       "/setup/setProfilePic",
-      this.validateSchema(profilePicSchema),
+      this.validateSchema(profileImageUpdateSchema),
       updateProfilePicController
     );
 

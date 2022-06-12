@@ -1,10 +1,6 @@
-import {
-  errorResponse,
-  getCollectionsOwned,
-  getDaoMemberships,
-  successResponse,
-} from "../../../utils";
+import { errorResponse, successResponse } from "../../../utils";
 import DaoModel from "../model";
+import { getDaoMemberships } from "../helpers";
 
 export const getDaosController = async (req, res) => {
   try {
@@ -15,9 +11,12 @@ export const getDaosController = async (req, res) => {
     const findOptions = {};
     if (member && userId) {
       const user = await req.profile();
-      const names = await getDaoMemberships(user.solanaAddress);
-      findOptions["collectionInfo.name"] = {
-        $in: names,
+      let memberIds = [];
+      if (user.solanaAddress) {
+        memberIds = await getDaoMemberships(user.solanaAddress);
+      }
+      findOptions["_id"] = {
+        $in: memberIds,
       };
     } else {
       if (term) {
@@ -49,7 +48,7 @@ export const getDaosController = async (req, res) => {
         $sort: { createdAt: -1 },
       },
     ]);
-    return successResponse({ res, response: { daos } });
+    return successResponse({ res, response: { data: daos } });
   } catch (err) {
     return errorResponse({ res, err });
   }

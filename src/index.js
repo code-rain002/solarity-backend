@@ -16,6 +16,7 @@ import {
   profileModule,
   tweetModule,
   userModule,
+  collectionModule,
 } from "./modules";
 import { authenticate } from "./middlewares";
 import Mailer from "./mailer";
@@ -126,6 +127,7 @@ class Server {
     this.express.use("/api/nfts", nftModule);
     this.express.use("/api/tweets", tweetModule);
     this.express.use("/api/users", userModule);
+    this.express.use("/api/collections", collectionModule);
     this.express.use("/api/*", (req, res, next) => {
       const err = new Error("Not Found");
       err.status = 404;

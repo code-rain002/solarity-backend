@@ -5,6 +5,7 @@ import {
   checkIfNftOwner,
   throwError,
   getNftImageLink,
+  getProfileData,
 } from "../../../utils";
 import UserModel from "../../User/model";
 import _ from "lodash";
@@ -62,7 +63,7 @@ export const updateProfilePicController = async (req, res) => {
         }
       );
     }
-    profile = await req.profile();
+    profile = await getProfileData(userId);
 
     return successResponse({ res, response: { profile } });
   } catch (err) {

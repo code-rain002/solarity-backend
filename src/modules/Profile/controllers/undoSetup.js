@@ -21,9 +21,6 @@ export const undoSetupController = async (req, res) => {
       body: { stepName },
     } = req;
     const profile = await req.profile();
-    console.log("profile -- START");
-    console.log(profile);
-    console.log("profile -- END");
     if (profile.visible) throwError("You cannot undo the setup");
 
     if (stepName == "profilePic") {

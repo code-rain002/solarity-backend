@@ -1,7 +1,6 @@
 import UserModel from "../../modules/User/model";
 import { Promise } from "bluebird";
 import { getDaoMemberships } from "../../modules/DAO/helpers";
-import mongoose from "mongoose";
 
 const setDaoMemberships = async () => {
   try {

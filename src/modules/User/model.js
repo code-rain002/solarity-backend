@@ -70,6 +70,17 @@ const userSchema = new Schema(
       coins: { type: [mongoose.Types.ObjectId], required: false },
       nfts: { type: [mongoose.Types.ObjectId], required: false },
     },
+    daoMemberships: {
+      checked: {
+        type: Boolean,
+        default: false,
+      },
+      daoIds: {
+        type: [mongoose.Types.ObjectId],
+        default: [],
+      },
+      required: false,
+    },
     rooms: [
       {
         roomId: { type: mongoose.Types.ObjectId, required: false },

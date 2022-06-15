@@ -1,6 +1,6 @@
 import { errorResponse, successResponse } from "../../../utils";
-import DaoModel from "../model";
 import { getDaoMemberships } from "../helpers";
+import DaoModel from "../model";
 
 export const getDaosController = async (req, res) => {
   try {
@@ -13,7 +13,11 @@ export const getDaosController = async (req, res) => {
       const user = await req.profile();
       let memberIds = [];
       if (user.solanaAddress) {
-        memberIds = await getDaoMemberships(user.solanaAddress);
+        memberIds = await getDaoMemberships({
+          walletAddress: user.solanaAddress,
+          set: true,
+          useCache: true,
+        });
       }
       findOptions["_id"] = {
         $in: memberIds,

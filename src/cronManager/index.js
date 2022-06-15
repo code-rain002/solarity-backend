@@ -1,5 +1,5 @@
 import setDaoMemberships from "./jobs/setDaoMemberships";
-import cron from "node-cron";
+const cron = require("node-cron");
 
 class CronManager {
   constructor() {

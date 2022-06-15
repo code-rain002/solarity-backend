@@ -3,7 +3,6 @@ import { Promise } from "bluebird";
 import { getDaoMemberships } from "../../modules/DAO/helpers";
 
 const setDaoMemberships = async () => {
-  console.log("running the function!!");
   try {
     const users = await UserModel.find(
       { solanaAddress: { $ne: null } },

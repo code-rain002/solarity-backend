@@ -28,7 +28,7 @@ import { testModule } from "./modules/Test";
 import { getProfileData } from "./modules/Profile/helpers";
 import { socketService } from "./services/socket";
 import { clusterApiUrl, Connection } from "@solana/web3.js";
-import { getTwitterBearerCodeForSystem } from "./helpers";
+import CronManager from "./cronManager";
 
 class Server {
   constructor({ port }) {
@@ -54,7 +54,7 @@ class Server {
     this.initMiddleware();
     this.forceSecure();
     this.insertHelpers();
-
+    this.cronManager = new CronManager();
     this.publicRoot = path.join("public");
     this.express.use(express.static(this.publicRoot));
     this.initPublicRoutes();
@@ -66,8 +66,7 @@ class Server {
     this.initErrorRoute();
     this.initApis();
     this.startNftQueue();
-    getTwitterBearerCodeForSystem();
-    // await this.initMailer(); <== we will unable later
+    // await this.initMailer(); <== we will enable later
   }
   async connectDatabase() {
     await mongoose.connect(process.env.MONGO_URL, {
@@ -211,7 +210,6 @@ class Server {
     });
     this.express.set("rollbar", rollbar);
     global.rollbar = rollbar;
-    Moralis.start({ serverUrl, appId, moralisSecret });
   }
   startNftQueue() {
     const nftQueue = new Agenda({

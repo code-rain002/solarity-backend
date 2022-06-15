@@ -10,7 +10,7 @@ class CronManager {
       jobs: [
         {
           name: "setDaoMemberships",
-          cron: "* * * * *",
+          cron: "0 0 * * *",
           path: setDaoMemberships,
         },
       ],

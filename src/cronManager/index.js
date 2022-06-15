@@ -1,24 +1,11 @@
-import Bree from "bree";
-import path from "path";
-import Graceful from "@ladjs/graceful";
 import setDaoMemberships from "./jobs/setDaoMemberships";
+import cron from "node-cron";
 
 class CronManager {
   constructor() {
-    this.scheduler = new Bree({
-      root: path.resolve("src/cronManager/jobs"),
-      jobs: [
-        {
-          name: "setDaoMemberships",
-          cron: "* * * * *",
-          path: setDaoMemberships,
-        },
-      ],
-      closeWorkerAfterMs: 1200000,
+    cron.schedule("* * * * *", () => {
+      setDaoMemberships();
     });
-    const graceful = new Graceful({ brees: [this.scheduler] });
-    graceful.listen();
-    this.scheduler.start();
   }
 }
 

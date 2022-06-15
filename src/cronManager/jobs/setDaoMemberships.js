@@ -11,7 +11,9 @@ const setDaoMemberships = async () => {
     await Promise.each(users, async ({ solanaAddress }) => {
       await getDaoMemberships({ walletAddress: solanaAddress, set: true });
     });
-  } catch {}
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 export default setDaoMemberships;

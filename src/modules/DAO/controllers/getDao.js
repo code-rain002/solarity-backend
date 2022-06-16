@@ -34,7 +34,7 @@ export const getDaoController = async (req, res) => {
     if (
       !dao.floorPrice ||
       !dao.floorPriceLastUpdate ||
-      new Date().getTime() - dao.floorPriceLastUpdate.getTime() > 10000
+      new Date().getTime() - new Date(dao.floorPriceLastUpdate).getTime() > 10000
     ) {
       try {
         const data = await getCollectionStats(dao.symbol);

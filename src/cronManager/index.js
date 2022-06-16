@@ -3,9 +3,10 @@ const cron = require("node-cron");
 
 class CronManager {
   constructor() {
-    cron.schedule("* * * * *", () => {
-      setDaoMemberships();
-    });
+    // un comment on dedicated server
+    // cron.schedule("* * * * *", () => {
+    //   setDaoMemberships();
+    // });
   }
 }
 

@@ -11,7 +11,7 @@ export const socketService = (io) => {
   const rooms = {};
   const userlist = {};
   groupService.create();
-  ////////////
+  ///////////
   io.on("connection", (socket) => {
     //aframe
     let curRoom = null;

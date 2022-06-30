@@ -33,7 +33,6 @@ class RoomService {
                 guests: [],
                 msgs: [],
             });
-            
             return roomId;
         } catch (error) {
             console.log(error);

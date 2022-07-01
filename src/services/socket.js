@@ -6,7 +6,7 @@ import User from "../modules/User/model";
 import user from "./user";
 export const socketService = (io) => {
   const socketUserMapping = {};
-  var roomIndex = 0;
+  var roomIndex = 1;
   //aframe
   const rooms = {};
   const userlist = {};

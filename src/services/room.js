@@ -1,6 +1,28 @@
 import md5 from "md5";
 import User from "../modules/User/model";
-const roomModel = [];
+const roomModel = [
+    {
+        invitationHash: md5('plaza' + 0),
+        roomId: 0,
+        roomName: 'plaza',
+        name: "",
+        title: "Plaza Community",
+        type: false,
+        roomNo: 2,
+        avatarUrl: "",
+        imageUrl: "",
+        sid: {},
+        modelIndex: 0,
+        clients: [],
+        speakers: [],
+        avatars:[],
+        states: [],
+        links: [],
+        models: [],
+        guests: [],
+        msgs: [],
+    }
+];
 
 class RoomService {
     
@@ -56,6 +78,10 @@ class RoomService {
     async joinRoom(roomId, user) {
         var roomIndex = roomModel.findIndex(s => s.roomId == roomId);
         if(!!roomModel[roomIndex]) {
+            roomModel[roomIndex].name = user.name;
+            roomModel[roomIndex].avatarUrl = user.avatarUrl
+            roomModel[roomIndex].sid = user.sid;
+            roomModel[roomIndex].modelIndex = user.modelIndex;
             roomModel[roomIndex].speakers.push(user.name);
             roomModel[roomIndex].avatars.push(user.avatarUrl);
             roomModel[roomIndex].clients.push(user.sid);
@@ -102,7 +128,9 @@ class RoomService {
                         }
                     })
                 }
-                roomModel.splice(roomIndex, 1);
+                if(roomId != 0) {
+                    roomModel.splice(roomIndex, 1);
+                }
                 return;
             }
         }

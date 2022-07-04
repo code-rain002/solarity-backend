@@ -2,9 +2,9 @@ import md5 from "md5";
 import User from "../modules/User/model";
 const roomModel = [
     {
-        invitationHash: md5('plaza' + 0),
+        invitationHash: md5('Plaza Community' + 0),
         roomId: 0,
-        roomName: 'plaza',
+        roomName: 'Plaza Community',
         name: "",
         title: "Plaza Community",
         type: false,
@@ -133,7 +133,7 @@ class RoomService {
                 }
                 return;
             }
-            
+
         }
     }
 

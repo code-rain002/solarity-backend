@@ -26,6 +26,8 @@ export const setActiveRoomController = async (req, res) => {
         rooms: rooms,
       }
     );
+    let userData = await req.profile();
+    return successResponse({ res, response: { profile: userData } });
   } catch (err) {
     return errorResponse({ res, err });
   }

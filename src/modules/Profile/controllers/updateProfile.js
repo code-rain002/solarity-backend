@@ -38,7 +38,6 @@ export const updateProfileInfoController = async (req, res, next) => {
       { _id: userId },
       { ...updateObject, "stepsCompleted.infoAdded": true, visible }
     );
-
     return successResponse({ res, response: { profile: userData } });
   } catch (err) {
     return errorResponse({ res, err });

@@ -40,6 +40,7 @@ class RoomService {
                 roomName,
                 name,
                 title,
+                solanaAddress: userInfo.solanaAddress,
                 type,
                 roomNo,
                 avatarUrl,
@@ -78,10 +79,6 @@ class RoomService {
     async joinRoom(roomId, user) {
         var roomIndex = roomModel.findIndex(s => s.roomId == roomId);
         if(!!roomModel[roomIndex]) {
-            roomModel[roomIndex].name = user.name;
-            roomModel[roomIndex].avatarUrl = user.avatarUrl
-            roomModel[roomIndex].sid = user.sid;
-            roomModel[roomIndex].modelIndex = user.modelIndex;
             roomModel[roomIndex].speakers.push(user.name);
             roomModel[roomIndex].avatars.push(user.avatarUrl);
             roomModel[roomIndex].clients.push(user.sid);

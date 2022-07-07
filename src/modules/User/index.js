@@ -13,6 +13,7 @@ import {
   getFollowingStatusController,
   getUserController,
   getRoomInfoController,
+  getSelectedRoomInfoController
 } from "./controllers";
 
 class UserModule extends RouteModule {
@@ -32,6 +33,9 @@ class UserModule extends RouteModule {
 
     // GOOD TO GO
     this.router.get("/getRoomInfo/:name/:roomNo", getRoomInfoController);
+
+    // Get Selected live room info.
+    this.router.get("/getSelectedRoomInfo/:roomNo", getSelectedRoomInfoController);
 
     // REDUNDANT with the GET / endpoint. Confirm removal later
     this.router.get("/getUsers", getAllUsersController);

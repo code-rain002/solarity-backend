@@ -9,3 +9,4 @@ export * from "./followUser";
 export * from "./getFollowingStatus";
 export * from "./getUserWithWalletAddress";
 export * from "./getRoomInfo";
+export * from "./getSelectedRoomInfo";

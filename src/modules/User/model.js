@@ -11,6 +11,14 @@ const userSchema = new Schema(
       sparse: true,
       trim: true,
     },
+    domain: {
+      type: String,
+      index: true,
+      unique: true,
+      lowercase: true,
+      sparse: true,
+      trim: true,
+    },
     solanaAddress: {
       type: String,
       trim: true,
@@ -28,6 +36,7 @@ const userSchema = new Schema(
       },
     },
     bio: { type: String, required: false, trim: true },
+    title: { type: String, required: false, trim: true },
     externalLinks: {
       twitter: {
         id: String,
@@ -78,6 +87,10 @@ const userSchema = new Schema(
       daoIds: {
         type: [mongoose.Types.ObjectId],
         default: [],
+      },
+      daos: {
+        type: Object,
+        default: []
       },
       required: false,
     },

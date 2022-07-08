@@ -13,6 +13,7 @@ import {
   checkRoomController,
   setActiveRoomController,
   confirmAccountLinksController,
+  updateUserInfoController // For new Solarity project (Domain, Title)
 } from "./controllers";
 import { getFollowingController } from "./controllers/getFollowing";
 import { undoSetupController } from "./controllers/undoSetup";
@@ -27,9 +28,11 @@ import {
   checkRoomSchema,
   setActiveRoomSchema,
   profileSetupSchema,
+  profileInitSchema, // For new Solarity project
   profileImageUpdateSchema,
   getFollowingSchema,
   undoSetupSchema,
+  updateUserInfoSchema // For new Solarity project (Domain, Title)
 } from "./schema";
 
 class ProfileModule extends RouteModule {
@@ -47,11 +50,29 @@ class ProfileModule extends RouteModule {
       claimDaosController
     );
 
+    // setup the profile
+    this.router.post(
+      "/initProfile",
+      this.validateSchema(profileInitSchema),
+      updateUserInfoController,
+      confirmAccountLinksController,
+      updateProfilePicController,
+      claimDaosController
+    );
+
     // update profile
     this.router.patch(
       "/",
       this.validateSchema(updateProfileSchema),
       updateProfileInfoController
+    );
+
+    // For New Solarity Project
+    // update profile
+    this.router.patch(
+      "/userInfo",
+      this.validateSchema(updateUserInfoSchema),
+      updateUserInfoController
     );
 
     // update profile pic using the nft

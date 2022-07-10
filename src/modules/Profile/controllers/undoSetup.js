@@ -21,7 +21,7 @@ export const undoSetupController = async (req, res) => {
       body: { stepName },
     } = req;
     const profile = await req.profile();
-    if (profile.visible) throwError("You cannot undo the setup");
+    // if (profile.visible) throwError("You cannot undo the setup");
 
     if (stepName == "profilePic") {
       const { solanaAddress, ethereumAddress } = profile;

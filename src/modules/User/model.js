@@ -89,7 +89,7 @@ const userSchema = new Schema(
         default: [],
       },
       daos: {
-        type: Object,
+        type: [Object],
         default: []
       },
       required: false,

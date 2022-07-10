@@ -1,4 +1,4 @@
-import { authenticate, validateQuery, validateSchema } from "../middlewares";
+import { authenticate, validateQuery, validateSchema, uploadImage } from "../middlewares";
 import express from "express";
 
 export class RouteModule {
@@ -18,19 +18,20 @@ export class RouteModule {
     return this.router;
   }
 
-  defineMiddlewares() {}
+  defineMiddlewares() { }
 
   addHelpers() {
     this.validateSchema = validateSchema;
 
     this.validateQuery = validateQuery;
+    this.uploadImage = uploadImage
   }
 
-  setup() {}
+  setup() { }
 
-  attach(req, res) {}
+  attach(req, res) { }
 
-  publicRoutes() {}
+  publicRoutes() { }
 
-  privateRoutes() {}
+  privateRoutes() { }
 }

@@ -390,3 +390,24 @@ export const profileImageUpdateSchema = yup.object({
     }),
   }),
 });
+
+export const uploadProfilePicSchema = yup.object({
+  body: yup.object({
+    fileBlob: yup
+      .string()
+      .required("Upload image file is required"),
+    fileName: yup
+      .string()
+      .typeError("File name must be a string")
+      .required("File name is required"),
+    fileSize: yup
+      .number()
+      .typeError('Must be a specified number')
+      .min(0, 'File size must be more than 0MB.')
+      .max(1024 * 1024 * 5, 'File size must be less than 5MB')
+      .required("File size field is required"),
+    filePath: yup
+      .string()
+      .nullable(),
+  }),
+});

@@ -13,7 +13,8 @@ import {
   checkRoomController,
   setActiveRoomController,
   confirmAccountLinksController,
-  updateUserInfoController // For new Solarity project (Domain, Title)
+  updateUserInfoController, // For new Solarity project (Domain, Title)
+  uploadProfilePicController
 } from "./controllers";
 import { getFollowingController } from "./controllers/getFollowing";
 import { undoSetupController } from "./controllers/undoSetup";
@@ -32,7 +33,8 @@ import {
   profileImageUpdateSchema,
   getFollowingSchema,
   undoSetupSchema,
-  updateUserInfoSchema // For new Solarity project (Domain, Title)
+  updateUserInfoSchema, // For new Solarity project (Domain, Title)
+  uploadProfilePicSchema
 } from "./schema";
 
 class ProfileModule extends RouteModule {
@@ -50,14 +52,15 @@ class ProfileModule extends RouteModule {
       claimDaosController
     );
 
-    // setup the profile
+    // init the profile
     this.router.post(
       "/initProfile",
       this.validateSchema(profileInitSchema),
       updateUserInfoController,
       confirmAccountLinksController,
       updateProfilePicController,
-      claimDaosController
+      claimDaosController,
+      uploadProfilePicController
     );
 
     // update profile
@@ -87,6 +90,13 @@ class ProfileModule extends RouteModule {
       "/publicAddress",
       this.validateSchema(updatePublicAddressSchema),
       updatePublicAddressController
+    );
+
+    // upload the user profile image
+    this.router.post(
+      "/uploadPic",
+      this.uploadImage,
+      uploadProfilePicController
     );
 
     // SETUP ROUTE

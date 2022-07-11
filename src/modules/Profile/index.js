@@ -14,7 +14,8 @@ import {
   setActiveRoomController,
   confirmAccountLinksController,
   updateUserInfoController, // For new Solarity project (Domain, Title)
-  uploadProfilePicController
+  uploadProfilePicController,
+  checkDomainAvailabilityController // For new Solarity project (Domain)
 } from "./controllers";
 import { getFollowingController } from "./controllers/getFollowing";
 import { undoSetupController } from "./controllers/undoSetup";
@@ -124,6 +125,13 @@ class ProfileModule extends RouteModule {
       "/usernameAvailability/:username",
       this.validateSchema(null, { idParamCheck: true, idName: "username" }),
       checkUsernameAvailabilityController
+    );
+
+    // get the domain name availability
+    this.router.get(
+      "/domainAvailability/:domain",
+      this.validateSchema(null, { idParamCheck: true, idName: "domain" }),
+      checkDomainAvailabilityController
     );
 
     // select nfts for display in a room

@@ -12,7 +12,7 @@ export const domainValidator = async (domain, userId) => {
       return {
         available: false,
         reason:
-          "Domain has invalid format, must be alphanumeric without any special characters and spaces, and must start with an alphabet",
+          "Domain has invalid format, must be alphanumeric without any special characters and spaces.",
       };
     }
 
@@ -32,7 +32,7 @@ export const domainValidator = async (domain, userId) => {
     }
 
     const domainExists = await UserModel.findOne(
-      { domain },
+      { domain: `${domain}.verse` },
       { domain: 1, userId: 1 }
     );
 

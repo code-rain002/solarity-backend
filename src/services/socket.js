@@ -104,7 +104,6 @@ export const socketService = (io) => {
       try {
         const { modelIndex, name, roomName, title, type, roomNo, avatarUrl, slideUrls } = user;
         socketUserMapping[socket.id] = user;
-        console.log('slideUrls', slideUrls, user);
         if (roomId == -1) {
           roomId = await roomService.create(roomIndex, {
             name: name,
@@ -182,6 +181,10 @@ export const socketService = (io) => {
         console.log(err);
       }
     });
+
+    socket.on(ACTIONS.CHANGE_SLIDE, ({action}) => {
+      socket.to(curRoom).emit(ACTIONS.CHANGE_SLIDE, {action});
+    })
 
     socket.on(ACTIONS.GET_USERS, () => {
       try {

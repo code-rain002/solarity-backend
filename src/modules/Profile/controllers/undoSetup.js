@@ -29,9 +29,9 @@ export const undoSetupController = async (req, res) => {
       if (solanaAddress) nftsOwned = await checkIfOwnsSolanaNft(solanaAddress);
       if (!nftsOwned && ethereumAddress)
         nftsOwned = await checkIfOwnsEthereumNft(ethereumAddress);
-      if (!nftsOwned) {
-        stepName = "link";
-      }
+      // if (!nftsOwned) {
+      //   stepName = "link";
+      // }
     }
 
     profile.stepsCompleted[ACTION_MAP[stepName]] = false;

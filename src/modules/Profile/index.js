@@ -96,7 +96,7 @@ class ProfileModule extends RouteModule {
     // upload the user profile image
     this.router.post(
       "/uploadPic",
-      this.uploadImage,
+      // this.uploadImage,
       uploadProfilePicController
     );
 

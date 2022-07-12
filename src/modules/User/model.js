@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { boolean } from "yup";
 
 const Schema = mongoose.Schema;
 const userSchema = new Schema(
@@ -72,6 +73,12 @@ const userSchema = new Schema(
       tokenId: { type: String, required: false, trim: true },
       mintAddress: { type: String, required: false, trim: true },
     },
+    uploadImage: {
+      url: { type: String, required: false },
+      publicId: { type: String, required: false },
+      title: { type: String, required: false }
+    },
+    isNftSelectedAsAvatar: { type: Boolean, default: false },
     followerCount: { type: Number, required: false, default: 0 },
     following: {
       users: { type: [mongoose.Types.ObjectId], required: false },

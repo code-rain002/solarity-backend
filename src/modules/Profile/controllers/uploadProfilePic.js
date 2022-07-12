@@ -16,11 +16,11 @@ export const uploadProfilePicController = async (req, res) => {
   try {
     console.log("request: ", req)
     const {
-      body: { fileName, fileSize, filePath },
+      body: { url, public_id, title },
       session: { userId },
     } = req;
 
-    console.log("filename: ", fileName)
+    // console.log("filename: ", fileName)
     let profile;
 
     profile = await req.profile();
@@ -30,6 +30,12 @@ export const uploadProfilePicController = async (req, res) => {
       { _id: userId },
       {
         "stepsCompleted.profilePicUpdated": true,
+        "uploadImage": {
+          url,
+          publicId: public_id,
+          title
+        },
+        "isNftSelectedAsAvatar": false,
         visible,
       }
     );

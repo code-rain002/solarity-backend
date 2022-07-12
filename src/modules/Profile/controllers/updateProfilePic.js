@@ -28,6 +28,7 @@ export const updateProfilePicController = async (req, res) => {
         { _id: userId },
         {
           "stepsCompleted.profilePicUpdated": true,
+          "isNftSelectedAsAvatar": true,
           visible,
         }
       );
@@ -59,6 +60,7 @@ export const updateProfilePicController = async (req, res) => {
         {
           profileImage: profileImageUpdates,
           "stepsCompleted.profilePicUpdated": true,
+          "isNftSelectedAsAvatar": true,
           visible,
         }
       );

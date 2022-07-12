@@ -16,7 +16,7 @@ const s3 = new AWS.S3({
   },
 });
 
-export const upload = (folder = "") =>
+export const uploadImage = (folder = "") =>
   multer({
     storage: multerS3({
       s3,

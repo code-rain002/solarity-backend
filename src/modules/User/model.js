@@ -1,9 +1,18 @@
 import mongoose from "mongoose";
+import { boolean } from "yup";
 
 const Schema = mongoose.Schema;
 const userSchema = new Schema(
   {
     username: {
+      type: String,
+      index: true,
+      unique: true,
+      lowercase: true,
+      sparse: true,
+      trim: true,
+    },
+    domain: {
       type: String,
       index: true,
       unique: true,
@@ -28,6 +37,7 @@ const userSchema = new Schema(
       },
     },
     bio: { type: String, required: false, trim: true },
+    title: { type: String, required: false, trim: true },
     externalLinks: {
       twitter: {
         id: String,
@@ -63,6 +73,12 @@ const userSchema = new Schema(
       tokenId: { type: String, required: false, trim: true },
       mintAddress: { type: String, required: false, trim: true },
     },
+    uploadImage: {
+      url: { type: String, required: false },
+      publicId: { type: String, required: false },
+      title: { type: String, required: false }
+    },
+    isNftSelectedAsAvatar: { type: Boolean, default: false },
     followerCount: { type: Number, required: false, default: 0 },
     following: {
       users: { type: [mongoose.Types.ObjectId], required: false },
@@ -78,6 +94,10 @@ const userSchema = new Schema(
       daoIds: {
         type: [mongoose.Types.ObjectId],
         default: [],
+      },
+      daos: {
+        type: [Object],
+        default: []
       },
       required: false,
     },

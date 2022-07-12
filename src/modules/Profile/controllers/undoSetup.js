@@ -21,7 +21,7 @@ export const undoSetupController = async (req, res) => {
       body: { stepName },
     } = req;
     const profile = await req.profile();
-    if (profile.visible) throwError("You cannot undo the setup");
+    // if (profile.visible) throwError("You cannot undo the setup");
 
     if (stepName == "profilePic") {
       const { solanaAddress, ethereumAddress } = profile;
@@ -29,9 +29,9 @@ export const undoSetupController = async (req, res) => {
       if (solanaAddress) nftsOwned = await checkIfOwnsSolanaNft(solanaAddress);
       if (!nftsOwned && ethereumAddress)
         nftsOwned = await checkIfOwnsEthereumNft(ethereumAddress);
-      if (!nftsOwned) {
-        stepName = "link";
-      }
+      // if (!nftsOwned) {
+      //   stepName = "link";
+      // }
     }
 
     profile.stepsCompleted[ACTION_MAP[stepName]] = false;

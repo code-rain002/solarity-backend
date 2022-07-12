@@ -13,6 +13,9 @@ import {
   checkRoomController,
   setActiveRoomController,
   confirmAccountLinksController,
+  updateUserInfoController, // For new Solarity project (Domain, Title)
+  uploadProfilePicController,
+  checkDomainAvailabilityController // For new Solarity project (Domain)
 } from "./controllers";
 import { getFollowingController } from "./controllers/getFollowing";
 import { undoSetupController } from "./controllers/undoSetup";
@@ -27,9 +30,12 @@ import {
   checkRoomSchema,
   setActiveRoomSchema,
   profileSetupSchema,
+  profileInitSchema, // For new Solarity project
   profileImageUpdateSchema,
   getFollowingSchema,
   undoSetupSchema,
+  updateUserInfoSchema, // For new Solarity project (Domain, Title)
+  uploadProfilePicSchema
 } from "./schema";
 
 class ProfileModule extends RouteModule {
@@ -47,11 +53,30 @@ class ProfileModule extends RouteModule {
       claimDaosController
     );
 
+    // init the profile
+    this.router.post(
+      "/initProfile",
+      this.validateSchema(profileInitSchema),
+      updateUserInfoController,
+      confirmAccountLinksController,
+      updateProfilePicController,
+      claimDaosController,
+      uploadProfilePicController
+    );
+
     // update profile
     this.router.patch(
       "/",
       this.validateSchema(updateProfileSchema),
       updateProfileInfoController
+    );
+
+    // For New Solarity Project
+    // update profile
+    this.router.patch(
+      "/userInfo",
+      this.validateSchema(updateUserInfoSchema),
+      updateUserInfoController
     );
 
     // update profile pic using the nft
@@ -66,6 +91,13 @@ class ProfileModule extends RouteModule {
       "/publicAddress",
       this.validateSchema(updatePublicAddressSchema),
       updatePublicAddressController
+    );
+
+    // upload the user profile image
+    this.router.post(
+      "/uploadPic",
+      // this.uploadImage,
+      uploadProfilePicController
     );
 
     // SETUP ROUTE
@@ -93,6 +125,13 @@ class ProfileModule extends RouteModule {
       "/usernameAvailability/:username",
       this.validateSchema(null, { idParamCheck: true, idName: "username" }),
       checkUsernameAvailabilityController
+    );
+
+    // get the domain name availability
+    this.router.get(
+      "/domainAvailability/:domain",
+      this.validateSchema(null, { idParamCheck: true, idName: "domain" }),
+      checkDomainAvailabilityController
     );
 
     // select nfts for display in a room

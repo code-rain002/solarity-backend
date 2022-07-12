@@ -1,6 +1,7 @@
 import { errorResponse, successResponse } from "../../../utils";
 import { getDaoMemberships } from "../helpers";
 import DaoModel from "../model";
+import UserModel from "../model";
 
 export const getDaosController = async (req, res) => {
   try {
@@ -9,8 +10,8 @@ export const getDaosController = async (req, res) => {
       query: { member, term },
     } = req;
     const findOptions = {};
+    const user = await req.profile();
     if (member && userId) {
-      const user = await req.profile();
       let memberIds = [];
       if (user.solanaAddress) {
         memberIds = await getDaoMemberships({
@@ -52,6 +53,17 @@ export const getDaosController = async (req, res) => {
         $sort: { createdAt: -1 },
       },
     ]);
+    // console.log(user.solanaAddress)
+    // await UserModel.updateOne(
+    //   { solanaAddress: user.solanaAddress },
+    //   {
+    //     $set: {
+    //       daoMemberships: {
+    //         daos: [{ q: '1' }, { q: '2' }],
+    //       },
+    //     }
+    //   }
+    // );
     return successResponse({ res, response: { data: daos } });
   } catch (err) {
     return errorResponse({ res, err });

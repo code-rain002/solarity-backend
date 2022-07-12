@@ -183,7 +183,7 @@ export const socketService = (io) => {
     });
 
     socket.on(ACTIONS.CHANGE_SLIDE, ({action}) => {
-      socket.to(curRoom).emit(ACTIONS.CHANGE_SLIDE, {action});
+      io.to(curRoom).emit(ACTIONS.CHANGE_SLIDE, {action});
     })
 
     socket.on(ACTIONS.GET_USERS, () => {

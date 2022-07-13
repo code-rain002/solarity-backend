@@ -32,7 +32,6 @@ export const socketService = (io) => {
     });
 
     /////////////////////////////////////
-
     console.log("new connection", socket.id);
     socket.socket_id = socket.id;
     socket.on(ACTIONS.SET_USER_NAME, ({ username }) => {

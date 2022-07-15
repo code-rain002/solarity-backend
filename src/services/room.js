@@ -30,9 +30,12 @@ class RoomService {
         try {
             const { name, sid, roomName, modelIndex, title, type, roomNo, avatarUrl, slideUrls } = payload;
             var imageUrl = "";
-            const userInfo = await User.findOne({username: name, "rooms.roomNo": roomNo});
+            const userInfo = await User.findOne({ username: name });
             if(userInfo && userInfo.rooms) {
-                imageUrl = userInfo.rooms.find(s => s.roomNo == roomNo).imageUrl;
+                var roomInfo = userInfo.rooms.find(s => s.roomNo == roomNo)
+                if(!!roomInfo) {
+                    imageUrl = roomInfo.imageUrl;
+                }
             }
             roomModel.push({
                 invitationHash: md5(roomName + roomId),

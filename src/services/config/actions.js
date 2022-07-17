@@ -1,4 +1,5 @@
 const ACTIONS = {
+    CHANGE_SLIDE: 'CHANGE_SLIDE',
     GET_GROUP_MSGS: 'get-group-msgs',
     REMOVE_USER_EXTENSION: 'remove-user-extension',
     SEND_MSG_EXTENSION: 'send-msg-extension',

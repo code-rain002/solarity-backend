@@ -32,7 +32,6 @@ export const socketService = (io) => {
     });
 
     /////////////////////////////////////
-
     console.log("new connection", socket.id);
     socket.socket_id = socket.id;
     socket.on(ACTIONS.SET_USER_NAME, ({ username }) => {
@@ -102,7 +101,7 @@ export const socketService = (io) => {
 
     socket.on(ACTIONS.JOIN, async ({ roomId, user }) => {
       try {
-        const { modelIndex, name, roomName, title, type, roomNo, avatarUrl } = user;
+        const { modelIndex, name, roomName, title, type, roomNo, avatarUrl, slideUrls } = user;
         socketUserMapping[socket.id] = user;
         if (roomId == -1) {
           roomId = await roomService.create(roomIndex, {
@@ -112,6 +111,7 @@ export const socketService = (io) => {
             title,
             type,
             roomNo,
+            slideUrls,
             avatarUrl,
             sid: socket.id,
           });
@@ -180,6 +180,10 @@ export const socketService = (io) => {
         console.log(err);
       }
     });
+
+    socket.on(ACTIONS.CHANGE_SLIDE, ({action}) => {
+      io.to(curRoom).emit(ACTIONS.CHANGE_SLIDE, {action});
+    })
 
     socket.on(ACTIONS.GET_USERS, () => {
       try {

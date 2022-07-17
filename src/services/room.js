@@ -28,7 +28,7 @@ class RoomService {
     
     async create(roomId, payload) {
         try {
-            const { name, sid, roomName, modelIndex, title, type, roomNo, avatarUrl } = payload;
+            const { name, sid, roomName, modelIndex, title, type, roomNo, avatarUrl, slideUrls } = payload;
             var imageUrl = "";
             const userInfo = await User.findOne({username: name, "rooms.roomNo": roomNo});
             if(userInfo && userInfo.rooms) {
@@ -45,6 +45,7 @@ class RoomService {
                 roomNo,
                 avatarUrl,
                 imageUrl,
+                slideUrls,
                 sid,
                 modelIndex,
                 clients: [],

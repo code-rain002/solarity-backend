@@ -5,7 +5,7 @@ import { isProfileVisible } from "../helpers";
 export const claimDaosController = async (req, res) => {
   try {
     const {
-      body: { daos },
+      // body: { daos },
       session: { userId },
     } = req;
     // // steps of claiming will come here, when ready
@@ -27,7 +27,7 @@ export const claimDaosController = async (req, res) => {
       { _id: userId },
       {
         "stepsCompleted.daoClaimed": true,
-        "daoMemberships.daos": daos,
+        // "daoMemberships.daos": daos,
         visible
       }
     );

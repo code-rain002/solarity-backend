@@ -108,19 +108,7 @@ export const profileSetupSchema = yup.object({
           .required("Username is required");
       }
     }),
-    // domain: yup.string().when("action", (action) => {
-    //   if (action === "info") {
-    //     return yup
-    //       .string()
-    //       .trim()
-    //       .typeError("Domain is invalid")
-    //       .min(3, "Domain is too short")
-    //       .max(60, "Domain is too long")
-    //       .required("Domain is required");
-    //   }
-    // }),
     bio: yup.string().trim().typeError("Bio is invalid"),
-    // title: yup.string().trim().typeError("Title is invalid"),
     skipImage: yup.boolean(),
     imageNetwork: yup
       .string()
@@ -299,6 +287,15 @@ export const selectNftsForRoomSchema = yup.object({
       .string()
       .typeError("Location must be a string")
       .required("Location is required"),
+  }),
+});
+
+export const updateProfileDaosSchema = yup.object({
+  body: yup.object({
+    domain: yup
+      .string()
+      .typeError("Domain must be a string")
+      .required("Domain is required"),
   }),
 });
 

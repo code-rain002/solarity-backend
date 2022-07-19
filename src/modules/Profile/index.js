@@ -15,7 +15,8 @@ import {
   confirmAccountLinksController,
   updateUserInfoController, // For new Solarity project (Domain, Title)
   uploadProfilePicController,
-  checkDomainAvailabilityController // For new Solarity project (Domain)
+  checkDomainAvailabilityController, // For new Solarity project (Domain)
+  updateProfileDaosController,  // For new Solarity project (Domain)
 } from "./controllers";
 import { getFollowingController } from "./controllers/getFollowing";
 import { undoSetupController } from "./controllers/undoSetup";
@@ -35,7 +36,8 @@ import {
   getFollowingSchema,
   undoSetupSchema,
   updateUserInfoSchema, // For new Solarity project (Domain, Title)
-  uploadProfilePicSchema
+  uploadProfilePicSchema,
+  updateProfileDaosSchema
 } from "./schema";
 
 class ProfileModule extends RouteModule {
@@ -61,7 +63,8 @@ class ProfileModule extends RouteModule {
       confirmAccountLinksController,
       updateProfilePicController,
       claimDaosController,
-      uploadProfilePicController
+      uploadProfilePicController,
+      updateProfileDaosController
     );
 
     // update profile
@@ -98,6 +101,13 @@ class ProfileModule extends RouteModule {
       "/uploadPic",
       // this.uploadImage,
       uploadProfilePicController
+    );
+
+    // set the profile daos for the profile
+    this.router.get(
+      "/profileDaos",
+      // this.validateSchema(updateProfileDaosSchema),
+      updateProfileDaosController
     );
 
     // SETUP ROUTE

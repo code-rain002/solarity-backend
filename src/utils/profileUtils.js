@@ -44,7 +44,7 @@ export const getProfileData = async (userId) => {
         "createdAt",
         "updatedAt",
         "nonce",
-        "profileImage",
+        // "profileImage",
         "externalLinks",
       ],
     },

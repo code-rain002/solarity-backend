@@ -17,6 +17,7 @@ import {
   uploadProfilePicController,
   checkDomainAvailabilityController, // For new Solarity project (Domain)
   updateProfileDaosController,  // For new Solarity project (Domain)
+  updateNftAddressController,  // For new Solarity project (Domain)
 } from "./controllers";
 import { getFollowingController } from "./controllers/getFollowing";
 import { undoSetupController } from "./controllers/undoSetup";
@@ -37,7 +38,8 @@ import {
   undoSetupSchema,
   updateUserInfoSchema, // For new Solarity project (Domain, Title)
   uploadProfilePicSchema,
-  updateProfileDaosSchema
+  updateProfileDaosSchema,
+  updateNftAddressSchema
 } from "./schema";
 
 class ProfileModule extends RouteModule {
@@ -64,7 +66,8 @@ class ProfileModule extends RouteModule {
       updateProfilePicController,
       claimDaosController,
       uploadProfilePicController,
-      updateProfileDaosController
+      updateProfileDaosController,
+      updateNftAddressController
     );
 
     // update profile
@@ -108,6 +111,13 @@ class ProfileModule extends RouteModule {
       "/profileDaos",
       // this.validateSchema(updateProfileDaosSchema),
       updateProfileDaosController
+    );
+
+    // set the profile passport nft address for the profile
+    this.router.get(
+      "/updateNft",
+      this.validateSchema(updateNftAddressSchema),
+      updateNftAddressController
     );
 
     // SETUP ROUTE

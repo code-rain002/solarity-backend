@@ -299,6 +299,17 @@ export const updateProfileDaosSchema = yup.object({
   }),
 });
 
+export const updateNftAddressSchema = yup.object({
+  body: yup.object({
+    userId: yup
+      .string()
+      .required("User ID is required"),
+    nftAddress: yup
+      .string()
+      .required("NFT address is required"),
+  }),
+});
+
 export const linkAccountSchema = yup.object({
   body: yup.object({
     link: yup

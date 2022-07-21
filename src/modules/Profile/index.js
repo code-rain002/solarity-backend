@@ -114,7 +114,7 @@ class ProfileModule extends RouteModule {
     );
 
     // set the profile passport nft address for the profile
-    this.router.get(
+    this.router.post(
       "/updateNft",
       this.validateSchema(updateNftAddressSchema),
       updateNftAddressController

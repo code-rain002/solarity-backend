@@ -15,6 +15,7 @@ export const verifySignature = (nonce, signature, publicKey, walletType) => {
         signatureBytes,
         publicKeyBytes
       );
+      
     } else {
       const messageBufferHex = bufferToHex(Buffer.from(nonce, "utf8"));
       const retrievedAddress = recoverPersonalSignature({

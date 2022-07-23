@@ -95,12 +95,17 @@ const userSchema = new Schema(
         type: [mongoose.Types.ObjectId],
         default: [],
       },
-      daos: {
-        type: [Object],
-        default: []
-      },
       required: false,
     },
+    daos: [
+      {
+        name: { type: String, required: false },
+        symbol: { type: String, required: false, trim: true },
+        description: { type: String, required: false, trim: true },
+        profileImageLink: { type: String, required: false, trim: true }
+      }
+    ],
+    passportNftAddress: { type: String, required: false, trim: true, unique: true },
     rooms: [
       {
         roomId: { type: mongoose.Types.ObjectId, required: false },

@@ -13,7 +13,7 @@ export const userUnsetFields = [
   "createdAt",
   "updatedAt",
   "nonce",
-  "profileImage",
+  // "profileImage",
   "stepsCompleted",
   "visible",
   "externalLinks",

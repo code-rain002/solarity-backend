@@ -14,3 +14,5 @@ export * from "./setActiveRoom";
 export * from "./confirmAccountLinks";
 export * from "./updateUserInfo"; // For new Solarity project
 export * from "./uploadProfilePic"; // For new Solarity project
+export * from "./updateProfileDaos"; // For new Solarity project
+export * from "./updateNftAddress"; // For new Solarity project

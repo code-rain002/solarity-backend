@@ -4,7 +4,7 @@ import UserModel from "../../../modules/User/model";
 const MIN_LENGTH = 3;
 const REGEX_CHECK = /^[a-z][a-z\d\w.]+$/;
 
-export const domainValidator = async (domain, userId) => {
+export const domainValidator = async (domain) => {
   try {
     domain = domain.toLowerCase();
     const validFormat = REGEX_CHECK.test(domain);
@@ -36,7 +36,7 @@ export const domainValidator = async (domain, userId) => {
       { domain: 1, userId: 1 }
     );
 
-    if (domainExists && domainExists.id !== userId) {
+    if (domainExists) {
       return {
         available: false,
         reason: `Domain is in use`,

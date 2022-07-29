@@ -43,6 +43,15 @@ import {
 } from "./schema";
 
 class ProfileModule extends RouteModule {
+  publicRoutes() {
+    // get the domain name availability
+    this.router.get(
+      "/domainAvailability/:domain",
+      this.validateSchema(null, { idParamCheck: true, idName: "domain" }),
+      checkDomainAvailabilityController
+    );
+  }
+
   privateRoutes() {
     // get profile
     this.router.get("/", getProfileController);
@@ -145,13 +154,6 @@ class ProfileModule extends RouteModule {
       "/usernameAvailability/:username",
       this.validateSchema(null, { idParamCheck: true, idName: "username" }),
       checkUsernameAvailabilityController
-    );
-
-    // get the domain name availability
-    this.router.get(
-      "/domainAvailability/:domain",
-      this.validateSchema(null, { idParamCheck: true, idName: "domain" }),
-      checkDomainAvailabilityController
     );
 
     // select nfts for display in a room

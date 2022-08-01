@@ -11,7 +11,6 @@ export const checkDomainAvailabilityController = async (req, res) => {
     const {
       params: { domain },
     } = req;
-    console.log(domain)
     const { available, reason } = await domainValidator(domain);
     if (!available) throwError(reason);
     return successResponse({ res, response: { available: true } });

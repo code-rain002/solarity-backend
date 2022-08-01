@@ -14,13 +14,11 @@ import { isProfileVisible } from "../helpers";
 
 export const uploadProfilePicController = async (req, res) => {
   try {
-    console.log("request: ", req)
     const {
-      body: { url, public_id, title },
+      body: { url },
       session: { userId },
     } = req;
 
-    // console.log("filename: ", fileName)
     let profile;
 
     profile = await req.profile();
@@ -30,10 +28,8 @@ export const uploadProfilePicController = async (req, res) => {
       { _id: userId },
       {
         "stepsCompleted.profilePicUpdated": true,
-        "uploadImage": {
-          url,
-          publicId: public_id,
-          title
+        "profileImage": {
+          link: url,
         },
         "isNftSelectedAsAvatar": false,
         visible,

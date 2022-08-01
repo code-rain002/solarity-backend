@@ -14,13 +14,11 @@ import { isProfileVisible } from "../helpers";
 
 export const uploadProfilePicController = async (req, res) => {
   try {
-    // console.log("request: ", req)
     const {
       body: { url },
       session: { userId },
     } = req;
 
-    // console.log("filename: ", fileName)
     let profile;
 
     profile = await req.profile();

@@ -31,7 +31,6 @@ export const uploadProfilePicController = async (req, res) => {
         "profileImage": {
           link: url,
         },
-        "isNftSelectedAsAvatar": false,
         visible,
       }
     );

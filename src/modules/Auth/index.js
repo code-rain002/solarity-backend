@@ -3,13 +3,25 @@ import {
   loginUserController,
   logoutUserController,
   provideUserDataController,
+  checkUserExistController,
 } from "./controllers";
-import { LoginUserSchema } from "./schema";
+import { LoginUserSchema, UserExistSchema } from "./schema";
 
 class AuthModule extends RouteModule {
   publicRoutes() {
     // check the session of the user and provide data
     this.router.get("/check", provideUserDataController);
+
+    /**
+    * @name checkUserExist - Check if a user is exist with wallet address
+    * @return {Object<{ exist: boolean }>}
+    *
+    * @example POST /auth/userExist { publicKey: ${publicKey}, walletType: ${walletType} }
+    */
+    this.router.post('/userExist',
+      this.validateSchema(UserExistSchema),
+      checkUserExistController
+    );
 
     // login/register the user
     this.router.post(

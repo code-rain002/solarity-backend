@@ -33,3 +33,26 @@ export const UserExistSchema = yup.object({
       .required("The wallet type is required"),
   })
 });
+
+export const RegisterSchema = yup.object({
+  body: yup.object({
+    publicKey: yup
+      .string()
+      .typeError("Public key must be a string")
+      .required("The public key is required"),
+    walletType: yup
+      .string()
+      .oneOf(["solana", "ethereum"])
+      .required("The wallet type is required"),
+    username: yup
+      .string()
+      .typeError("User name must be a string")
+      .required("User name is required"),
+    profileImage: yup.object({
+      link: yup
+        .string()
+        .typeError("Link of profile image must be a string")
+        .required("Link of profile image is required"),
+    })
+  })
+});

@@ -5,8 +5,9 @@ import {
   provideUserDataController,
   checkUserExistController,
   domainAvailabilityController,
+  registerController,
 } from "./controllers";
-import { LoginUserSchema, UserExistSchema } from "./schema";
+import { LoginUserSchema, UserExistSchema, RegisterSchema } from "./schema";
 
 class AuthModule extends RouteModule {
   publicRoutes() {
@@ -33,6 +34,17 @@ class AuthModule extends RouteModule {
     this.router.post('/userExist',
       this.validateSchema(UserExistSchema),
       checkUserExistController
+    );
+
+    /**
+    * @name register - Register
+    * @return {Object<{ success: boolean }>}
+    *
+    * @example POST /auth/register { publicKey: ${publicKey}, walletType: ${walletType}, domain: ${domain}, bio: ${bio}, profileImage: ${profileImage} }
+    */
+    this.router.post('/register',
+      this.validateSchema(RegisterSchema),
+      registerController
     );
 
     // login/register the user

@@ -24,3 +24,12 @@ export const removeDaoSchema = yup.object({
       .required("Coin symbol is required"),
   }),
 });
+
+export const getDaoSchema = yup.object({
+  params: yup.object({
+    address: yup.string().required("The id is required"),
+  }),
+  query: yup.object({
+    includeDao: yup.boolean().typeError("includeDao must be true/false"),
+  }),
+});

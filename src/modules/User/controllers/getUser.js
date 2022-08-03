@@ -59,6 +59,7 @@ export const getUserController = async (req, res) => {
             name: 1,
             symbol: 1,
             description: 1,
+            profileImage: 1
           }
         );
       } catch {}

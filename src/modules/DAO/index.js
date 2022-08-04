@@ -8,8 +8,9 @@ import {
   unfollowDaoController,
   getDaoTokensController,
   getDaoController,
+  getDaoByAddressController
 } from "./controllers";
-import { getDaosSchema } from "./schema";
+import { getDaosSchema, getDaoSchema } from "./schema";
 
 class DaoModule extends RouteModule {
   publicRoutes() {
@@ -29,13 +30,19 @@ class DaoModule extends RouteModule {
       this.validateSchema(null, { idParamCheck: true, idName: "symbol" }),
       getDaoController
     );
+
+    this.router.get(
+      "/:address/address",
+      this.validateSchema(getDaoSchema, { includeQuery: true }),
+      getDaoByAddressController
+    );
   }
 
   privateRoutes() {
     // check if use is following a dao
     this.router.get(
       "/:symbol/follow",
-      this.validateSchema(null, { idParamCheck: true, idName: "symbol" }),
+      this.validateSchema(getDaoSchema, { idParamCheck: true, idName: "symbol" }),
       getDaoFollowingStatusController
     );
 

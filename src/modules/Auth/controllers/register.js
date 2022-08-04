@@ -4,8 +4,6 @@ import UserModel from "../../User/model";
 export const registerController = async (req, res) => {
   try {
     const { publicKey, walletType, username, bio, daos, profileImage } = req.body;
-    console.log(req.body);
-    return;
     const user = await UserModel.create({
       [walletType + "Address"]: publicKey,
       username,

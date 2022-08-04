@@ -48,6 +48,9 @@ export const RegisterSchema = yup.object({
       .string()
       .typeError("User name must be a string")
       .required("User name is required"),
+    bio: yup
+      .string()
+      .typeError("Bio must be a string"),
     profileImage: yup.object({
       link: yup
         .string()

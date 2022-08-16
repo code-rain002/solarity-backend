@@ -12,6 +12,13 @@ export const registerController = async (req, res) => {
       profileImage
     });
 
+    // set the session user ID
+    if (user) {
+      req.session.userId = user._id.toString();
+      req.session.logged = true;
+      await req.session.save();
+    }
+
     return successResponse({ res, response: { data: "success" } });
   } catch (err) {
     return errorResponse({ res, err });

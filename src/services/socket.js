@@ -67,29 +67,30 @@ export const socketService = (io) => {
 
     socket.on(ACTIONS.SEND_MSG_EXTENSION, (msg) => {
       try {
-        if(msg.groupType == false) {
-          const senderIndex = userService.userModel.findIndex(
-            (s) => s.user.name == msg.members[0]
-          );
-          const receiverIndex = userService.userModel.findIndex(
-            (s) => s.user.name == msg.members[1]
-          );
-          if (senderIndex > -1 && receiverIndex > -1) {
-            userService.userModel[senderIndex].user.msgs.push(msg);
-            userService.userModel[receiverIndex].user.msgs.push(msg);
-            userService.userModel[senderIndex].socket.emit(
-              ACTIONS.SEND_MSG_EXTENSION,
-              msg
-            );
-            userService.userModel[receiverIndex].socket.emit(
-              ACTIONS.SEND_MSG_EXTENSION,
-              msg
-            );
-          }
-        } else {
-          groupService.setMsg(msg);
+        // if(msg.groupType == false) {
+        //   const senderIndex = userService.userModel.findIndex(
+        //     (s) => s.user.name == msg.members[0]
+        //   );
+        //   const receiverIndex = userService.userModel.findIndex(
+        //     (s) => s.user.name == msg.members[1]
+        //   );
+        //   if (senderIndex > -1 && receiverIndex > -1) {
+        //     userService.userModel[senderIndex].user.msgs.push(msg);
+        //     userService.userModel[receiverIndex].user.msgs.push(msg);
+        //     userService.userModel[senderIndex].socket.emit(
+        //       ACTIONS.SEND_MSG_EXTENSION,
+        //       msg
+        //     );
+        //     userService.userModel[receiverIndex].socket.emit(
+        //       ACTIONS.SEND_MSG_EXTENSION,
+        //       msg
+        //     );
+        //   }
+        // } else {
+        //   groupService.setMsg(msg);
+        console.log(msg);
           io.sockets.emit(ACTIONS.SEND_MSG_EXTENSION, msg);
-        }
+        // }
       } catch (error) {
         console.log("SEND_MSG_EXTENSION :", error);
       }

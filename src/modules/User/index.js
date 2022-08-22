@@ -1,5 +1,5 @@
 import { RouteModule } from "../RouteModuleClass";
-import { getUserSchema, getUsersSchema } from "./schema";
+import { getUserSchema, getUsersSchema, getEventsSchema } from "./schema";
 
 import {
   getAllUsersController,
@@ -13,7 +13,8 @@ import {
   getFollowingStatusController,
   getUserController,
   getRoomInfoController,
-  getSelectedRoomInfoController
+  getSelectedRoomInfoController,
+  getEventsController
 } from "./controllers";
 
 class UserModule extends RouteModule {
@@ -36,6 +37,13 @@ class UserModule extends RouteModule {
 
     // Get Selected live room info.
     this.router.get("/getSelectedRoomInfo/:roomNo", getSelectedRoomInfoController);
+
+    // Get all the events info
+    this.router.get(
+      "/getEvents",
+      this.validateSchema(getEventsSchema, { includeQuery: true }),
+      getEventsController
+    )
 
     // REDUNDANT with the GET / endpoint. Confirm removal later
     this.router.get("/getUsers", getAllUsersController);

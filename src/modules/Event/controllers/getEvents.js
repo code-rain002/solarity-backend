@@ -8,7 +8,7 @@ export const getEventsController = async (req, res) => {
       query: { isPrivate },
     } = req;
     console.log(req.query);
-    const data = await EventModel.find({ isPrivate });
+    const data = await EventModel.find();
     return successResponse({ res, response: { data } });
   } catch (err) {
     return errorResponse({ res, err });

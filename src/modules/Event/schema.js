@@ -23,6 +23,11 @@ export const createEventSchema = yup.object({
     isPrivate: yup
       .boolean()
       .typeError("isPrivate must be true/false"),
+    creator: yup
+      .object({
+        avatar: yup.string().typeError("Avatar must be a string").required("Avatar is required"),
+        name: yup.string().typeError("Name must be a string").required("Name is required"),
+      }),
     friends: yup
       .array()
   }),

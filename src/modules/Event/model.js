@@ -14,6 +14,10 @@ const eventSchema = new Schema(
       required: false, 
       trim: true,
     },
+    type: {
+      type: String,
+      required: true,
+    },
     creator: {
       avatar: { type: String, required: true, trim: true },
       name: { type: String, required: true, trim: true }
@@ -21,12 +25,13 @@ const eventSchema = new Schema(
     friends: [
       {
         avatar: { type: String, required: true, trim: true },
-        name: { type: String, required: true, trim: true }
+        name: { type: String, required: true, trim: true },
+        link: { type: String, required: true, trim: true },
       }
     ],
-    isPublic: {
+    isPrivate: {
       type: Boolean,
-      default: true
+      default: false
     }
   },
   {

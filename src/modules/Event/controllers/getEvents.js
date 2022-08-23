@@ -5,10 +5,10 @@ import EventModel from "../model";
 export const getEventsController = async (req, res) => {
   try {
     const {
-      query: { isPublic },
+      query: { isPrivate },
     } = req;
     console.log(req.query);
-    const data = await EventModel.find();
+    const data = await EventModel.find({ isPrivate });
     return successResponse({ res, response: { data } });
   } catch (err) {
     return errorResponse({ res, err });

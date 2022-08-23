@@ -5,34 +5,20 @@ import EventModel from "../model";
 export const createEventController = async (req, res, next) => {
   try {
     const {
-      body: { title, image, friends},
+      body: { title, image, friends, type, isPrivate},
     } = req;
-    
+    console.log("title,", title)
+    console.log("title,", req.body)
     EventModel.create({
       title: title,
       image: image,
+      type: type,
       creator: {
         avatar: "/images/library/temp/users/creator1.png",
         name: "monke DAO"
       },
-      friends: [
-        {
-            avatar: "/images/library/temp/users/user1.png",
-            name: "Meta",
-        }, {
-            avatar: "/images/library/temp/users/user2.png",
-            name: "Rocco",
-        }, {
-            avatar: "/images/library/temp/users/user3.png",
-            name: "Beka",
-        }, {
-            avatar: "/images/library/temp/users/user4.png",
-            name: "Supa",
-        }, {
-            avatar: "/images/library/temp/users/user5.png",
-            name: "Bella",
-        },
-      ],
+      friends: friends,
+      isPrivate: isPrivate
     });
 
     return successResponse({ res, response: { success: true } });

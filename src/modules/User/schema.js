@@ -33,3 +33,9 @@ export const getUserSchema = yup.object({
     includeDao: yup.boolean().typeError("includeDao must be true/false"),
   }),
 });
+
+export const getEventsSchema = yup.object({
+  query: yup.object({
+    isPublic: yup.boolean().typeError("isPublic must be true/false"),
+  }),
+});

@@ -32,8 +32,8 @@ export const domainValidator = async (domain) => {
     }
 
     const domainExists = await UserModel.findOne(
-      { domain: `${domain}.verse` },
-      { domain: 1, userId: 1 }
+      { username: `${domain}.verse` },
+      { username: 1, userId: 1 }
     );
 
     if (domainExists) {

@@ -10,3 +10,4 @@ export * from "./getFollowingStatus";
 export * from "./getUserWithWalletAddress";
 export * from "./getRoomInfo";
 export * from "./getSelectedRoomInfo";
+export * from "./getEvents";

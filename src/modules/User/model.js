@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { boolean } from "yup";
 
 const Schema = mongoose.Schema;
 const userSchema = new Schema(
@@ -63,6 +62,15 @@ const userSchema = new Schema(
       contractAddress: { type: String, required: false, trim: true },
       tokenId: { type: String, required: false, trim: true },
       mintAddress: { type: String, required: false, trim: true },
+    },
+    friends: {
+      friendId: { type: String, required: true, trim: true },
+      status: { type: Number, default: 0 },
+      roomRequests: {
+        roomId: { type: String, required: true },
+        status: { type: Number, default: 0 },
+        created_at: { type: String, trim: true }
+      }
     },
     followerCount: { type: Number, required: false, default: 0 },
     following: {

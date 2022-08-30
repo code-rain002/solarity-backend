@@ -3,20 +3,39 @@ const { default: UserModel } = require("../modules/User/model");
 class UserService {
     userModel = [];
 
-    createUser(data) {
+    async createUser(data) {
         const { name, socket } = data;
-        var userId = this.userModel.length;
+        const user = await UserModel.findOne({username: name});
+        var userNo = this.userModel.length;
         var newUser = { 
             socket: socket,
             user: {
-                userId: userId,
+                userId: user._id,
+                userNo: userNo,
                 name: name,
-                msgs: [],
+                friends: user.friends,
                 onlineFlag: true,
             }
         };
         this.userModel.push(newUser);
         return newUser;
+    }
+
+    getFriendsStatus({ userInfo }) {
+        var friends = [];
+        if(!!userInfo && !!userInfo.user.friends) {
+            for(var i = 0; i < userInfo.user.friends.length; i ++) {
+                const friend = userInfo.user.friends[i];
+                console.log(friend);
+                // for(var j = 0; j < this.userModel.length; j ++) {
+                //     if(this.userModel[j].user.userId == friend.friendId) {
+                //         return;
+                //     }
+                // }
+                // friends.push({
+                // });
+            }
+        }
     }
 
     joinUser({userIndex, socket}) {

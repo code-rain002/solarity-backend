@@ -13,7 +13,8 @@ export const socketService = (io) => {
   groupService.create();
   ///////////
   io.on("connection", (socket) => {
-    //aframe
+
+    /******************************-aframe-*****************************/
     let curRoom = null;
     socket.on("send", (data) => {
       if (!!socket.username) {
@@ -30,13 +31,38 @@ export const socketService = (io) => {
       }
       socket.to(curRoom).emit("broadcast", data);
     });
+    /////////////////////////////////////////////////////////////////////
 
-    /////////////////////////////////////
     console.log("new connection", socket.id);
     socket.socket_id = socket.id;
-    socket.on(ACTIONS.SET_USER_NAME, ({ username }) => {
-      userlist[username] = socket;
-    });
+
+    /****************************-Extension-****************************/
+    socket.on(ACTIONS.JOIN_EXTENSION, ({ name }) => {
+      try {
+        // Add name to socket
+        socket.extension_user_name = name;
+        const userIndex = userService.userModel.findIndex(
+          (s) => s.user.name == name
+        );
+        var userInfo = {};
+        if(userIndex != -1) {
+          if (userService.userModel[userIndex].onlineFlag) {
+            userService.userModel[userIndex].socket.emit('logout', {});
+          }
+          userInfo = userService.joinUser({ userIndex, socket });
+        } else {
+          userInfo = userService.createUser({ name, socket });
+        }
+        if(userInfo != {}) {
+          const friends = userService.getFriendsStatus({ userInfo });
+          socket.emit(ACTIONS.USER_INFO_EXTENSION, !!friends ? friends : []);
+          io.sockets.emit(ACTIONS.ADD_USER_EXTENSION, userInfo.user);
+        }
+        console.log("join in extension ", socket.id);
+      } catch (error) {
+        console.log("JOIN_EXTENSION :", error);
+      }
+    })
 
     socket.on(ACTIONS.JOIN_EXTENSION, ({ name }) => {
       try {
@@ -88,7 +114,6 @@ export const socketService = (io) => {
         //   }
         // } else {
         //   groupService.setMsg(msg);
-        console.log(msg);
           io.sockets.emit(ACTIONS.SEND_MSG_EXTENSION, msg);
         // }
       } catch (error) {
@@ -99,6 +124,10 @@ export const socketService = (io) => {
     socket.on(ACTIONS.GET_GROUP_MSGS, ({daoId}) => {
       socket.emit(ACTIONS.GET_GROUP_MSGS, {daoId, msgs: groupService.getGroupMsgs(daoId)})
     })
+
+    socket.on(ACTIONS.SET_USER_NAME, ({ username }) => {
+      userlist[username] = socket;
+    });
 
     socket.on(ACTIONS.JOIN, async ({ roomId, user }) => {
       try {

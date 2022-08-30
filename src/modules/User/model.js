@@ -64,10 +64,13 @@ const userSchema = new Schema(
       mintAddress: { type: String, required: false, trim: true },
     },
     friends: {
-      friendId: { type: String, required: true, trim: true },
+      friend: { 
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
       status: { type: Number, default: 0 },
       roomRequests: {
-        roomId: { type: String, required: true },
+        roomId: { type: String },
         status: { type: Number, default: 0 },
         created_at: { type: String, trim: true }
       }
@@ -98,7 +101,7 @@ const userSchema = new Schema(
         profileImageLink: { type: String, required: false, trim: true }
       }
     ],
-    passportNftAddress: { type: String, required: false, trim: true, unique: true },
+    passportNftAddress: { type: String, required: false, trim: true },
     rooms: [
       {
         roomId: { type: mongoose.Types.ObjectId, required: false },

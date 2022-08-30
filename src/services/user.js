@@ -48,12 +48,11 @@ class UserService {
     }
 
     getOnlineUser(name) {
-        var users = [];
         for(var i = 0; i < this.userModel.length; i ++) {
-            if(this.userModel[i].user.onlineFlag)
-            users.push(this.userModel[i].user);
+            if(this.userModel[i].user.onlineFlag && this.userModel[i].user.name == name)
+                return true
         }
-        return users;
+        return false;
     }
 }
 

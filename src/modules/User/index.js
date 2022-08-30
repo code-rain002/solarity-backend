@@ -14,7 +14,8 @@ import {
   getUserController,
   getRoomInfoController,
   getSelectedRoomInfoController,
-  getEventsController
+  getEventsController,
+  fetchUsersToInviteController
 } from "./controllers";
 
 class UserModule extends RouteModule {
@@ -34,6 +35,9 @@ class UserModule extends RouteModule {
 
     // GOOD TO GO
     this.router.get("/getRoomInfo/:name/:roomNo", getRoomInfoController);
+
+    // Fetch Users to invite
+    this.router.get("/fetchUsersToInvite/:searchName", fetchUsersToInviteController)
 
     // Get Selected live room info.
     this.router.get("/getSelectedRoomInfo/:roomNo", getSelectedRoomInfoController);

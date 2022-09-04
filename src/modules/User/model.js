@@ -101,7 +101,7 @@ const userSchema = new Schema(
         profileImageLink: { type: String, required: false, trim: true }
       }
     ],
-    passportNftAddress: { type: String, required: false, trim: true },
+    passportNftAddress: { type: String, required: false, default: "" },
     rooms: [
       {
         roomId: { type: mongoose.Types.ObjectId, required: false },

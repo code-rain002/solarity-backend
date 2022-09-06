@@ -63,18 +63,22 @@ const userSchema = new Schema(
       tokenId: { type: String, required: false, trim: true },
       mintAddress: { type: String, required: false, trim: true },
     },
-    friends: {
-      friend: { 
-        type: Schema.Types.ObjectId,
-        ref: "User",
-      },
-      status: { type: Number, default: 0 },
-      roomRequests: {
-        roomId: { type: String },
+    friends: [
+      {
+        friend: { 
+          type: Schema.Types.ObjectId,
+          ref: "User",
+        },
         status: { type: Number, default: 0 },
-        created_at: { type: String, trim: true }
+        roomRequests: [
+          {
+            roomId: { type: String },
+            status: { type: Number, default: 0 },
+            created_at: { type: String, trim: true }
+          }
+        ]
       }
-    },
+    ],
     followerCount: { type: Number, required: false, default: 0 },
     following: {
       users: { type: [mongoose.Types.ObjectId], required: false },

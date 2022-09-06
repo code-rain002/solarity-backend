@@ -1,9 +1,9 @@
 import ACTIONS from "./config/actions";
 import roomService from "./room";
-import userService from "./user";
+import userService, { getOnlineUser } from "./user";
 import groupService from "./group";
 import User from "../modules/User/model";
-import user from "./user";
+import Chat from "../modules/Chat/model";
 export const socketService = (io) => {
   const socketUserMapping = {};
   var roomIndex = 1;
@@ -37,7 +37,31 @@ export const socketService = (io) => {
     socket.socket_id = socket.id;
 
     /****************************-Extension-****************************/
-    socket.on(ACTIONS.JOIN_EXTENSION, ({ name }) => {
+    socket.on(ACTIONS.INVITE_TO_FRIEND, async ({userId}) => {
+      const userInfo = userService.userModel.find(s => s.user._id == userId);
+      const invitorInfo = userService.userModel.find(s => s.user.name == socket.extension_user_name);
+      var user = await User.findById(userId);
+      if(!user.friends) {
+        user.friends = [];
+      }
+      user.friends.push({
+        friend: invitorInfo.user.userId,
+        status: 0,
+        roomRequests: [],
+      })
+      user.save();
+      return;
+      if(userInfo) {
+        userInfo.socket.emit(ACTIONS.INVITE_TO_FRIEND, {
+          name: invitorInfo.user.name,
+          profileImage: invitorInfo.user.profileImage,
+          userId: invitorInfo.user._id,
+          bio: invitorInfo.user.bio,
+        })
+      }
+    })
+
+    socket.on(ACTIONS.JOIN_EXTENSION, async ({ name }) => {
       try {
         // Add name to socket
         socket.extension_user_name = name;
@@ -51,12 +75,18 @@ export const socketService = (io) => {
           }
           userInfo = userService.joinUser({ userIndex, socket });
         } else {
-          userInfo = userService.createUser({ name, socket });
+          userInfo = await userService.createUser({ name, socket });
         }
         if(userInfo != {}) {
           const friends = userService.getFriendsStatus({ userInfo });
-          socket.emit(ACTIONS.USER_INFO_EXTENSION, !!friends ? friends : []);
-          io.sockets.emit(ACTIONS.ADD_USER_EXTENSION, userInfo.user);
+          socket.emit(ACTIONS.USER_INFO_EXTENSION, friends);
+          io.sockets.emit(ACTIONS.ADD_USER_EXTENSION, {
+            userId: userInfo.user.userId,
+            userNo: userInfo.user.userNo,
+            name: userInfo.user.name,
+            bio: userInfo.user.bio,
+            onlineFlag: userInfo.user.onlineFlag,
+          });
         }
         console.log("join in extension ", socket.id);
       } catch (error) {
@@ -64,58 +94,86 @@ export const socketService = (io) => {
       }
     })
 
-    socket.on(ACTIONS.JOIN_EXTENSION, ({ name }) => {
-      try {
-        socket.extension_user_name = name;
-        const userIndex = userService.userModel.findIndex(
-          (s) => s.user.name == name
-        );
-        var userInfo = {};
-        if (userIndex != -1) {
-          if (userInfo.onlineFlag) {
-            userInfo.socket.emit("logout", {});
-            return;
-          }
-          userInfo = userService.joinUser({ userIndex, socket });
-        } else {
-          userInfo = userService.createUser({ name, socket });
+    socket.on(ACTIONS.TYPING_STATE, ({members, name, state}) => {
+      members.forEach((memberId, index) => {
+        const member = userService.userModel.find(s => s.user.userId == memberId);
+        if(!!member && index != 0) {
+          member.socket.emit(ACTIONS.TYPING_STATE, {members, state, name})
         }
-        const users = userService.getOnlineUser(name);
-        if (userInfo != {}) {
-          socket.emit(ACTIONS.USER_INFO_EXTENSION, !!users ? users : []);
-          io.sockets.emit(ACTIONS.ADD_USER_EXTENSION, userInfo.user);
-        }
-        console.log("join in extension ", socket.id);
-      } catch (error) {
-        console.log("JOIN_EXTENSION :", error);
-      }
-    });
+      })
+    })
 
-    socket.on(ACTIONS.SEND_MSG_EXTENSION, (msg) => {
+    socket.on(ACTIONS.SEND_MSG_EXTENSION, async (msg) => {
       try {
-        // if(msg.groupType == false) {
-        //   const senderIndex = userService.userModel.findIndex(
-        //     (s) => s.user.name == msg.members[0]
-        //   );
-        //   const receiverIndex = userService.userModel.findIndex(
-        //     (s) => s.user.name == msg.members[1]
-        //   );
-        //   if (senderIndex > -1 && receiverIndex > -1) {
-        //     userService.userModel[senderIndex].user.msgs.push(msg);
-        //     userService.userModel[receiverIndex].user.msgs.push(msg);
-        //     userService.userModel[senderIndex].socket.emit(
-        //       ACTIONS.SEND_MSG_EXTENSION,
-        //       msg
-        //     );
-        //     userService.userModel[receiverIndex].socket.emit(
-        //       ACTIONS.SEND_MSG_EXTENSION,
-        //       msg
-        //     );
-        //   }
-        // } else {
-        //   groupService.setMsg(msg);
-          io.sockets.emit(ACTIONS.SEND_MSG_EXTENSION, msg);
-        // }
+        if(msg.groupType == false) {
+          // Send msgs. Members contain you.
+          var msgId = "";
+          var date = "";
+          const sender = userService.userModel.find(s => s.user.userId == msg.members[0]);
+          msg.sender = sender.user;
+          for( var index = 0; index < msg.members.length; index ++) {
+            var memberUserId = msg.members[index];
+            const member = userService.userModel.find(s => s.user.userId == memberUserId);
+            var tmpOne = {};
+            if(index != 0) {
+              var oldOne = undefined;
+              try {
+                oldOne = await Chat.findOne({users: {$all: msg.members, $size: msg.members.length}, type: msg.groupType, blockState: false});
+              } catch (error) {
+                console.log('ChatFind', error);
+              }
+              if(!oldOne) {
+                // creating new document for chat.
+                try {
+                  tmpOne = await Chat.create({
+                    users: msg.members,
+                    type: msg.groupType,
+                    msgs: [
+                      {
+                        sender: msg.members[0],
+                        content: msg.content,
+                        attachments: msg.attachments,
+                        readState: !!member,
+                        reply: msg.reply,
+                        editState: msg.editState,
+                        deleteState: msg.deleteState
+                      }
+                    ],
+                    blockState: false
+                  });
+                } catch (error) {
+                  console.log('Chat-save', error);
+                }
+              } else { 
+                // If users chat is exist, just pushing message on chat document.
+                oldOne.msgs.push({
+                  sender: msg.members[0],
+                  content: msg.content,
+                  reply: msg.reply,
+                  attachments: msg.attachments,
+                  readState: !!member,
+                  editState: msg.editState,
+                  deleteState: msg.deleteState
+                })
+                tmpOne = await oldOne.save();
+              }
+              if(!!tmpOne.msgs) {
+                msgId = tmpOne.msgs[tmpOne.msgs.length - 1]._id.toString();
+                date = tmpOne.msgs[tmpOne.msgs.length - 1].createdAt.toString();
+              }
+            }
+          }
+          msg.members.forEach((memberUserId, index) => {
+            const member = userService.userModel.find(s => s.user.userId == memberUserId);
+            if(!!member) {
+              msg.msgId = msgId;
+              msg.date = date;
+              member.socket.emit(ACTIONS.SEND_MSG_EXTENSION, msg);
+            }
+          })
+        } else {
+          // Group chat content
+        }
       } catch (error) {
         console.log("SEND_MSG_EXTENSION :", error);
       }

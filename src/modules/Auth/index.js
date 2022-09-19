@@ -6,8 +6,10 @@ import {
   checkUserExistController,
   domainAvailabilityController,
   registerController,
+  setStepController,
+  checkStepController
 } from "./controllers";
-import { LoginUserSchema, UserExistSchema, RegisterSchema } from "./schema";
+import { LoginUserSchema, UserExistSchema, RegisterSchema, SetStepSchema } from "./schema";
 
 class AuthModule extends RouteModule {
   publicRoutes() {
@@ -58,6 +60,28 @@ class AuthModule extends RouteModule {
 
   privateRoutes() {
     this.router.post("/logout", logoutUserController);
+
+    /**
+    * @name setStep - Set register step
+    * @return {Object<{ success: boolean }>}
+    *
+    * @example POST /auth/setStep { step: ${step} }
+    */
+     this.router.post('/setStep',
+    //  this.validateSchema(SetStepSchema),
+     setStepController
+   );
+
+   /**
+    * @name checkStep - Check register step
+    * @return {Object<{ userInfo: object }>}
+    *
+    * @example POST /auth/checkStep
+    */
+    this.router.post('/checkStep',
+    //  this.validateSchema(SetStepSchema),
+     checkStepController
+   );
   }
 }
 

@@ -15,7 +15,8 @@ import {
   getRoomInfoController,
   getSelectedRoomInfoController,
   getEventsController,
-  fetchUsersToInviteController
+  fetchUsersToInviteController,
+  fetchSuggestedFriendsController
 } from "./controllers";
 
 class UserModule extends RouteModule {
@@ -35,9 +36,6 @@ class UserModule extends RouteModule {
 
     // GOOD TO GO
     this.router.get("/getRoomInfo/:name/:roomNo", getRoomInfoController);
-
-    // Fetch Users to invite
-    this.router.get("/fetchUsersToInvite/:searchName", fetchUsersToInviteController)
 
     // Get Selected live room info.
     this.router.get("/getSelectedRoomInfo/:roomNo", getSelectedRoomInfoController);
@@ -67,6 +65,7 @@ class UserModule extends RouteModule {
       this.validateSchema(getUserSchema, { includeQuery: true }),
       getUserController
     );
+
   }
 
   privateRoutes() {
@@ -75,6 +74,18 @@ class UserModule extends RouteModule {
       "/:username/follow",
       this.validateSchema(null, { idParamCheck: true, idName: "username" }),
       getFollowingStatusController
+    );
+
+    // Fetch Users to invite
+    this.router.post(
+      "/fetchUsersToInvite", 
+      fetchUsersToInviteController
+    );
+
+    // Fetch Users to do chat
+    this.router.post(
+      "/fetchSuggestedFriends", 
+      fetchSuggestedFriendsController
     );
 
     // follow a user

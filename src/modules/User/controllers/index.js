@@ -12,3 +12,4 @@ export * from "./getRoomInfo";
 export * from "./getSelectedRoomInfo";
 export * from "./getEvents";
 export * from "./fetchUsersToInvite";
+export * from "./fetchSuggestedFriends";

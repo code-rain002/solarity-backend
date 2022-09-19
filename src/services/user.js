@@ -12,6 +12,8 @@ class UserService {
             user: {
                 userId: user._id,
                 userNo: userNo,
+                bio: user.bio,
+                profileImage: user.profileImage.link,
                 name: name,
                 friends: user.friends,
                 onlineFlag: true,
@@ -23,19 +25,23 @@ class UserService {
 
     getFriendsStatus({ userInfo }) {
         var friends = [];
-        if(!!userInfo && !!userInfo.user.friends) {
+        if(!!userInfo && !!userInfo.user && !!userInfo.user.friends) {
             for(var i = 0; i < userInfo.user.friends.length; i ++) {
-                const friend = userInfo.user.friends[i];
-                console.log(friend);
-                // for(var j = 0; j < this.userModel.length; j ++) {
-                //     if(this.userModel[j].user.userId == friend.friendId) {
-                //         return;
-                //     }
-                // }
-                // friends.push({
-                // });
+                const friend = userInfo.user.friends[i].friend;
+                for(var j = 0; j < this.userModel.length; j ++) {
+                    if(this.userModel[j].user.name == friend.username) {
+                        return;
+                    }
+                }
+                friends.push({
+                    name: friend.username,
+                    bio: friend.bio,
+                    profileImage: friend.profileImage ? friend.profileImage.link: null,
+                    onlineFlag: j != this.userModel.length,
+                });
             }
         }
+        return friends;
     }
 
     joinUser({userIndex, socket}) {

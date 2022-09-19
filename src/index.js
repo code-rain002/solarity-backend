@@ -16,6 +16,7 @@ import {
   profileModule,
   tweetModule,
   userModule,
+  chatModule,
   collectionModule,
   eventModule
 } from "./modules";
@@ -127,6 +128,7 @@ class Server {
     this.express.use("/api/nfts", nftModule);
     this.express.use("/api/tweets", tweetModule);
     this.express.use("/api/users", userModule);
+    this.express.use("/api/chats", chatModule);
     this.express.use("/api/collections", collectionModule);
     this.express.use("/api/events", eventModule);
     this.express.use("/api/*", (req, res, next) => {

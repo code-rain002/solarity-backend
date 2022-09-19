@@ -91,3 +91,41 @@ export const RegisterSchema = yup.object({
     })
   })
 });
+
+export const linkAccountSchema = yup.object({
+  body: yup.object({
+    link: yup
+      .string()
+      .required("The account link name is required")
+      .oneOf(["discord", "twitter", "ethereum", "solana"]),
+    code: yup.string().when("link", (link) => {
+      if (!["solana", "ethereum"].includes(link)) {
+        return yup.string().required("Code is required");
+      }
+    }),
+    url: yup.string().when("link", (link) => {
+      if (!["solana", "ethereum"].includes(link)) {
+        return yup.string().required("URL is required");
+      }
+    }),
+    signature: yup.string().when("link", (link) => {
+      if (["solana", "ethereum"].includes(link)) {
+        return yup.string().required("Signature is required");
+      }
+    }),
+    walletAddress: yup.string().when("link", (link) => {
+      if (["solana", "ethereum"].includes(link)) {
+        return yup.string().required("Wallet address is required");
+      }
+    }),
+  }),
+});
+
+export const unlinkAccountSchema = yup.object({
+  body: yup.object({
+    link: yup
+      .string()
+      .required("The account link name is required")
+      .oneOf(["discord", "twitter", "ethereum", "solana"]),
+  }),
+});

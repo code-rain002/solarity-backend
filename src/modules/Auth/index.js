@@ -7,9 +7,11 @@ import {
   domainAvailabilityController,
   registerController,
   setStepController,
-  checkStepController
+  checkStepController,
+  linkAccountController,
+  unlinkAccountController
 } from "./controllers";
-import { LoginUserSchema, UserExistSchema, RegisterSchema, SetStepSchema } from "./schema";
+import { LoginUserSchema, UserExistSchema, RegisterSchema, SetStepSchema, linkAccountSchema, unlinkAccountSchema } from "./schema";
 
 class AuthModule extends RouteModule {
   publicRoutes() {
@@ -55,6 +57,20 @@ class AuthModule extends RouteModule {
       this.validateSchema(LoginUserSchema),
       loginUserController,
       provideUserDataController
+    );
+
+    // link profile to external accounts
+    this.router.post(
+      "/linkAccounts",
+      this.validateSchema(linkAccountSchema),
+      linkAccountController
+    );
+
+    // link profile to external accounts
+    this.router.post(
+      "/unlinkAccounts",
+      this.validateSchema(unlinkAccountSchema),
+      unlinkAccountController
     );
   }
 

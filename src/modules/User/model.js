@@ -41,10 +41,12 @@ const userSchema = new Schema(
       },
       github: {
         username: String,
-        verified: {
+        connected: {
           type: Boolean,
           default: false,
         },
+        accessToken: String,
+        refreshToken: String,
       },
       discord: {
         username: String,

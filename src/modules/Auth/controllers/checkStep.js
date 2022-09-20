@@ -6,7 +6,6 @@ export const checkStepController = async (req, res) => {
     const { userId } = req.session;
 
     const user = await UserModel.findOne({ _id: userId });
-    console.log(user)
     const userInfo = {};
     // !user.solanaAddress ? userInfo.solanaAddress = '' : userInfo.solanaAddress;
     // !user.username ? userInfo.domain = '' : userInfo.domain;

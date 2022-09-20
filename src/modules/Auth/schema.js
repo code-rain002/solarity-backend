@@ -97,7 +97,7 @@ export const linkAccountSchema = yup.object({
     link: yup
       .string()
       .required("The account link name is required")
-      .oneOf(["discord", "twitter", "ethereum", "solana"]),
+      .oneOf(["discord", "twitter", "github", "ethereum", "solana"]),
     code: yup.string().when("link", (link) => {
       if (!["solana", "ethereum"].includes(link)) {
         return yup.string().required("Code is required");
@@ -126,6 +126,6 @@ export const unlinkAccountSchema = yup.object({
     link: yup
       .string()
       .required("The account link name is required")
-      .oneOf(["discord", "twitter", "ethereum", "solana"]),
+      .oneOf(["discord", "twitter", "github", "ethereum", "solana"]),
   }),
 });

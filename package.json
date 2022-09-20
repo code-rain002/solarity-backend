@@ -50,6 +50,7 @@
     "multer-s3": "^2.10.0",
     "node-cache": "^5.1.2",
     "node-cron": "^3.0.1",
+    "node-fetch": "^2.6.7",
     "nodemailer": "^6.7.2",
     "password-validator": "^5.2.1",
     "rollbar": "^2.24.0",

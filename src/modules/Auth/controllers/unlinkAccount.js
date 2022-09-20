@@ -5,6 +5,7 @@ import {
   errorResponse,
   throwError,
   revokeDiscord,
+  revokeGithub,
   twitterAuthorizationToken,
 } from "../../../utils";
 import UserModel from "../../User/model";
@@ -21,6 +22,9 @@ export const unlinkAccountController = async (req, res) => {
       case "twitter":
         throwError("Unavailable");
         break;
+      case "github":
+        await unlinkGithub(user);
+        break;
       case "ethereum":
         await unlinkEthereum(user);
         break;
@@ -28,8 +32,9 @@ export const unlinkAccountController = async (req, res) => {
         await unlinkSolana(user);
         break;
     }
-    let profile = await req.profile();
-    return successResponse({ res, response: { profile } });
+    // let profile = await req.profile();
+    let profile = await UserModel.findOne({ _id: userId });
+    return successResponse({ res, response: { type: link } });
   } catch (err) {
     return errorResponse({ res, err });
   }
@@ -75,6 +80,19 @@ const unlinkTwitter = async (user) => {
   //     },
   //   }
   // );
+};
+
+const unlinkGithub = async (user) => {
+  const { accessToken } = user.externalLinks.github;
+  await revokeGithub(accessToken);
+  await UserModel.updateOne(
+    { _id: user._id },
+    {
+      "externalLinks.github": {
+        connected: false,
+      },
+    }
+  );
 };
 
 const unlinkEthereum = async (user) => {

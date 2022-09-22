@@ -1,5 +1,6 @@
 import axios from "axios";
 import UserModel from "../modules/User/model";
+import base64 from "base-64";
 import fetch from "node-fetch";
 
 export const getGithubAccessToken = async (userId, code, redirect_uri) => {
@@ -8,7 +9,7 @@ export const getGithubAccessToken = async (userId, code, redirect_uri) => {
     client_secret: process.env.GITHUB_CLIENT_SECRET,
     // grant_type: "authorization_code",
     code,
-    // scope: "repo repo:status repo_deployment public_repo repo:invite security_events",
+    scope: "repo user",
     redirect_uri,
   };
   const options = { headers: { Accept: "application/vnd.github+json" } };
@@ -38,6 +39,12 @@ export const getGithubUser = async (accessToken) => {
   return data;
 };
 
+export const githubAuthorizationToken = (() => {
+  const token = `${process.env.GITHUB_CLIENT_ID}:${process.env.GITHUB_CLIENT_SECRET}`;
+  const encodedToken = base64.encode(token);
+  return "Basic " + encodedToken;
+})();
+
 export const revokeGithub = async (accessToken) => {
   let data = {
     // client_id: process.env.GITHUB_CLIENT_ID,
@@ -48,10 +55,11 @@ export const revokeGithub = async (accessToken) => {
   // const params = new URLSearchParams(data);
   let headers = {
     "Accept": "application/vnd.github+json",
-    "Authorization": `token ${accessToken}`
+    "Authorization": `Bearer ${accessToken}`
+    // "Authorization": githubAuthorizationToken
   };
   const { data: response } = await axios.delete(
-    `https://github.com/applications/${process.env.GITHUB_CLIENT_ID}/token`,
+    `https://api.github.com/applications/${process.env.GITHUB_CLIENT_ID}/token`,
     data,
     {
       headers,

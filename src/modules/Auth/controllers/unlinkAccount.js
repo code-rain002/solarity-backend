@@ -20,7 +20,7 @@ export const unlinkAccountController = async (req, res) => {
         await unlinkDiscord(user);
         break;
       case "twitter":
-        throwError("Unavailable");
+        unlinkTwitter(user);
         break;
       case "github":
         await unlinkGithub(user);
@@ -57,29 +57,30 @@ const unlinkTwitter = async (user) => {
   const { accessToken } = user.externalLinks.twitter;
   try {
     let params = {
-      access_token: accessToken,
+      token: accessToken,
+      client_id: process.env.TWITTER_API_KEY
     };
-    console.log(accessToken);
     const paramString = new URLSearchParams(params);
     const { response } = await axios.post(
-      "https://api.twitter.com/2/oauth2/invalidate_token",
+      "https://api.twitter.com/2/oauth2/revoke",
       paramString,
       {
-        Authorization: twitterAuthorizationToken,
+        "Authorization": twitterAuthorizationToken,
+        "Content-Type": "application/x-www-form-urlencoded",
       }
     );
     console.log(response);
   } catch (err) {
     console.log(err.response.data);
   }
-  // await UserModel.updateOne(
-  //   { _id: user._id },
-  //   {
-  //     "externalLinks.twitter": {
-  //       connected: false,
-  //     },
-  //   }
-  // );
+  await UserModel.updateOne(
+    { _id: user._id },
+    {
+      "externalLinks.twitter": {
+        connected: false,
+      },
+    }
+  );
 };
 
 const unlinkGithub = async (user) => {

@@ -36,6 +36,7 @@ export const linkAccountController = async (req, res) => {
     }
     // profile = await req.profile();
     profile = await UserModel.findOne({ _id: _id });
+    console.log("profile", profile);
     return successResponse({ res, response: { type: link, link: profile.externalLinks[link] } });
   } catch (err) {
     return errorResponse({ res, err });

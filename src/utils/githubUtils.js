@@ -51,7 +51,6 @@ export const revokeGithub = async (accessToken) => {
     // client_secret: process.env.GITHUB_CLIENT_SECRET,
     access_token: accessToken,
   };
-  console.log('data ', data)
   // const params = new URLSearchParams(data);
   let headers = {
     "Accept": "application/vnd.github+json",

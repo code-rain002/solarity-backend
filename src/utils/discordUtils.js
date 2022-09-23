@@ -1,13 +1,6 @@
 import axios from "axios";
 import UserModel from "../modules/User/model";
-import base64 from "base-64";
 import fetch from "node-fetch";
-
-export const discordAuthorizationToken = (() => {
-  const token = `${process.env.DISCORD_CLIENT_ID}:${process.env.DISCORD_CLIENT_SECRET}`;
-  const encodedToken = base64.encode(token);
-  return "Basic " + encodedToken;
-})();
 
 export const getDiscordAccessToken = async (userId, code, redirect_uri) => {
   const params = {
@@ -20,17 +13,20 @@ export const getDiscordAccessToken = async (userId, code, redirect_uri) => {
     redirect_uri,
   };
   const paramsString = new URLSearchParams(params);
-  let headers = {
-    "Authorization": discordAuthorizationToken,
-    "Content-Type": "application/x-www-form-urlencoded",
-  };
-  const instance = await fetch("https://discord.com/api/oauth2/token", {
-    method: "POST",
-    headers: headers,
-    body: paramsString.toString()
-  });
-  var response = await instance.json();
-  const { access_token: accessToken, refresh_token: refreshToken } = response;
+  const config = {
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      'Accept': 'application/json'
+    }
+  }
+  // const instance = await fetch("https://discord.com/api/oauth2/token", {
+  //   method: "POST",
+  //   headers: headers,
+  //   body: paramsString.toString()
+  // });
+  // var response = await instance.json();
+  const response = await axios.post("https://discord.com/api/oauth2/token", paramsString, config);
+  const { access_token: accessToken, refresh_token: refreshToken } = response.data;
 
   await UserModel.updateOne(
     { _id: userId },

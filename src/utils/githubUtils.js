@@ -12,14 +12,12 @@ export const getGithubAccessToken = async (userId, code, redirect_uri) => {
     scope: "repo user",
     redirect_uri,
   };
-  const options = { headers: { Accept: "application/vnd.github+json" } };
+  const config = { headers: { Accept: "application/vnd.github+json" } };
+  const paramsString = new URLSearchParams(params);
   
-  let data;
-  await axios.post("https://github.com/login/oauth/access_token", params, options)
-    .then(response => data = response.data)
-    .catch(error => console.log(error));
+  const response = await axios.post("https://github.com/login/oauth/access_token", paramsString, config);
   
-  const { access_token: accessToken } = data;
+  const { access_token: accessToken } = response.data;
 
   await UserModel.updateOne(
     { _id: userId },

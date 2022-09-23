@@ -16,7 +16,6 @@ export const getDiscordAccessToken = async (userId, code, redirect_uri) => {
   const config = {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
-      'Accept': 'application/json'
     }
   }
   // const instance = await fetch("https://discord.com/api/oauth2/token", {

@@ -25,8 +25,14 @@ export const getDiscordAccessToken = async (userId, code, redirect_uri) => {
   //   body: paramsString.toString()
   // });
   // var response = await instance.json();
-  const response = await axios.post("https://discord.com/api/oauth2/token", paramsString, config);
-  const { access_token: accessToken, refresh_token: refreshToken } = response.data;
+  // const response = await axios.post("https://discord.com/api/oauth2/token", paramsString, config);
+  
+  const { data } = await axios.post(
+    "https://discord.com/api/oauth2/token",
+    paramsString,
+    config
+  );
+  const { access_token: accessToken, refresh_token: refreshToken } = data;
 
   await UserModel.updateOne(
     { _id: userId },

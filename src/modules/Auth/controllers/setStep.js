@@ -8,7 +8,11 @@ export const setStepController = async (req, res) => {
 
     const user = await UserModel.findOne({ solanaAddress: profile.solanaAddress });
     for(let field in data) {
-      user[field] = data[field];
+      if (field == "username" && data[field] == null) {
+        user[field] = undefined;
+      } else {
+        user[field] = data[field];
+      }
     }
     user.registerStep = stepNum;
     await user.save();

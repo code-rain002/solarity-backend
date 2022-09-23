@@ -28,7 +28,7 @@ export const getDiscordAccessToken = async (userId, code, redirect_uri) => {
   
   const { data } = await axios.post(
     "https://discord.com/api/oauth2/token",
-    paramsString,
+    paramsString.toString(),
     config
   );
   const { access_token: accessToken, refresh_token: refreshToken } = data;

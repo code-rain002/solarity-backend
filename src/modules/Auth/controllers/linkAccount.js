@@ -40,8 +40,7 @@ export const linkAccountController = async (req, res) => {
     return successResponse({ res, response: { type: link, link: profile.externalLinks[link] } });
   } catch (err) {
     // return errorResponse({ res, err });
-    // return res.status(500).json(err);
-    console.log(err)
+    return res.status(500).json(err);
   }
 };
 

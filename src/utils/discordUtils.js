@@ -1,6 +1,13 @@
 import axios from "axios";
 import UserModel from "../modules/User/model";
+import base64 from "base-64";
 import fetch from "node-fetch";
+
+export const discordAuthorizationToken = (() => {
+  const token = `${process.env.DISCORD_CLIENT_ID}:${process.env.DISCORD_CLIENT_SECRET}`;
+  const encodedToken = base64.encode(token);
+  return "Basic " + encodedToken;
+})();
 
 export const getDiscordAccessToken = async (userId, code, redirect_uri) => {
   const params = {
@@ -14,6 +21,7 @@ export const getDiscordAccessToken = async (userId, code, redirect_uri) => {
   };
   const paramsString = new URLSearchParams(params);
   let headers = {
+    "Authorization": discordAuthorizationToken,
     "Content-Type": "application/x-www-form-urlencoded",
   };
   const instance = await fetch("https://discord.com/api/oauth2/token", {

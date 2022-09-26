@@ -424,8 +424,7 @@ export const socketService = (io) => {
             delete rooms[curRoom];
           }
         }
-        ////////////////////////////////////////////////////////
-
+        ///////////////////////////////////////////////////////
         var room = await roomService.getRoom(roomId);
         if (!!room) {
           var clients = room.clients.filter((s) => s != socket.id);

@@ -6,3 +6,4 @@ export * from "./profileUtils";
 export * from "./magicEdenUtils";
 export * from "./twitterUtils";
 export * from "./discordUtils";
+export * from "./githubUtils";

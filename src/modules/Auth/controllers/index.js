@@ -4,3 +4,7 @@ export * from "./logoutUser";
 export * from "./provideUserData";
 export * from "./domainAvailability";
 export * from "./register";
+export * from "./setStep";
+export * from "./checkStep";
+export * from "./linkAccount";
+export * from "./unlinkAccount";

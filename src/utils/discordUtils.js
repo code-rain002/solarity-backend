@@ -1,5 +1,6 @@
 import axios from "axios";
 import UserModel from "../modules/User/model";
+import fetch from "node-fetch";
 
 export const getDiscordAccessToken = async (userId, code, redirect_uri) => {
   const params = {
@@ -7,20 +8,28 @@ export const getDiscordAccessToken = async (userId, code, redirect_uri) => {
     client_secret: process.env.DISCORD_CLIENT_SECRET,
     grant_type: "authorization_code",
     code,
-    scope: "identify connections guilds guilds.members.read dm_channels.read",
+    // scope: "identify connections guilds guilds.members.read dm_channels.read",
+    scope: "identify connections",
     redirect_uri,
   };
-
   const paramsString = new URLSearchParams(params);
-  let headers = {
-    "Content-Type": "application/x-www-form-urlencoded",
-  };
+  const config = {
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    }
+  }
+  // const instance = await fetch("https://discord.com/api/oauth2/token", {
+  //   method: "POST",
+  //   headers: headers,
+  //   body: paramsString.toString()
+  // });
+  // var response = await instance.json();
+  // const response = await axios.post("https://discord.com/api/oauth2/token", paramsString, config);
+  
   const { data } = await axios.post(
     "https://discord.com/api/oauth2/token",
-    paramsString,
-    {
-      headers,
-    }
+    paramsString.toString(),
+    config
   );
   const { access_token: accessToken, refresh_token: refreshToken } = data;
 

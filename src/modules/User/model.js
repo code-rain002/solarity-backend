@@ -41,10 +41,12 @@ const userSchema = new Schema(
       },
       github: {
         username: String,
-        verified: {
+        connected: {
           type: Boolean,
           default: false,
         },
+        accessToken: String,
+        refreshToken: String,
       },
       discord: {
         username: String,
@@ -102,10 +104,14 @@ const userSchema = new Schema(
         name: { type: String, required: false },
         symbol: { type: String, required: false, trim: true },
         description: { type: String, required: false, trim: true },
-        profileImageLink: { type: String, required: false, trim: true }
+        profileImageLink: { type: String, required: false, trim: true },
+        profileImage: {
+          link: { type: String, required: false, trim: true },
+          address: { type: String, required: false, trim: true },
+        },
       }
     ],
-    passportNftAddress: { type: String, required: false, default: "" },
+    passportNftAddress: { type: String, default: "" },
     rooms: [
       {
         roomId: { type: mongoose.Types.ObjectId, required: false },
@@ -161,6 +167,20 @@ const userSchema = new Schema(
         default: false,
       },
     },
+    registerStep: {
+      type: Number,
+      default: 1
+    },
+    passportStyle: {
+      logo: { type: String, required: false, trim: true },
+      background: { type: String, required: false, trim: true },
+      line: { type: String, required: false, trim: true },
+      text: { type: String, required: false, trim: true },
+    },
+    badges: [{
+      icon: { type: String, required: false, trim: true },
+      name: { type: String, required: false, trim: true }
+    }]
   },
   {
     autoIndex: true,

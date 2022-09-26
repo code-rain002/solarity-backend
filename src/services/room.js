@@ -21,6 +21,27 @@ const roomModel = [
         models: [],
         guests: [],
         msgs: [],
+    },
+    {
+        invitationHash: md5('Gallery' + 1),
+        roomId: 1,
+        roomName: 'Gallery',
+        name: "",
+        title: "Gallery",
+        type: false,
+        roomNo: 1,
+        avatarUrl: "",
+        imageUrl: "",
+        sid: {},
+        modelIndex: 0,
+        clients: [],
+        speakers: [],
+        avatars:[],
+        states: [],
+        links: [],
+        models: [],
+        guests: [],
+        msgs: [],
     }
 ];
 
@@ -129,7 +150,7 @@ class RoomService {
                         }
                     })
                 }
-                if(roomId != 0) {
+                if(roomId != 0 && roomId != 1) {
                     roomModel.splice(roomIndex, 1);
                 }
                 return;

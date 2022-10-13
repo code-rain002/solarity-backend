@@ -189,7 +189,7 @@ export const socketService = (io) => {
 
     socket.on(ACTIONS.JOIN, async ({ roomId, user }) => {
       try {
-        const { modelIndex, name, roomName, title, type, roomNo, avatarUrl, slideUrls } = user;
+        const { modelIndex, name, roomName, title, type, roomNo, avatarUrl, imageUrl, slideUrls } = user;
         socketUserMapping[socket.id] = user;
         if (roomId == -1) {
           roomId = await roomService.create(roomIndex, {
@@ -201,6 +201,7 @@ export const socketService = (io) => {
             roomNo,
             slideUrls,
             avatarUrl,
+            imageUrl,
             sid: socket.id,
           });
           socket.emit(ACTIONS.ROOM_READY, { roomId, title, type, roomNo });

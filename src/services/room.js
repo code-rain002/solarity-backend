@@ -10,7 +10,7 @@ const roomModel = [
         type: false,
         roomNo: 2,
         avatarUrl: "",
-        imageUrl: "",
+        imageUrl: "/images/marketplace/rooms/2.jpg",
         sid: {},
         modelIndex: 0,
         clients: [],
@@ -31,7 +31,7 @@ const roomModel = [
         type: false,
         roomNo: 1,
         avatarUrl: "",
-        imageUrl: "",
+        imageUrl: "/images/marketplace/rooms/1.png",
         sid: {},
         modelIndex: 0,
         clients: [],
@@ -49,15 +49,8 @@ class RoomService {
     
     async create(roomId, payload) {
         try {
-            const { name, sid, roomName, modelIndex, title, type, roomNo, avatarUrl, slideUrls } = payload;
-            var imageUrl = "";
+            const { name, sid, roomName, modelIndex, title, type, roomNo, avatarUrl, imageUrl, slideUrls } = payload;
             const userInfo = await User.findOne({ username: name });
-            if(userInfo && userInfo.rooms) {
-                var roomInfo = userInfo.rooms.find(s => s.roomNo == roomNo)
-                if(!!roomInfo) {
-                    imageUrl = roomInfo.imageUrl;
-                }
-            }
             roomModel.push({
                 invitationHash: md5(roomName + roomId),
                 roomId,

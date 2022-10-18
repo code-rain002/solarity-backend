@@ -6,7 +6,7 @@ import User from "../modules/User/model";
 import Chat from "../modules/Chat/model";
 export const socketService = (io) => {
   const socketUserMapping = {};
-  var roomIndex = 1;
+  var roomIndex = 2;
   //aframe
   const rooms = {};
   const userlist = {};
@@ -368,9 +368,9 @@ export const socketService = (io) => {
       io.to("room" + roomId).emit(ACTIONS.SEND_MSG, {
         user: socket.username,
         avatarUrl: data.avatarUrl,
-        msg: data.sendData,
+        msg: data,
       });
-      roomService.addMsg(roomId, { user: socket.username, avatarUrl: data.avatarUrl, msg: data.sendData });
+      roomService.addMsg(roomId, { user: socket.username, avatarUrl: data.avatarUrl, msg: data });
     });
 
     // handel relay ice

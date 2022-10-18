@@ -49,6 +49,7 @@ class RoomService {
     
     async create(roomId, payload) {
         try {
+            
             const { name, sid, roomName, modelIndex, title, type, roomNo, avatarUrl, imageUrl, slideUrls } = payload;
             const userInfo = await User.findOne({ username: name });
             roomModel.push({

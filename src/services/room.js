@@ -9,7 +9,7 @@ const roomModel = [
         title: "Plaza Community",
         type: false,
         roomNo: 2,
-        avatarUrl: "",
+        avatarUrl: "/images/profile/temp/Avatar_Konstantin1982.webp",
         imageUrl: "/images/rooms/plaza.jpg",
         sid: {},
         modelIndex: 0,
@@ -30,7 +30,7 @@ const roomModel = [
         title: "Gallery",
         type: false,
         roomNo: 1,
-        avatarUrl: "",
+        avatarUrl: "/images/profile/temp/Avatar_Konstantin1982.webp",
         imageUrl: "/images/rooms/gallery.png",
         sid: {},
         modelIndex: 0,
@@ -49,7 +49,6 @@ class RoomService {
     
     async create(roomId, payload) {
         try {
-            
             const { name, sid, roomName, modelIndex, title, type, roomNo, avatarUrl, imageUrl, slideUrls } = payload;
             const userInfo = await User.findOne({ username: name });
             roomModel.push({

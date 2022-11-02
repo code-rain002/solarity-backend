@@ -2,6 +2,27 @@ import md5 from "md5";
 import User from "../modules/User/model";
 const roomModel = [
     {
+        invitationHash: md5('Solarity Hub' + 2),
+        roomId: 2,
+        roomName: 'Solarity Hub',
+        name: "",
+        title: "Solarity Hub",
+        type: false,
+        roomNo: 0,
+        avatarUrl: "/images/profile/temp/Avatar_Konstantin1982.webp",
+        imageUrl: "/images/rooms/hub.jpg",
+        sid: {},
+        modelIndex: 0,
+        clients: [],
+        speakers: [],
+        avatars:[],
+        states: [],
+        links: [],
+        models: [],
+        guests: [],
+        msgs: [],
+    },
+    {
         invitationHash: md5('Plaza Community' + 0),
         roomId: 0,
         roomName: 'Plaza Community',
@@ -42,7 +63,7 @@ const roomModel = [
         models: [],
         guests: [],
         msgs: [],
-    }
+    },
 ];
 
 class RoomService {
@@ -143,7 +164,7 @@ class RoomService {
                         }
                     })
                 }
-                if(roomId != 0 && roomId != 1) {
+                if(roomId != 0 && roomId != 1 && roomId != 2) {
                     roomModel.splice(roomIndex, 1);
                 }
                 return;

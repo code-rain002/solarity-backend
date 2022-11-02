@@ -6,7 +6,7 @@ import User from "../modules/User/model";
 import Chat from "../modules/Chat/model";
 export const socketService = (io) => {
   const socketUserMapping = {};
-  var roomIndex = 2;
+  var roomIndex = 3;
   //aframe
   const rooms = {};
   const userlist = {};

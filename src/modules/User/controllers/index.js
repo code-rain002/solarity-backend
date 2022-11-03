@@ -9,6 +9,7 @@ export * from "./followUser";
 export * from "./getFollowingStatus";
 export * from "./getUserWithWalletAddress";
 export * from "./getRoomInfo";
+export * from "./getRoomIds";
 export * from "./getSelectedRoomInfo";
 export * from "./getEvents";
 export * from "./fetchUsersToInvite";

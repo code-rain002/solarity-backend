@@ -2,15 +2,15 @@ import md5 from "md5";
 import User from "../modules/User/model";
 const roomModel = [
     {
-        invitationHash: md5('Plaza Community' + 0),
-        roomId: 0,
-        roomName: 'Plaza Community',
+        invitationHash: md5('Solarity Hub' + 2),
+        roomId: 2,
+        roomName: 'Solarity Hub',
         name: "",
-        title: "Plaza Community",
+        title: "Solarity Hub",
         type: false,
-        roomNo: 2,
-        avatarUrl: "",
-        imageUrl: "",
+        roomNo: 0,
+        avatarUrl: "/images/profile/temp/Avatar_Konstantin1982.webp",
+        imageUrl: "/images/rooms/hub.jpg",
         sid: {},
         modelIndex: 0,
         clients: [],
@@ -21,22 +21,57 @@ const roomModel = [
         models: [],
         guests: [],
         msgs: [],
-    }
+    },
+    {
+        invitationHash: md5('Plaza Community' + 0),
+        roomId: 0,
+        roomName: 'Plaza Community',
+        name: "",
+        title: "Plaza Community",
+        type: false,
+        roomNo: 2,
+        avatarUrl: "/images/profile/temp/Avatar_Konstantin1982.webp",
+        imageUrl: "/images/rooms/plaza.jpg",
+        sid: {},
+        modelIndex: 0,
+        clients: [],
+        speakers: [],
+        avatars:[],
+        states: [],
+        links: [],
+        models: [],
+        guests: [],
+        msgs: [],
+    },
+    {
+        invitationHash: md5('Gallery' + 1),
+        roomId: 1,
+        roomName: 'Gallery',
+        name: "",
+        title: "Gallery",
+        type: false,
+        roomNo: 1,
+        avatarUrl: "/images/profile/temp/Avatar_Konstantin1982.webp",
+        imageUrl: "/images/rooms/gallery.png",
+        sid: {},
+        modelIndex: 0,
+        clients: [],
+        speakers: [],
+        avatars:[],
+        states: [],
+        links: [],
+        models: [],
+        guests: [],
+        msgs: [],
+    },
 ];
 
 class RoomService {
     
     async create(roomId, payload) {
         try {
-            const { name, sid, roomName, modelIndex, title, type, roomNo, avatarUrl, slideUrls } = payload;
-            var imageUrl = "";
+            const { name, sid, roomName, modelIndex, title, type, roomNo, avatarUrl, imageUrl, slideUrls } = payload;
             const userInfo = await User.findOne({ username: name });
-            if(userInfo && userInfo.rooms) {
-                var roomInfo = userInfo.rooms.find(s => s.roomNo == roomNo)
-                if(!!roomInfo) {
-                    imageUrl = roomInfo.imageUrl;
-                }
-            }
             roomModel.push({
                 invitationHash: md5(roomName + roomId),
                 roomId,
@@ -129,7 +164,7 @@ class RoomService {
                         }
                     })
                 }
-                if(roomId != 0) {
+                if(roomId != 0 && roomId != 1 && roomId != 2) {
                     roomModel.splice(roomIndex, 1);
                 }
                 return;

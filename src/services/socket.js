@@ -6,7 +6,7 @@ import User from "../modules/User/model";
 import Chat from "../modules/Chat/model";
 export const socketService = (io) => {
   const socketUserMapping = {};
-  var roomIndex = 1;
+  var roomIndex = 3;
   //aframe
   const rooms = {};
   const userlist = {};
@@ -189,7 +189,7 @@ export const socketService = (io) => {
 
     socket.on(ACTIONS.JOIN, async ({ roomId, user }) => {
       try {
-        const { modelIndex, name, roomName, title, type, roomNo, avatarUrl, slideUrls } = user;
+        const { modelIndex, name, roomName, title, type, roomNo, avatarUrl, imageUrl, slideUrls } = user;
         socketUserMapping[socket.id] = user;
         if (roomId == -1) {
           roomId = await roomService.create(roomIndex, {
@@ -201,6 +201,7 @@ export const socketService = (io) => {
             roomNo,
             slideUrls,
             avatarUrl,
+            imageUrl,
             sid: socket.id,
           });
           socket.emit(ACTIONS.ROOM_READY, { roomId, title, type, roomNo });
@@ -367,9 +368,9 @@ export const socketService = (io) => {
       io.to("room" + roomId).emit(ACTIONS.SEND_MSG, {
         user: socket.username,
         avatarUrl: data.avatarUrl,
-        msg: data.sendData,
+        msg: data,
       });
-      roomService.addMsg(roomId, { user: socket.username, avatarUrl: data.avatarUrl, msg: data.sendData });
+      roomService.addMsg(roomId, { user: socket.username, avatarUrl: data.avatarUrl, msg: data });
     });
 
     // handel relay ice
@@ -424,8 +425,7 @@ export const socketService = (io) => {
             delete rooms[curRoom];
           }
         }
-        ////////////////////////////////////////////////////////
-
+        ///////////////////////////////////////////////////////
         var room = await roomService.getRoom(roomId);
         if (!!room) {
           var clients = room.clients.filter((s) => s != socket.id);

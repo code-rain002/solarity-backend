@@ -7,6 +7,7 @@ import {
   getUserInfoController,
   getUserFollowersController,
   getLinkInfoController,
+  getRoomIdsController,
   getUsersController,
   followUserController,
   unfollowUserController,
@@ -49,6 +50,9 @@ class UserModule extends RouteModule {
 
     // REDUNDANT with the GET / endpoint. Confirm removal later
     this.router.get("/getUsers", getAllUsersController);
+
+    // REDUNDANT with the GET / endpoint. Confirm removal later
+    this.router.get("/getRoomIds", getRoomIdsController);
 
     // REDUNDANT with the GET /:id endpoint. Confirm removal later
     this.router.get("/getUserInfo/:name", getUserInfoController);

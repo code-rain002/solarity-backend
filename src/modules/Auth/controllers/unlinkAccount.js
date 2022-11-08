@@ -6,7 +6,7 @@ import {
   throwError,
   revokeDiscord,
   revokeGithub,
-  twitterAuthorizationToken,
+  revokeTwitter,
 } from "../../../utils";
 import UserModel from "../../User/model";
 
@@ -42,7 +42,7 @@ export const unlinkAccountController = async (req, res) => {
 
 const unlinkDiscord = async (user) => {
   const { accessToken } = user.externalLinks.discord;
-  await revokeDiscord(accessToken);
+  // await revokeDiscord(accessToken);
   await UserModel.updateOne(
     { _id: user._id },
     {
@@ -55,24 +55,7 @@ const unlinkDiscord = async (user) => {
 
 const unlinkTwitter = async (user) => {
   const { accessToken } = user.externalLinks.twitter;
-  try {
-    let params = {
-      token: accessToken,
-      client_id: process.env.TWITTER_API_KEY
-    };
-    const paramString = new URLSearchParams(params);
-    const { response } = await axios.post(
-      "https://api.twitter.com/2/oauth2/revoke",
-      paramString,
-      {
-        "Authorization": twitterAuthorizationToken,
-        "Content-Type": "application/x-www-form-urlencoded",
-      }
-    );
-    console.log(response);
-  } catch (err) {
-    console.log(err.response.data);
-  }
+  // await revokeTwitter(accessToken);
   await UserModel.updateOne(
     { _id: user._id },
     {
@@ -85,7 +68,7 @@ const unlinkTwitter = async (user) => {
 
 const unlinkGithub = async (user) => {
   const { accessToken } = user.externalLinks.github;
-  await revokeGithub(accessToken);
+  // await revokeGithub(accessToken);
   await UserModel.updateOne(
     { _id: user._id },
     {

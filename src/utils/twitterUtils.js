@@ -21,21 +21,39 @@ export const getTwitterAccessToken = async (userId, code, redirect_uri) => {
     "Authorization": twitterAuthorizationToken,
     "Content-Type": "application/x-www-form-urlencoded",
   };
-  const { data } = await axios.post(
+  const {
+    data
+  } = await axios.post(
     "https://api.twitter.com/2/oauth2/token",
-    paramString,
-    {
+    paramString, {
       headers,
     }
   );
-  await UserModel.updateOne(
-    { _id: userId },
-    {
-      "externalLinks.twitter": {
-        accessToken: data.access_token,
-        refreshToken: data.refresh_token,
-      },
+  await UserModel.updateOne({
+    _id: userId
+  }, {
+    "externalLinks.twitter": {
+      accessToken: data.access_token,
+      refreshToken: data.refresh_token,
+    },
+  });
+  return data.access_token;
+};
+
+export const revokeTwitter = async (accessToken) => {
+  let params = {
+    token: accessToken,
+    client_id: process.env.TWITTER_API_KEY
+  };
+  const paramString = new URLSearchParams(params);
+  const {
+    data: response
+  } = await axios.post(
+    "https://api.twitter.com/2/oauth2/revoke",
+    paramString, {
+      "Authorization": twitterAuthorizationToken,
+      "Content-Type": "application/x-www-form-urlencoded",
     }
   );
-  return data.access_token;
+  return response;
 };

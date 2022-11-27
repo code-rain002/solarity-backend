@@ -13,7 +13,6 @@ export const checkUserExistController = async (req, res) => {
     }
 
     if (!!user) {
-      
       return successResponse({ res, response: { exist: true, user: user } });
     } else {
       return successResponse({ res, response: { exist: false, user: user } });

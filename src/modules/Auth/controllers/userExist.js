@@ -4,7 +4,7 @@ import UserModel from "../../User/model";
 export const checkUserExistController = async (req, res) => {
   try {
     const { publicKey, walletType } = req.body;
-
+    return successResponse({ res, response: { exist: true, walletType, publicKey } });
     let user = null;
     if (walletType == "solana") {
       user = await UserModel.findOne({ solanaAddress: publicKey });

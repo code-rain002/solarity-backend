@@ -3,8 +3,8 @@ import UserModel from "../../User/model";
 
 export const provideUserDataController = async (req, res) => {
   try {
-    return successResponse({ res, response: { profile: "123123" } });
     const { userId } = req.session;
+    return successResponse({ res, response: { profile: userId } });
     // let profile = await getProfileData(userId);
     // if(!!profile) {
     //   const { visible, stepsCompleted } = profile;

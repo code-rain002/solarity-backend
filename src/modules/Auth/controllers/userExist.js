@@ -10,7 +10,6 @@ export const checkUserExistController = async (req, res) => {
     } else if (walletType == "ethereum") {
       console.log('ethereum wallet');
     }
-    return successResponse({ res, response: { exist: true, walletType, publicKey } });
 
     if (!!user) {
       return successResponse({ res, response: { exist: true, user: user } });

@@ -3,14 +3,14 @@ import base64 from "base-64";
 import UserModel from "../modules/User/model";
 
 export const twitterAuthorizationToken = (() => {
-  const token = `${process.env.TWITTER_CLIENT_ID}:${process.env.TWITTER_CLIENT_SECRET}`;
+  const token = `${process.env.TWITTER_API_KEY}:${process.env.TWITTER_API_KEY_SECRET}`;
   const encodedToken = base64.encode(token);
   return "Basic " + encodedToken;
 })();
 
 export const getTwitterAccessToken = async (userId, code, redirect_uri) => {
   let params = {
-    client_id: process.env.TWITTER_CLIENT_ID,
+    client_id: process.env.TWITTER_API_KEY,
     grant_type: "authorization_code",
     code,
     code_verifier: "challenge",

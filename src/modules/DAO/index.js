@@ -8,6 +8,7 @@ import {
   unfollowDaoController,
   getDaoTokensController,
   getDaoController,
+  getWebsiteController,
   getDaoByAddressController
 } from "./controllers";
 import { getDaosSchema, getDaoSchema } from "./schema";
@@ -29,6 +30,12 @@ class DaoModule extends RouteModule {
       "/:symbol",
       this.validateSchema(null, { idParamCheck: true, idName: "symbol" }),
       getDaoController
+    );
+
+    // get a content of the website with url.
+    this.router.get(
+      "/url/:url",
+      getWebsiteController
     );
 
     this.router.get(

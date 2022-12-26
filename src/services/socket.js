@@ -39,7 +39,7 @@ export const socketService = (io) => {
     /****************************-Extension-****************************/
     socket.on(ACTIONS.INVITE_TO_FRIEND, async ({userId}) => {
       const userInfo = userService.userModel.find(s => s.user._id == userId);
-      const invitorInfo = userService.userModel.find(s => s.user.name == socket.extension_user_name);
+      const invitorInfo = userService.userModel.find(s => s.user.name == socket.username);
       var user = await User.findById(userId);
       if(!user.friends) {
         user.friends = [];
@@ -64,7 +64,7 @@ export const socketService = (io) => {
     socket.on(ACTIONS.JOIN_EXTENSION, async ({ name }) => {
       try {
         // Add name to socket
-        socket.extension_user_name = name;
+        socket.username = name;
         const userIndex = userService.userModel.findIndex(
           (s) => s.user.name == name
         );
@@ -105,8 +105,9 @@ export const socketService = (io) => {
 
     socket.on(ACTIONS.SEND_MSG_EXTENSION, async (msg) => {
       try {
-        if(msg.groupType == false) {
+        if(msg.groupType == 2) {
           // Send msgs. Members contain you.
+          var groupType = false;
           var msgId = "";
           var date = "";
           const sender = userService.userModel.find(s => s.user.userId == msg.members[0]);
@@ -118,7 +119,7 @@ export const socketService = (io) => {
             if(index != 0) {
               var oldOne = undefined;
               try {
-                oldOne = await Chat.findOne({users: {$all: msg.members, $size: msg.members.length}, type: msg.groupType, blockState: false});
+                oldOne = await Chat.findOne({users: {$all: msg.members, $size: msg.members.length}, type: groupType, blockState: false});
               } catch (error) {
                 console.log('ChatFind', error);
               }
@@ -127,7 +128,7 @@ export const socketService = (io) => {
                 try {
                   tmpOne = await Chat.create({
                     users: msg.members,
-                    type: msg.groupType,
+                    type: groupType,
                     msgs: [
                       {
                         sender: msg.members[0],
@@ -462,7 +463,7 @@ export const socketService = (io) => {
         user.user.onlineFlag = false;
         io.sockets.emit(
           ACTIONS.REMOVE_USER_EXTENSION,
-          socket.extension_user_name
+          socket.username
         );
       }
       console.log("disconnection " + socket.socket_id);

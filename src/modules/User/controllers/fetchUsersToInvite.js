@@ -24,7 +24,9 @@ export const fetchUsersToInviteController = async (req, res) => {
         bio: 1,
         solanaAddress: 1
       }
-    ).sort('createdAt');
+    ).sort('createdAt').limit(100);
+
+    console.log(userData);
 
     // Add onlineFlag in fetched users
     for (var i = 0; i < userData.length; i ++) {
